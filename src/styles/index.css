@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+/******************Schedule CSS***********************/
+
+#event-popover .popover button:nth-child(2){
+  display: none !important;
+} 
+
+body.service_provider_scheduler_modal .scheduler-modal{
+  display: none !important;
+}
+
+body.service_provider_scheduler_modal .scheduler-modal-backdrop{
+  background-color: transparent !important;
+  height: auto !important;
+}
+
+body.client_scheduler_modal .scheduler-modal{
+  display: block !important;
+}
+
+body.client_scheduler_modal .scheduler-modal-backdrop{
+  background-color: rgba(0,0,0,.3) !important;
+  height: 100vh !important;
+}
+
+/* --- Scheduler dark mode overrides --- */
+/* Target the main scheduler container */
+body.mantine-dark [class*="scheduler"],
+body.mantine-dark [class*="calendar"],
+body.mantine-dark [class*="Scheduler"] {
+  background: #23272e !important;
+  color: #fff !important;
+}
+
+/* Target table elements */
+body.mantine-dark [class*="scheduler"] table,
+body.mantine-dark [class*="calendar"] table,
+body.mantine-dark [class*="Scheduler"] table {
+  background: #23272e !important;
+  color: #fff !important;
+  border-color: #343a40 !important;
+}
+
+/* Target table headers */
+body.mantine-dark [class*="scheduler"] th,
+body.mantine-dark [class*="calendar"] th,
+body.mantine-dark [class*="Scheduler"] th {
+  background: #23272e !important;
+  color: #fff !important;
+  border-color: #343a40 !important;
+}
+
+/* Target table cells */
+body.mantine-dark [class*="scheduler"] td,
+body.mantine-dark [class*="calendar"] td,
+body.mantine-dark [class*="Scheduler"] td {
+  background: #23272e !important;
+  color: #fff !important;
+  border-color: #343a40 !important;
+}
+
+/* Target event elements */
+body.mantine-dark [class*="event"],
+body.mantine-dark [class*="Event"] {
+  color: #fff !important;
+}
+
+/* Target any div with scheduler-related classes */
+body.mantine-dark div[class*="scheduler"],
+body.mantine-dark div[class*="calendar"],
+body.mantine-dark div[class*="Scheduler"] {
+  background: #23272e !important;
+  color: #fff !important;
+}
+
+/* Target any element with date-related classes */
+body.mantine-dark [class*="date"],
+body.mantine-dark [class*="Date"] {
+  color: #fff !important;
+}
+
+/* Target any element with time-related classes */
+body.mantine-dark [class*="time"],
+body.mantine-dark [class*="Time"] {
+  color: #fff !important;
+}
+
+/* Target any element with header-related classes */
+body.mantine-dark [class*="header"],
+body.mantine-dark [class*="Header"] {
+  background: #23272e !important;
+  color: #fff !important;
+}
+
+/* Target any element with grid-related classes */
+body.mantine-dark [class*="grid"],
+body.mantine-dark [class*="Grid"] {
+  background: #23272e !important;
+  color: #fff !important;
+}
+
+/* --- End Scheduler dark mode overrides --- */
+
+
+/******************Schedule CSS***********************/

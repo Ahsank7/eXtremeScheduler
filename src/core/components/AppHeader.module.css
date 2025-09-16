@@ -1,0 +1,15 @@
+.header {
+    padding-left: 1rem;
+    border-bottom: 1px solid #dee2e6a3;
+    height: "8vh";
+}
+
+.headerMenu {
+    height: "100%";
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+.headerMenu:hover {
+    background-color: "#4c4c4c";
+}
