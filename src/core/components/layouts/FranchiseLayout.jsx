@@ -199,6 +199,7 @@ export const FranchiseLayout = () => {
       sidebarMenu={franchisesSidebarMenu}
       selectedMenu={selectedMenu}
       onSidebarMenu={handleFranchiseSidebarMenu}
+      franchiseName={franchiseName}
     >
       <Outlet context={{ selectedMenu }} />
     </Layout>

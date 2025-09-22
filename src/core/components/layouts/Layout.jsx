@@ -25,6 +25,7 @@ export const Layout = ({
   selectedMenu,
   onSidebarMenu,
   children,
+  franchiseName
 }) => {
   const { classes, cx } = useStyles();
   const { isCollapsed } = useSidebar();
@@ -32,7 +33,7 @@ export const Layout = ({
   return (
     <Grid m={0} p={0}>
       <Grid.Col m={0} p={0} xs={12}>
-        <AppHeader></AppHeader>
+        <AppHeader franchiseName={franchiseName}></AppHeader>
       </Grid.Col>
 
       {!isCollapsed && (

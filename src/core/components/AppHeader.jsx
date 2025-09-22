@@ -13,13 +13,13 @@ import {
 } from "@mantine/core";
 import { IconChevronRight, IconLogout, IconSun, IconMoon, IconLock } from "@tabler/icons";
 import { useNavigate } from "react-router-dom";
-import { localStoreService, loginHistoryService } from "core/services";
+import { localStoreService, loginHistoryService, organizationService } from "core/services";
 import { useTheme } from "../context/ThemeContext";
 import { useSidebar } from "../context/SidebarContext";
 import imageUrlService from "../services/imageUrlService";
 import { ChangePassword } from "shared/components/user/ChangePassword";
 import { AppTable, AppModal } from "shared/components";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -42,14 +42,33 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function AppHeader() {
+export function AppHeader({ franchiseName }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [organizationName, setOrganizationName] = useState(null);
   const { classes, theme } = useStyles();
   const naviagte = useNavigate();
   const { colorScheme, toggleColorScheme } = useTheme();
   const { isCollapsed, toggleSidebar } = useSidebar();
 
   const userInfo = localStoreService.getUserInfo();
+
+  useEffect(() => {
+    fetchOrganizationName();
+  }, []);
+
+  const fetchOrganizationName = async () => {
+    try {
+      const organizationId = localStoreService.getOrganizationID();
+      if (organizationId) {
+        const response = await organizationService.getOrganizationById(organizationId);
+        if (response && response.isSuccess && response.data) {
+          setOrganizationName(response.data.name);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching organization name:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -82,6 +101,47 @@ export function AppHeader() {
         <Group>
           <Burger opened={!isCollapsed} onClick={toggleSidebar} size="sm" />
           <Logo width={120} />
+          {(organizationName && franchiseName) && (
+            <Group spacing={4} style={{ marginLeft: "16px" }}>
+              {organizationName && (
+                <Text 
+                  size="sm" 
+                  color="#0078d4" 
+                  weight={500}
+                  style={{ 
+                    cursor: "pointer", 
+                    fontSize: "14px",
+                    textDecoration: "none"
+                  }}
+                  onClick={() => naviagte("/organizations")}
+                  onMouseEnter={(e) => e.target.style.textDecoration = "underline"}
+                  onMouseLeave={(e) => e.target.style.textDecoration = "none"}
+                >
+                  {organizationName}
+                </Text>
+              )}
+              {franchiseName && (
+                <>
+                  <Text size="sm" color="dimmed" style={{ fontSize: "14px" }}>/</Text>
+                  <Text 
+                    size="sm" 
+                    color="#0078d4" 
+                    weight={500}
+                    style={{ 
+                      cursor: "pointer", 
+                      fontSize: "14px",
+                      textDecoration: "none"
+                    }}
+                    onClick={() => naviagte(`/franchises/${franchiseName}/dashboard`)}
+                    onMouseEnter={(e) => e.target.style.textDecoration = "underline"}
+                    onMouseLeave={(e) => e.target.style.textDecoration = "none"}
+                  >
+                    {franchiseName}
+                  </Text>
+                </>
+              )}
+            </Group>
+          )}
         </Group>
 
         <Group className={classes.headerMenu}>
