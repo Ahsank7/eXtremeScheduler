@@ -1,0 +1,5 @@
+[33m83e2aca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix: Update browserslist database to resolve build failure
+[33m32118ec[m Update component files: AppHeader, FranchiseLayout, Layout and environment config
+[33m4825e20[m Add .env file with environment variables
+[33m973182a[m Merge branch 'main' of https://github.com/Ahsank7/eXtremeScheduler
+[33m630688f[m Fix build configuration for Azure deployment
