@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Alert, TextInput, Group } from '@mantine/core';
 import { IconCalendar, IconReceipt, IconCheck, IconEye } from '@tabler/icons';
 import { useParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { AppContainer } from 'shared/components';
-import { localStoreService, billingService } from 'core/services';
+import { localStoreService, billingService, organizationService } from 'core/services';
 import PreviewModal from 'shared/components/PreviewModal';
 
 const GenerateBilling = () => {
@@ -17,6 +17,7 @@ const GenerateBilling = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [previewError, setPreviewError] = useState(null);
+  const [currencySign, setCurrencySign] = useState('$');
   const pageSize = 15;
 
   const form = useForm({
@@ -29,6 +30,24 @@ const GenerateBilling = () => {
       endDate: (value) => (!value ? 'End date is required' : null),
     },
   });
+
+  // Fetch currency sign on component mount
+  useEffect(() => {
+    const fetchCurrencySign = async () => {
+      try {
+        const organizationId = localStoreService.getOrganizationID();
+        if (organizationId) {
+          const currency = await organizationService.getCurrencySign(organizationId);
+          setCurrencySign(currency);
+        }
+      } catch (error) {
+        console.error('Error fetching currency sign:', error);
+        // Keep default '$' if there's an error
+      }
+    };
+
+    fetchCurrencySign();
+  }, []);
 
   const handlePreview = async (page = 1) => {
     const validation = form.validate();
@@ -92,7 +111,7 @@ const GenerateBilling = () => {
     { key: 'clientName', label: 'Client Name' },
     { key: 'serviceProviderName', label: 'Service Provider' },
     { key: 'taskDate', label: 'Task Date', render: (value) => new Date(value).toLocaleDateString() },
-    { key: 'billingAmount', label: 'Billing Amount', render: (value) => `${parseFloat(value).toFixed(2)}` },
+    { key: 'billingAmount', label: 'Billing Amount', render: (value) => `${currencySign}${parseFloat(value).toFixed(2)}` },
   ];
 
   return (

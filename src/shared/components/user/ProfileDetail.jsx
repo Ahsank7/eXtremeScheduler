@@ -114,7 +114,6 @@ export const ProfileDetail = () => {
   const [tabs, setTabs] = useState([]);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [avatarLoading, setAvatarLoading] = useState(false);
-  const [hasCredentials, setHasCredentials] = useState(false);
   const backendBaseUrl = enviroment.baseURL.replace(/\/api\/?$/, "");
   const [avatarHovered, setAvatarHovered] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -168,27 +167,12 @@ export const ProfileDetail = () => {
       
       setProfileData(profileDataWithAge);
       setAvatarUrl(data.profileImagePath);
-      checkCredentialsStatus();
     } catch (error) {
       console.error("Failed to fetch profile data:", error);
     }
   };
 
-    // Check credentials status
-    const checkCredentialsStatus = async () => {
-      if (!userID) return;
-      
-      try {
-        const response = await authenticationService.getUserCredentials(userID);
-        const { data } = response;
-        
-        const hasCreds = !!(data.userName && data.password);
-        setHasCredentials(hasCreds);
-      } catch (error) {
-        // If credentials fetch fails, assume no credentials exist
-        setHasCredentials(false);
-      }
-    };
+ 
 
     if (!helperFunctions.isValidGUID(userID)) {
       getTabsByUserType(-1);
@@ -196,7 +180,7 @@ export const ProfileDetail = () => {
       getTabsByUserType(numericUserType);
       fetchProfileData();
     }
-  }, [userID, numericUserType, hasCredentials]);
+  }, [userID, numericUserType]);
 
   // Fetch avatar on mount or when userID changes
   useEffect(() => {
@@ -220,7 +204,6 @@ export const ProfileDetail = () => {
   }, [userID]);
 
   const getTabsByUserType = (userType) => {
-    console.log('Generating tabs for userType:', userType, 'hasCredentials:', hasCredentials);
     
     let tabs = [];
     
@@ -232,18 +215,13 @@ export const ProfileDetail = () => {
         "Contact",
         "Leave",
         "Document",
+        "Credentials",
         "Credit/Debit Card",
         "Bank Account Info",
         "Billing Info",
       ];
       
-      // Only show Credentials tab if credentials don't exist
-      if (!hasCredentials) {
-        tabs.splice(6, 0, "Credentials"); // Insert after Document
-        console.log('Added Credentials tab for Clients');
-      } else {
-        console.log('Credentials tab hidden for Clients (credentials exist)');
-      }
+  
     } else if (userType == UserType["Service Providers"]) {
       tabs = [
         "Profile",
@@ -253,6 +231,7 @@ export const ProfileDetail = () => {
         "Leave",
         "Document",
         "Availability",
+        "Credentials",
         "Expense",
         "Credit/Debit Card",
         "Contract Info",
@@ -260,23 +239,10 @@ export const ProfileDetail = () => {
         "Wage Info",
       ];
       
-      // Only show Credentials tab if credentials don't exist
-      if (!hasCredentials) {
-        tabs.splice(7, 0, "Credentials"); // Insert after Availability
-        console.log('Added Credentials tab for Service Providers');
-      } else {
-        console.log('Credentials tab hidden for Service Providers (credentials exist)');
-      }
     } else if (userType == UserType.Staffs) {
-      tabs = ["Profile", "Role Management", "Address", "Contact", "Leave", "Document"];
+      tabs = ["Profile", "Role Management", "Address", "Contact", "Leave", "Document", "Credentials"];
       
-      // Only show Credentials tab if credentials don't exist
-      if (!hasCredentials) {
-        tabs.push("Credentials");
-        console.log('Added Credentials tab for Staffs');
-      } else {
-        console.log('Credentials tab hidden for Staffs (credentials exist)');
-      }
+ 
     } else {
       tabs = ["Profile"];
     }

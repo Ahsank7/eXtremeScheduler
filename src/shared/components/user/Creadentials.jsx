@@ -9,7 +9,6 @@ export function Creadentials({ userId, userType }) {
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [hasCreadentialsSet, setHasCreadentialsSet] = useState(false);
 
 
 
@@ -23,14 +22,12 @@ export function Creadentials({ userId, userType }) {
         // Only set values if they exist in the response, don't auto-fill with browser data
         if (data.userName) {
           setUserName(data.userName);
-          setHasCreadentialsSet(true);
         } else {
           setUserName("");
         }
         
         if (data.password) {
           setPassword(data.password);
-          setHasCreadentialsSet(true);
         } else {
           setPassword("");
         }
@@ -144,9 +141,7 @@ export function Creadentials({ userId, userType }) {
             autoComplete="new-password"
           />
 
-          {hasCreadentialsSet? (
-            <p>Username and Password are set already</p>
-          ) : (
+        
             <Button 
               onClick={saveCredentials}
               loading={isLoading}
@@ -154,7 +149,7 @@ export function Creadentials({ userId, userType }) {
             >
               Save
             </Button>
-          )}
+
         </div>
       </div>
     </>
