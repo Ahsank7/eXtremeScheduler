@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Select, Container, Group, Tooltip, Paper, Text } from "@mantine/core";
 import { Scheduler } from "react-scheduler-pro";
-import { AddUpdateUserSchedule } from "shared/components/user/AddUpdateUserSchedule";
+import AddUpdateUserSchedule from "shared/components/user/AddUpdateUserSchedule";
 import { lookupService, scheduleService } from "core/services";
 import { UpdateAppointment } from "..";
 import { UserType } from "core/enum";

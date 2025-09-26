@@ -114,7 +114,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
+const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
   const navigate = useNavigate();
   const [action, setAction] = useState("");
   const { classes } = useStyles();
@@ -668,3 +668,5 @@ export const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
     </div>
   );
 };
+
+export default UpdateAppointment;
