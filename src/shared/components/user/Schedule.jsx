@@ -9,7 +9,7 @@ import { UserType } from "core/enum";
 export function Schedule({ userId, organizationId, userType, readOnly = false }) {
   const fetchEvents = async (startDate, endDate) => {
     let request = {
-      timeZone: selectedTimezone,
+      organizationId: organizationId,
       startDate:
         new Date(startDate.setHours(0, 0, 0, 0)).toISOString().split("T")[0] +
         "T00:00:00Z",
@@ -92,8 +92,6 @@ export function Schedule({ userId, organizationId, userType, readOnly = false })
 
   const [eventFields, setEventFields] = useState({});
   const [events, setEvents] = useState([]);
-  const [timezoneOptions, setTimezoneOptions] = useState([]);
-  const [selectedTimezone, setSelectedTimezone] = useState("");
   const [startEndDate, setStartEndDate] = useState(null);
 
   const closeModal = (toggle) => {
@@ -130,32 +128,7 @@ export function Schedule({ userId, organizationId, userType, readOnly = false })
     fetchEventsAsync(start, end);
   }, []);
 
-  useEffect(() => {
-    const fetchTimezoneOptions = async () => {
-      try {
-        const timezoneResponse = await lookupService.getLookupList({
-          lookupType: "TimeZones",
-          organizationId,
-        }); // Using organizationId instead of hardcoded value
-        if (timezoneResponse.status === 200) {
-          setTimezoneOptions(
-            timezoneResponse.data.result.map((item, index) => ({
-              key: index,
-              value: item.name,
-              label: item.description,
-            }))
-          );
-          setSelectedTimezone(timezoneResponse.data.result[0].name);
-        } else {
-          console.error("Failed to fetch timezone options:", timezoneResponse.errors);
-        }
-      } catch (error) {
-        console.error("Failed to fetch timezone options:", error);
-      }
-    };
-
-    fetchTimezoneOptions();
-  }, [organizationId]); // Added organizationId as a dependency
+  // Timezone is now handled at organization level, no need to fetch here
 
   const getMonthRange = (year, month) => {
     const start = new Date(year, month - 1, 1);
@@ -184,16 +157,7 @@ export function Schedule({ userId, organizationId, userType, readOnly = false })
       )}
       <Group position="apart" style={{ marginBottom: "20px" }}>
         <div style={{ flex: 1 }}></div>{" "}
-        {/* Placeholder to push the timezone dropdown to the right */}
-        <Select
-          label="Timezone"
-          placeholder="Select Timezone"
-          data={timezoneOptions}
-          value={selectedTimezone}
-          onChange={(value) => setSelectedTimezone(value)}
-          style={{ width: "25%" }}
-          disabled={readOnly}
-        />
+        {/* Timezone is now managed at organization level */}
         <Scheduler
           modalSize="sm"
           view="month"

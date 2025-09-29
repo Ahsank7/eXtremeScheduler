@@ -24,6 +24,7 @@ const schema = zod.object({
   TaxPercentage: zod.number(),
   DiscountPercentage: zod.number(),
   UseServiceRateForBilling: zod.boolean(),
+  TimeZone: zod.string().optional(),
 });
 
 const BasicSetting = ({ organization }) => {
@@ -33,6 +34,7 @@ const BasicSetting = ({ organization }) => {
     { value: 2, label: "Actual" },
   ]);
   const [currencySignOptions, setCurrencySignOptions] = useState([]);
+  const [timezoneOptions, setTimezoneOptions] = useState([]);
   const [logoUrl, setLogoUrl] = useState(null);
   const [logoLoading, setLogoLoading] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
@@ -57,6 +59,7 @@ const BasicSetting = ({ organization }) => {
       TaxPercentage: 0.0,
       DiscountPercentage: 0.0,
       UseServiceRateForBilling: false,
+      TimeZone: 'Pakistan Standard Time',
     },
   });
 
@@ -80,6 +83,7 @@ const BasicSetting = ({ organization }) => {
         TaxPercentage: organization.taxPercentage,
         DiscountPercentage: organization.discountPercentage,
         UseServiceRateForBilling: organization.useServiceRateForBilling,
+        TimeZone: organization.timeZone || 'Pakistan Standard Time',
       };
       form.setValues(mappedData);
       lookupService.getLookupList({ lookupType: "Currency", organizationId: organization?.id })
@@ -104,6 +108,20 @@ const BasicSetting = ({ organization }) => {
           notifications.show({
             title: "Error",
             message: "Failed to fetch currency sign data",
+            color: "red",
+          });
+        });
+
+      // Load timezone options
+      lookupService.getLookupList({ lookupType: "TimeZones", organizationId: organization?.id })
+        .then((response) => {
+          const { data } = response;
+          setTimezoneOptions(data.result.map(item => ({ value: item.name, label: item.name })));
+        })
+        .catch((error) => {
+          notifications.show({
+            title: "Error",
+            message: "Failed to fetch timezone data",
             color: "red",
           });
         });
@@ -353,6 +371,17 @@ const BasicSetting = ({ organization }) => {
           </Grid.Col>
           <Grid.Col xs={12} md={6}>
             <TextInput label="WebSite" {...form.getInputProps('WebSite')} mb="sm" />
+          </Grid.Col>
+          <Grid.Col xs={12} md={6}>
+            <Select
+              label="Time Zone"
+              placeholder="Select timezone"
+              {...form.getInputProps('TimeZone')}
+              data={timezoneOptions}
+              mb="sm"
+              searchable
+              clearable
+            />
           </Grid.Col>
           <Grid.Col xs={12} md={12}>
             <TextInput label="Complete Address" {...form.getInputProps('CompleteAddress')} mb="sm" />
