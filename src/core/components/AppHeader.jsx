@@ -20,6 +20,7 @@ import imageUrlService from "../services/imageUrlService";
 import { ChangePassword } from "shared/components/user/ChangePassword";
 import { AppTable, AppModal } from "shared/components";
 import React, { useState, useEffect } from "react";
+import { UserType } from "core/enum";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -51,6 +52,8 @@ export function AppHeader({ franchiseName }) {
   const { isCollapsed, toggleSidebar } = useSidebar();
 
   const userInfo = localStoreService.getUserInfo();
+  const userType = localStoreService.getUserType();
+
 
   useEffect(() => {
     fetchOrganizationName();
@@ -101,7 +104,7 @@ export function AppHeader({ franchiseName }) {
         <Group>
           <Burger opened={!isCollapsed} onClick={toggleSidebar} size="sm" />
           <Logo width={120} />
-          {(organizationName && franchiseName) && (
+          {(organizationName && franchiseName && userType == UserType.Staffs) && (
             <Group spacing={4} style={{ marginLeft: "16px" }}>
               {organizationName && (
                 <Text 
