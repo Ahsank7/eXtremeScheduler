@@ -1,6 +1,7 @@
 import axios from "axios";
 import enviroment from "enviroment";
 import { localStoreService, loginHistoryService } from ".";
+import { handleApiResponse, processApiResponse, getErrorMessage, getErrorDetails } from "../utils/responseHandler";
 
 const axiosClient = axios.create({
   baseURL: enviroment.baseURL
@@ -53,23 +54,43 @@ axiosClient.interceptors.response.use(
 );
 
 const get = async (url) => {
-  const { data } = await axiosClient.get(`${url}`);
-  return data;
+  try {
+    const { data } = await axiosClient.get(`${url}`);
+    return handleApiResponse(data);
+  } catch (error) {
+    console.error('GET request failed:', getErrorDetails(error));
+    throw error;
+  }
 };
 
 const post = async (url, postData) => {
-  const { data } = await axiosClient.post(`${url}`, postData);
-  return data;
+  try {
+    const { data } = await axiosClient.post(`${url}`, postData);
+    return handleApiResponse(data);
+  } catch (error) {
+    console.error('POST request failed:', getErrorDetails(error));
+    throw error;
+  }
 };
 
 const put = async (url, putData) => {
-  const { data } = await axiosClient.put(`${url}`, putData);
-  return data;
+  try {
+    const { data } = await axiosClient.put(`${url}`, putData);
+    return handleApiResponse(data);
+  } catch (error) {
+    console.error('PUT request failed:', getErrorDetails(error));
+    throw error;
+  }
 };
 
 const remove = async (url) => {
-  const { data } = await axiosClient.delete(`${url}`);
-  return data;
+  try {
+    const { data } = await axiosClient.delete(`${url}`);
+    return handleApiResponse(data);
+  } catch (error) {
+    console.error('DELETE request failed:', getErrorDetails(error));
+    throw error;
+  }
 };
 
 export { get, post, put, remove };

@@ -1,4 +1,4 @@
-import { get, post } from "./httpService";
+import { get, post, remove } from "./httpService";
 
 /*const getFranchiseList = async (organizationID, userID) => {
   return await get(`Franchise/${organizationID}/${userID}`);
@@ -13,7 +13,7 @@ const saveUpdateUserExpense = async (userExpenseObj) => {
 };
 
 const deleteUserExpenseItem = async (userExpenseId) => {
-    return await post(`Expenses/Delete?userExpenseId=${userExpenseId}`);
+    return await remove(`Expenses/Delete?userExpenseId=${userExpenseId}`);
 };
 
 export {

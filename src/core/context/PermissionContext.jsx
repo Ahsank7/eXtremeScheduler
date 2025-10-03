@@ -49,9 +49,9 @@ export const PermissionProvider = ({ children }) => {
         userInfo.OrganizationId
       );
       
-      if (response.isSuccess) {
+      if (response && Array.isArray(response)) {
         const permissionsMap = {};
-        response.data.forEach(permission => {
+        response.forEach(permission => {
           permissionsMap[permission.menuId] = permission;
         });
         setPermissions(permissionsMap);

@@ -15,7 +15,6 @@ export function Expense({ userId, organizationId }) {
 
   const tableColumns = [
     "SrNo",
-    "Id",
     "Expense Type",
     "TaskId",
     "Date",
@@ -34,9 +33,14 @@ export function Expense({ userId, organizationId }) {
       pageSize: 100,
     };
 
-    const { data } = await profileService.getExpenseList(request);
-
-    setExpense(data);
+    try {
+      const response = await profileService.getExpenseList(request);
+      console.log('Expense Response:', response); // Debug log
+      setExpense(response?.response || []);
+    } catch (error) {
+      console.error("Failed to fetch expense data:", error);
+      setExpense([]);
+    }
   }, [userId]);
 
   useEffect(() => {
@@ -104,7 +108,6 @@ export function Expense({ userId, organizationId }) {
           Expense.map((row, index) => (
             <tr key={index}>
               <td>{helperFunctions.getRowNumber(100, 1, index)}</td>
-              <td>{row.id}</td>
               <td>{row.type}</td>
               <td>{row.taskId}</td>
               <td>{row.date}</td>

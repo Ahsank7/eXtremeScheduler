@@ -156,29 +156,29 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
         taskID,
         franchise
       );
-      if (response.status === 200) {
-        setTaskInfo(response.data);
+      if (response) {
+        setTaskInfo(response);
         if (
-          response.data.taskStatus === "Cancelled" ||
-          response.data.taskStatus === "Completed"
+          response.taskStatus === "Cancelled" ||
+          response.taskStatus === "Completed"
         ) {
           setIsDisabled(true);
         }
-        if (response.data.taskStatus === "Scheduled") {
-          const taskDate = new Date(response.data.date).toISOString().split("T")[0];
+        if (response.taskStatus === "Scheduled") {
+          const taskDate = new Date(response.date).toISOString().split("T")[0];
           const currentTime = new Date().toTimeString().slice(0, 5);
           setCheckIn(`${taskDate}T${currentTime}`);
         }
-        if (response.data.taskStatus === "In-Progress") {
-          const taskDate = new Date(response.data.date).toISOString().split("T")[0];
+        if (response.taskStatus === "In-Progress") {
+          const taskDate = new Date(response.date).toISOString().split("T")[0];
           const currentTime = new Date().toTimeString().slice(0, 5);
           setCheckOut(`${taskDate}T${currentTime}`);
         }
-        if (response.data.checkInTime) {
-          setCheckIn(response.data.checkInTime);
+        if (response.checkInTime) {
+          setCheckIn(response.checkInTime);
         }
-        if (response.data.checkOutTime) {
-          setCheckOut(response.data.checkOutTime);
+        if (response.checkOutTime) {
+          setCheckOut(response.checkOutTime);
         }
       }
     };

@@ -40,13 +40,13 @@ export const AddUpdateUserExpense = ({
       expenseService
         .getUserExpenseItem(id)
         .then((response) => {
-          const { data } = response;
+          console.log('Expense Item Response:', response); // Debug log
           form.setValues({
-            taskId: data.taskId,
-            type: data.type,
-            amount: data.amount,
-            notes: data.notes,
-            date: data.date.split("T")[0],
+            taskId: response?.taskId || 0,
+            type: response?.type || 0,
+            amount: response?.amount || 0,
+            notes: response?.notes || "",
+            date: response?.date ? response.date.split("T")[0] : "",
           });
         })
         .catch((error) => {
@@ -73,7 +73,7 @@ export const AddUpdateUserExpense = ({
           organizationId,
         });
         setTypeOptions(
-          typeResponse.data.result.map((item) => ({
+          (typeResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))

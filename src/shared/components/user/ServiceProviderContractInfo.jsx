@@ -58,7 +58,7 @@ export const ServiceProviderContractInfo = ({ userId, organizationId }) => {
         organizationId: organizationId, // Assuming organizationId is defined and passed
       });
       setFrequenciesOptions(
-        frequencyResponse.data.result.map((item) => ({ value: item.id, label: item.name }))
+        (frequencyResponse?.result || []).map((item) => ({ value: item.id, label: item.name }))
       );
 
 
@@ -67,7 +67,7 @@ export const ServiceProviderContractInfo = ({ userId, organizationId }) => {
         organizationId: organizationId, // Assuming organizationId is defined and passed
       });
       setContractTypeOptions(
-        contractTypeResponse.data.result.map((item) => ({ value: item.id, label: item.name }))
+        (contractTypeResponse?.result || []).map((item) => ({ value: item.id, label: item.name }))
       );
 
     } catch (error) {
@@ -96,7 +96,7 @@ export const ServiceProviderContractInfo = ({ userId, organizationId }) => {
       profileService
         .getContractInfo(userId)
         .then((response) => {
-          const { data } = response;
+          console.log('Contract Info Response:', response); // Debug log
           
           // Convert ISO date format to YYYY-MM-DD for date inputs
           const formatDateForInput = (isoDate) => {
@@ -106,16 +106,16 @@ export const ServiceProviderContractInfo = ({ userId, organizationId }) => {
           };
           
           form.setValues({
-            serviceProviderUserId: data.serviceProviderUserId || "",
-            frequencyId: data.frequencyId || 0,
-            rate: data.rate || 0,
+            serviceProviderUserId: response?.serviceProviderUserId || "",
+            frequencyId: response?.frequencyId || 0,
+            rate: response?.rate || 0,
 
-            optionId: data.optionId.toString() || "1", // Convert optionId to string to match the form's optionId type
-            contractType: data.contractType || 0,
-            startDate: formatDateForInput(data.startDate),
-            endDate: formatDateForInput(data.endDate),
+            optionId: response?.optionId?.toString() || "1", // Convert optionId to string to match the form's optionId type
+            contractType: response?.contractType || 0,
+            startDate: formatDateForInput(response?.startDate),
+            endDate: formatDateForInput(response?.endDate),
           });
-          setContractId(data.id); // Save the contractId to the state
+          setContractId(response?.id); // Save the contractId to the state
         })
         .catch((error) => {
           notifications.show({

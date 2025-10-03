@@ -36,10 +36,12 @@ export function Address({ userId, organizationId }) {
     };
 
     try {
-      const { data } = await profileService.getAddressList(request);
-      setAddress(data.response);
+      const response = await profileService.getAddressList(request);
+      console.log('Address Response:', response); // Debug log
+      setAddress(response?.response || []);
     } catch (error) {
       console.error("Failed to fetch address data:", error);
+      setAddress([]);
     } finally {
       setIsLoading(false);
     }

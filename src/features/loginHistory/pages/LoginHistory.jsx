@@ -73,9 +73,9 @@ const LoginHistory = () => {
 
       const response = await loginHistoryService.getLoginHistory(request);
       
-      if (response.status === 200) {
-        setLoginHistory(response.data.entries || []);
-        setTotalRecords(response.data.totalRecords || 0);
+      if (response) {
+        setLoginHistory(response.entries || []);
+        setTotalRecords(response.totalRecords || 0);
       } else {
         notifications.show({
           title: "Error",

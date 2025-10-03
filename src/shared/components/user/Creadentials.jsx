@@ -17,17 +17,16 @@ export function Creadentials({ userId, userType }) {
       setIsFetching(true);
       try {
         const response = await authenticationService.getUserCredentials(userId);
-        const { data } = response;
         
         // Only set values if they exist in the response, don't auto-fill with browser data
-        if (data.userName) {
-          setUserName(data.userName);
+        if (response && response.userName) {
+          setUserName(response.userName);
         } else {
           setUserName("");
         }
         
-        if (data.password) {
-          setPassword(data.password);
+        if (response && response.password) {
+          setPassword(response.password);
         } else {
           setPassword("");
         }

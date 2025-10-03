@@ -170,10 +170,19 @@ const Users = ({ userTypeID }) => {
     obj.sortType = "asc";
 
     setIsLoading(true);
-    const { data, totalRecords } = await profileService.getUsers(obj);
-    setClients(data.response);
-    setTotalRecords(data.totalRecords);
-    setIsLoading(false);
+    try {
+      const response = await profileService.getUsers(obj);
+      console.log('Users Response:', response); // Debug log
+      
+      setClients(response?.response || []);
+      setTotalRecords(response?.totalRecords || 0);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setClients([]);
+      setTotalRecords(0);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePagination = (pageNumber) => {

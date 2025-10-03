@@ -36,10 +36,12 @@ export function Contact({ userId, organizationId, franchiseId }) {
     };
 
     try {
-      const { data } = await profileService.getContactList(request);
-      setContact(data.response);
+      const response = await profileService.getContactList(request);
+      console.log('Contact Response:', response); // Debug log
+      setContact(response?.response || []);
     } catch (error) {
       console.error("Failed to fetch contact data:", error);
+      setContact([]);
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +122,7 @@ export function Contact({ userId, organizationId, franchiseId }) {
               <td>
                 <Button.Group>
                   <Button 
-                    onClick={() => handleActionClick("Edit", row.userId)}
+                    onClick={() => handleActionClick("Edit", row.id)}
                     leftIcon={<IconEdit size={16} />}
                   >
                     Edit

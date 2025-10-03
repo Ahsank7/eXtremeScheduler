@@ -103,20 +103,20 @@ const FranchiseDashboard = () => {
         filters.endDate
       );
 
-      if (response.isSuccess) {
-        setDashboardData(response.data);
-        console.log('Dashboard data loaded successfully:', response.data);
-        console.log('Stats object:', response.data.stats);
-        console.log('Service task statuses (popular services):', response.data.serviceTaskStatuses);
-        console.log('Service task statuses colors:', response.data.serviceTaskStatuses?.map(s => ({ status: s.taskStatus, color: s.color, count: s.count })));
-        console.log('Service types:', response.data.serviceTypes);
-        console.log('Task status distribution:', response.data.taskStatusDistribution);
-        console.log('Billing trend:', response.data.billingTrend);
-        console.log('Wage trend:', response.data.wageTrend);
-        console.log('Billing summary:', response.data.billingSummary);
-        console.log('Wage summary:', response.data.wageSummary);
+      if (response) {
+        setDashboardData(response);
+        console.log('Dashboard data loaded successfully:', response);
+        console.log('Stats object:', response.stats);
+        console.log('Service task statuses (popular services):', response.serviceTaskStatuses);
+        console.log('Service task statuses colors:', response.serviceTaskStatuses?.map(s => ({ status: s.taskStatus, color: s.color, count: s.count })));
+        console.log('Service types:', response.serviceTypes);
+        console.log('Task status distribution:', response.taskStatusDistribution);
+        console.log('Billing trend:', response.billingTrend);
+        console.log('Wage trend:', response.wageTrend);
+        console.log('Billing summary:', response.billingSummary);
+        console.log('Wage summary:', response.wageSummary);
       } else {
-        setError(response.message || "Failed to fetch dashboard data");
+        setError("Failed to fetch dashboard data");
       }
     } catch (err) {
       console.error("Error fetching dashboard data:", err);

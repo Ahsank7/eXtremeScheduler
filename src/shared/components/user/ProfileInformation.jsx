@@ -17,8 +17,10 @@ import {
   profileService,
   lookupService,
   localStoreService,
+  showSuccessNotification,
+  showErrorNotification,
+  handleApiError,
 } from "core/services";
-import { notifications } from "@mantine/notifications";
 import { helperFunctions } from "shared/utils";
 import { calculateAge } from "shared/utils/ageUtils";
 import { AppConfirmationModal } from "shared/components/modal/AppConfirmationModal";
@@ -124,7 +126,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setGenderOptions(
-          genderResponse.data.result.map((item) => ({
+          (genderResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -135,7 +137,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setEthnicityOptions(
-          ethnicityResponse.data.result.map((item) => ({
+          (ethnicityResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -146,7 +148,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setNationalityOptions(
-          nationalityResponse.data.result.map((item) => ({
+          (nationalityResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -168,7 +170,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setTitleOptions(
-          titleResponse.data.result.map((item) => ({
+          (titleResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -179,7 +181,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setContactCountyOptions(
-          countyResponse.data.result.map((item) => ({
+          (countyResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -190,7 +192,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setContactStateOptions(
-          stateResponse.data.result.map((item) => ({
+          (stateResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -201,7 +203,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setContactCountryOptions(
-          countryResponse.data.result.map((item) => ({
+          (countryResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -212,7 +214,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
           organizationId,
         });
         setMaritalStatusOptions(
-          maritalStatusResponse.data.result.map((item) => ({
+          (maritalStatusResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -228,34 +230,35 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
   useEffect(() => {
     const getProfileDetail = async () => {
       try {
-        const { data } = await profileService.getUserByID(id);
+        const response = await profileService.getUserByID(id);
+        console.log('Profile Information Response:', response); // Debug log
 
         // Calculate age from birthDate if available
         let calculatedAge = null;
-        if (data.birthDate) {
-          calculatedAge = calculateAge(data.birthDate.split("T")[0]);
+        if (response && response.birthDate) {
+          calculatedAge = calculateAge(response.birthDate.split("T")[0]);
         }
 
         // Create profile data with calculated age
         const profileDataWithAge = {
-          ...data,
+          ...response,
           age: calculatedAge
         };
 
         form.setValues({
-          ...data,
-          birthDate: data.birthDate.split("T")[0],
-          joiningDate: data.joiningDate.split("T")[0],
+          ...response,
+          birthDate: response?.birthDate ? response.birthDate.split("T")[0] : "",
+          joiningDate: response?.joiningDate ? response.joiningDate.split("T")[0] : "",
         });
 
-        setUserStatusInDB(data.status);
+        setUserStatusInDB(response?.status);
         setProfileData(profileDataWithAge);
         
         if (onProfileDataUpdate) {
           onProfileDataUpdate(profileDataWithAge);
         }
       } catch (error) {
-        console.error("Failed to fetch profile details:", error);
+        handleApiError(error, "Failed to fetch profile details");
       }
     };
     if (isValidUserID) {
@@ -272,27 +275,13 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
       const joiningDate = new Date(values.joiningDate);
 
       if (birthDate < new Date('1753-01-01') || birthDate > new Date('9999-12-31')) {
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: "Validation Error",
-          message: "Date of Birth must be between 1753 and 9999",
-          color: "red",
-          style: { backgroundColor: "white" },
-        });
+        showErrorNotification("Date of Birth must be between 1753 and 9999", "Validation Error");
         setIsLoading(false);
         return;
       }
 
       if (joiningDate < new Date('1753-01-01') || joiningDate > new Date('9999-12-31')) {
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: "Validation Error",
-          message: "Date of Joining must be between 1753 and 9999",
-          color: "red",
-          style: { backgroundColor: "white" },
-        });
+        showErrorNotification("Date of Joining must be between 1753 and 9999", "Validation Error");
         setIsLoading(false);
         return;
       }
@@ -331,67 +320,31 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
         franchiseId: values.franchiseId,
         userType: userType,
       });
-      if (response.status === 200) {
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: "Success",
-          message: "Profile details saved successfully",
-          color: "green",
-          style: {
-            backgroundColor: "white",
-          },
-        });
+      showSuccessNotification("Profile details saved successfully");
 
-        if (!isValidUserID) {
-          setTimeout(() => {
-            window.location.href = replaceDummyUserIDFromURLString(
-              window.location.href,
-              response.data
-            );
-          }, 1000);
-        } else {
-          // Update profile data after successful save
-          const updatedData = { ...profileData, ...values };
-
-          // Ensure age is calculated and included in the updated data
-          if (values.birthDate) {
-            const calculatedAge = calculateAge(values.birthDate);
-            updatedData.age = calculatedAge;
-          }
-
-          if (onProfileDataUpdate) {
-            onProfileDataUpdate(updatedData);
-          }
-        }
-        //console.log("Profile details saved successfully");
+      if (!isValidUserID) {
+        setTimeout(() => {
+          window.location.href = replaceDummyUserIDFromURLString(
+            window.location.href,
+            response
+          );
+        }, 1000);
       } else {
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: "Error",
-          message: "Failed to save profile details",
-          color: "red",
-          style: {
-            backgroundColor: "white",
-          },
-        });
+        // Update profile data after successful save
+        const updatedData = { ...profileData, ...values };
 
-        //console.error("Failed to save profile details:", response);
+        // Ensure age is calculated and included in the updated data
+        if (values.birthDate) {
+          const calculatedAge = calculateAge(values.birthDate);
+          updatedData.age = calculatedAge;
+        }
+
+        if (onProfileDataUpdate) {
+          onProfileDataUpdate(updatedData);
+        }
       }
     } catch (error) {
-      notifications.show({
-        withCloseButton: true,
-        autoClose: 5000,
-        title: "Error",
-        message: "Failed to save profile details",
-        color: "red",
-        style: {
-          backgroundColor: "white",
-        },
-      });
-
-      console.error("Failed to save profile details:", error);
+      handleApiError(error, "Failed to save profile details");
     } finally {
       setIsLoading(false);
     }
@@ -410,17 +363,7 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
     try {
       const response = await profileService.removeUser(id, userStatusActionID);
 
-      if (response.status === 200) {
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: "Success",
-          message: "Profile updated successfully",
-          color: "green",
-          style: {
-            backgroundColor: "white",
-          },
-        });
+      showSuccessNotification("Profile updated successfully");
 
         setTimeout(() => {
           switch (+userType) {
@@ -439,31 +382,8 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
         }, 1000);
 
         setIsConfirmationModalOpen(false);
-      } else {
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: "Error",
-          message: "Failed to save remove profile",
-          color: "red",
-          style: {
-            backgroundColor: "white",
-          },
-        });
-      }
     } catch (error) {
-      notifications.show({
-        withCloseButton: true,
-        autoClose: 5000,
-        title: "Error",
-        message: "Failed to save profile details",
-        color: "red",
-        style: {
-          backgroundColor: "white",
-        },
-      });
-
-      console.error("Failed to remove profile:", error);
+      handleApiError(error, "Failed to remove profile");
     } finally {
       setIsLoading(false);
     }

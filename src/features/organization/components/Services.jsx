@@ -35,9 +35,25 @@ const Services = ({ organizationId }) => {
         setError(null);
         try {
             const response = await servicesService.getServiceTypes(organizationId);
-            setServiceTypes(response.data.response || []);
+            console.log('Service Types Response:', response); // Debug log
+            
+            // Handle different response structures
+            let serviceTypesData = [];
+            if (Array.isArray(response)) {
+                serviceTypesData = response;
+            } else if (response && Array.isArray(response.result)) {
+                serviceTypesData = response.result;
+            } else if (response && Array.isArray(response.response)) {
+                serviceTypesData = response.response;
+            } else if (response && response.data && Array.isArray(response.data)) {
+                serviceTypesData = response.data;
+            }
+            
+            setServiceTypes(serviceTypesData);
         } catch (err) {
+            console.error('Error fetching service types:', err);
             setError("Failed to fetch service types");
+            setServiceTypes([]);
         } finally {
             setLoading(false);
         }
@@ -46,11 +62,26 @@ const Services = ({ organizationId }) => {
     const fetchServicesByType = async (serviceTypeId) => {
         try {
             const response = await servicesService.getServicesByType(serviceTypeId);
+            console.log('Services Response:', response); // Debug log
+            
+            // Handle different response structures
+            let servicesData = [];
+            if (Array.isArray(response)) {
+                servicesData = response;
+            } else if (response && Array.isArray(response.result)) {
+                servicesData = response.result;
+            } else if (response && Array.isArray(response.response)) {
+                servicesData = response.response;
+            } else if (response && response.data && Array.isArray(response.data)) {
+                servicesData = response.data;
+            }
+            
             setServicesByType((prev) => ({
                 ...prev,
-                [serviceTypeId]: response.data.response || [],
+                [serviceTypeId]: servicesData,
             }));
         } catch (err) {
+            console.error('Error fetching services:', err);
             setServicesByType((prev) => ({ ...prev, [serviceTypeId]: [] }));
         }
     };
@@ -170,7 +201,14 @@ const Services = ({ organizationId }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {serviceTypes.map((type) => (
+                    {(serviceTypes || []).length === 0 ? (
+                        <tr>
+                            <td colSpan={5} style={{ textAlign: "center", padding: "20px" }}>
+                                No service types found. Click "Add Service Type" to create one.
+                            </td>
+                        </tr>
+                    ) : (
+                        (serviceTypes || []).map((type) => (
                         <>
                             <tr key={type.id}>
                                 <td>
@@ -240,7 +278,8 @@ const Services = ({ organizationId }) => {
                                 </tr>
                             )}
                         </>
-                    ))}
+                        ))
+                    )}
                 </tbody>
             </Table>
 

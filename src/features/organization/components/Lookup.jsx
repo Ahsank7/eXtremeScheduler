@@ -25,33 +25,62 @@ function Lookup({ organizationid }) {
     ];
 
     const fetchLookup = useCallback(async () => {
+        if (!selectedLookupType) {
+            console.log('No lookup type selected, skipping fetch');
+            setLookup([]);
+            return;
+        }
+
         const request = {
             organizationId: organizationid,
             name: '',
             lookupType: selectedLookupType // Changed to directly use the state variable
         }
 
-        const response = await lookupService.getLookupList(request);
-        if (response && response.status === 200 && response.data) {
-            setLookup(response.data.result);
-        } else if (response && response.errors) {
-            console.error("Failed to fetch lookup list:", response.errors);
-        } else {
-            console.error("Failed to fetch lookup list:", response);
+        try {
+            const response = await lookupService.getLookupList(request);
+            console.log('Lookup Response:', response); // Debug log
+            
+            // Handle the nested response structure: response.data.result
+            if (response && response.result && Array.isArray(response.result)) {
+                setLookup(response.result);
+            } else if (response && Array.isArray(response)) {
+                // Fallback: if response is directly an array
+                setLookup(response);
+            } else if (response && response.errors) {
+                console.error("Failed to fetch lookup list:", response.errors);
+                setLookup([]);
+            } else {
+                console.error("Failed to fetch lookup list:", response);
+                setLookup([]);
+            }
+        } catch (error) {
+            console.error('Error fetching lookup list:', error);
+            setLookup([]);
         }
     }, [organizationid, selectedLookupType]);
 
     const fetchLookupDropdown = useCallback(async () => {
-        const { data } = await lookupService.getLookupDropdownList();
-        if (data && typeof data === 'object') {
-            const dropdownOptions = Object.entries(data).map(([key, value]) => ({
-                value: key,
-                label: value
-            }));
-            setLookupDropdown(dropdownOptions);
-            if (dropdownOptions.length > 0 && !selectedLookupType) {
-                setSelectedLookupType(dropdownOptions[0].value); // Select first dropdown value by default
+        try {
+            const response = await lookupService.getLookupDropdownList();
+            console.log('Lookup Dropdown Response:', response); // Debug log
+            
+            if (response && typeof response === 'object') {
+                const dropdownOptions = Object.entries(response).map(([key, value]) => ({
+                    value: key,
+                    label: value
+                }));
+                setLookupDropdown(dropdownOptions);
+                if (dropdownOptions.length > 0 && !selectedLookupType) {
+                    setSelectedLookupType(dropdownOptions[0].value); // Select first dropdown value by default
+                }
+            } else {
+                console.error('Invalid dropdown response:', response);
+                setLookupDropdown([]);
             }
+        } catch (error) {
+            console.error('Error fetching lookup dropdown:', error);
+            setLookupDropdown([]);
         }
     }, []);
 

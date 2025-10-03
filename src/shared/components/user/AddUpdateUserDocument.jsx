@@ -85,7 +85,7 @@ export const AddUpdateUserDocument = ({ id, userId, onModalClose }) => {
         });
         
         setDocumentTypeOptions(
-          documentTypeResponse.data.result.map((item) => ({
+          (documentTypeResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))

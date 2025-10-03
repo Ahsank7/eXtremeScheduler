@@ -96,17 +96,27 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
       const response = await servicesService.getServiceTypes(organizationId);
       console.log('Service Types Response:', response); // Debug log
       
-      if (response && response.data) {
-        // Handle different response structures
-        const data = Array.isArray(response.data) ? response.data : 
-                    response.data.result || response.data.response || [];
-        
-        const serviceTypesData = data.map(item => ({
-          value: item.id,
-          label: item.name
-        }));
-        setServiceTypes(serviceTypesData);
+      // Handle different response structures
+      let serviceTypesData = [];
+      if (Array.isArray(response)) {
+        // Direct array response
+        serviceTypesData = response;
+      } else if (response && Array.isArray(response.response)) {
+        // Response with response property
+        serviceTypesData = response.response;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Response with data property
+        serviceTypesData = response.data;
+      } else if (response && response.data && Array.isArray(response.data.response)) {
+        // Response with data.response property
+        serviceTypesData = response.data.response;
       }
+      
+      const serviceTypesOptions = serviceTypesData.map(item => ({
+        value: item.id,
+        label: item.name
+      }));
+      setServiceTypes(serviceTypesOptions);
     } catch (error) {
       console.error('Error loading service types:', error);
     }
@@ -118,19 +128,27 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
       const response = await servicesService.getServicesByType(serviceTypeId);
       console.log('Services Response:', response); // Debug log
       
-      if (response && response.data) {
-        // Handle different response structures
-        const data = Array.isArray(response.data) ? response.data : 
-                    response.data.result || response.data.response || [];
-        
-        const servicesData = data.map(item => ({
-            value: item.id,
-            label: item.name
-        }));
-        setServices(servicesData);
-      } else {
-        setServices([]);
+      // Handle different response structures
+      let servicesData = [];
+      if (Array.isArray(response)) {
+        // Direct array response
+        servicesData = response;
+      } else if (response && Array.isArray(response.response)) {
+        // Response with response property
+        servicesData = response.response;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Response with data property
+        servicesData = response.data;
+      } else if (response && response.data && Array.isArray(response.data.response)) {
+        // Response with data.response property
+        servicesData = response.data.response;
       }
+      
+      const servicesOptions = servicesData.map(item => ({
+        value: item.id,
+        label: item.name
+      }));
+      setServices(servicesOptions);
     } catch (error) {
       console.error('Error loading services:', error);
       setServices([]);
@@ -157,8 +175,8 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
 
       const response = await profileService.getAvailableServiceProviders(request);
       
-      if (response && response.data && response.data.response) {
-        const newProviders = response.data.response.map(provider => ({
+      if (response && response.response) {
+        const newProviders = response.response.map(provider => ({
           value: provider.userId,
           label: provider.name
         }));
@@ -169,8 +187,8 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
           setServiceProviders(newProviders);
         }
 
-        setHasMore(response.data.totalRecords > (page * 10));
-        setTotalRecords(response.data.totalRecords);
+        setHasMore(response.totalRecords > (page * 10));
+        setTotalRecords(response.totalRecords);
         setCurrentPage(page);
       }
     } catch (error) {
@@ -233,15 +251,10 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
       
       const response = await scheduleService.saveUpdateschedule(request);
       
-      if (response && response.status === 200) {
-        console.log('Appointment created successfully:', response);
-        // Show success message
-        // You can add a notification here if needed
+      console.log('Appointment created successfully:', response);
+      // Show success message
+      // You can add a notification here if needed
       onModalClose();
-      } else {
-        console.error('Failed to create appointment:', response);
-        // Handle error - you can add error notification here
-      }
     } catch (error) {
       console.error('Error creating appointment:', error);
       // Handle error - you can add error notification here

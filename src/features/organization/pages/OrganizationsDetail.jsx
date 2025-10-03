@@ -47,8 +47,8 @@ const OrganizationDetail = () => {
     useEffect(() => {
         organizationService.getOrganizationById(organizationID)
             .then((response) => {
-                if (response.isSuccess) {
-                    setOrg(response.data);
+                if (response) {
+                    setOrg(response);
                 } else {
                     notifications.show({
                         title: "Error",

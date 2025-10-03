@@ -70,8 +70,11 @@ export function Transactions({ userId, readOnly = false, transactionId = null, t
       setIsLoading(true);
       try {
         const response = await profileService.getTransactionDetails(transactionId);
-        if (response && response.data) {
-          setTransactions([response.data]);
+        console.log('Transaction Details Response:', response); // Debug log
+        
+        // The httpService has already extracted the data, so response is the data object
+        if (response) {
+          setTransactions([response]);
           setTotalRecords(1);
         } else {
           setTransactions([]);
@@ -102,9 +105,27 @@ export function Transactions({ userId, readOnly = false, transactionId = null, t
 
     setIsLoading(true);
     try {
-      const { response } = await profileService.getTransactionList(request);
-      setTransactions(response);
-      setTotalRecords(response?.length || 0);
+      const response = await profileService.getTransactionList(request);
+      console.log('Transaction List Response:', response); // Debug log
+      
+      // Handle different response structures
+      let transactionsData = [];
+      if (Array.isArray(response)) {
+        // Direct array response
+        transactionsData = response;
+      } else if (response && Array.isArray(response.response)) {
+        // Response with response property
+        transactionsData = response.response;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Response with data property
+        transactionsData = response.data;
+      } else if (response && response.data && Array.isArray(response.data.response)) {
+        // Response with data.response property
+        transactionsData = response.data.response;
+      }
+      
+      setTransactions(transactionsData);
+      setTotalRecords(transactionsData?.length || 0);
     } catch (error) {
       console.error('Error fetching transactions:', error);
       setTransactions([]);

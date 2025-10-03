@@ -64,8 +64,8 @@ export function AppHeader({ franchiseName }) {
       const organizationId = localStoreService.getOrganizationID();
       if (organizationId) {
         const response = await organizationService.getOrganizationById(organizationId);
-        if (response && response.isSuccess && response.data) {
-          setOrganizationName(response.data.name);
+        if (response && response.name) {
+          setOrganizationName(response.name);
         }
       }
     } catch (error) {

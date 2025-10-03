@@ -42,11 +42,11 @@ export const AddUpdateUserAvailability = ({ id, userId, onModalClose }) => {
       availabilityService
         .getAvailabilityItem(id)
         .then((response) => {
-          const { data } = response;
+          console.log('Availability Item Response:', response); // Debug log
           form.setValues({
-            endTime: data.endTime || "",
-            startTime: data.startTime || "",
-            day: data.day || "",
+            endTime: response?.endTime || "",
+            startTime: response?.startTime || "",
+            day: response?.day || "",
           });
         })
         .catch((error) => {
@@ -54,7 +54,7 @@ export const AddUpdateUserAvailability = ({ id, userId, onModalClose }) => {
             withCloseButton: true,
             autoClose: 5000,
             title: "Error",
-            message: "Failed to fetch Address item",
+            message: "Failed to fetch Availability item",
             color: "red",
             style: {
               backgroundColor: "white",

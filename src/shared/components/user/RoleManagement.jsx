@@ -91,8 +91,22 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
       setIsLoading(true);
       const roleResponse = await roleService.getAvailableRoles(organizationId);
       console.log('Role response:', roleResponse);
-      if (roleResponse.isSuccess) {
-        const roles = roleResponse.data.map((item) => ({
+      
+      // Handle different response structures
+      let rolesData = [];
+      if (Array.isArray(roleResponse)) {
+        // Direct array response
+        rolesData = roleResponse;
+      } else if (roleResponse && Array.isArray(roleResponse.data)) {
+        // Response with data property
+        rolesData = roleResponse.data;
+      } else if (roleResponse && Array.isArray(roleResponse.response)) {
+        // Response with response property
+        rolesData = roleResponse.response;
+      }
+      
+      if (rolesData.length > 0) {
+        const roles = rolesData.map((item) => ({
           value: item.id,
           label: item.name,
           description: item.description
@@ -100,10 +114,10 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
         console.log('Processed roles:', roles);
         setRolesOptions(roles);
       } else {
-        console.log('Role response not successful:', roleResponse);
+        console.log('No roles found in response:', roleResponse);
         notifications.show({
           title: "Error",
-          message: "Failed to load available roles",
+          message: "No roles found",
           color: "red",
         });
       }
@@ -112,7 +126,7 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
       notifications.show({
         title: "Error",
         message: "Failed to load available roles",
-          color: "red",
+        color: "red",
       });
     } finally {
       setIsLoading(false);
@@ -127,39 +141,41 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
       
       // Try different possible response structures
       let roleId = null;
-      if (credentialsResponse.data?.roleId) {
+      if (credentialsResponse?.roleId) {
+        roleId = credentialsResponse.roleId;
+      } else if (credentialsResponse?.data?.roleId) {
         roleId = credentialsResponse.data.roleId;
-      } else if (credentialsResponse.data?.result?.roleId) {
+      } else if (credentialsResponse?.result?.roleId) {
+        roleId = credentialsResponse.result.roleId;
+      } else if (credentialsResponse?.data?.result?.roleId) {
         roleId = credentialsResponse.data.result.roleId;
-      } else if (credentialsResponse.data?.result?.data?.roleId) {
-        roleId = credentialsResponse.data.result.data.roleId;
       }
       
-             if (roleId) {
-         console.log('Setting current role from credentials:', roleId);
-         // Store as number to match role option values
-         setCurrentRole(parseInt(roleId));
-         // Force refresh the Select component
-         setSelectKey(prev => prev + 1);
-       } else {
-         console.log('No roleId found in credentials response');
-         // Set default role if no role is assigned
-         if (rolesOptions.length > 0) {
-           console.log('Setting default role:', rolesOptions[0].value);
-           setCurrentRole(rolesOptions[0].value);
-           // Force refresh the Select component
-           setSelectKey(prev => prev + 1);
-         }
-       }
+      if (roleId) {
+        console.log('Setting current role from credentials:', roleId);
+        // Store as number to match role option values
+        setCurrentRole(parseInt(roleId));
+        // Force refresh the Select component
+        setSelectKey(prev => prev + 1);
+      } else {
+        console.log('No roleId found in credentials response');
+        // Set default role if no role is assigned
+        if (rolesOptions.length > 0) {
+          console.log('Setting default role:', rolesOptions[0].value);
+          setCurrentRole(rolesOptions[0].value);
+          // Force refresh the Select component
+          setSelectKey(prev => prev + 1);
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch user role:", error);
-             // Set default role if fetch fails
-       if (rolesOptions.length > 0) {
-         console.log('Setting default role due to error:', rolesOptions[0].value);
-         setCurrentRole(rolesOptions[0].value);
-         // Force refresh the Select component
-         setSelectKey(prev => prev + 1);
-       }
+      // Set default role if fetch fails
+      if (rolesOptions.length > 0) {
+        console.log('Setting default role due to error:', rolesOptions[0].value);
+        setCurrentRole(rolesOptions[0].value);
+        // Force refresh the Select component
+        setSelectKey(prev => prev + 1);
+      }
     }
   };
 
@@ -169,25 +185,25 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
     setIsRoleLoading(true);
     try {
       const response = await roleService.assignRoleToUser(userId, parseInt(newRoleId), userId);
-      if (response.isSuccess) {
-        setCurrentRole(newRoleId);
-        notifications.show({
-          title: "Success",
-          message: "Role updated successfully",
-          color: "green",
-        });
-      } else {
-        notifications.show({
-          title: "Error",
-          message: "Failed to update role",
-          color: "red",
-        });
-      }
+      console.log('Role assignment response:', response);
+      
+      // The httpService.handleApiResponse returns the data field from the API response
+      // For role assignment, the API returns { data: false } but with isSuccess: true
+      // Since handleApiResponse extracts the data field, we get false
+      // But if we reach this point without an exception, it means the operation was successful
+      // because handleApiResponse throws an error if isSuccess is false
+      
+      setCurrentRole(newRoleId);
+      notifications.show({
+        title: "Success",
+        message: "Role updated successfully",
+        color: "green",
+      });
     } catch (error) {
       console.error("Error updating role:", error);
       notifications.show({
         title: "Error",
-        message: "Failed to update role",
+        message: error.message || "Failed to update role",
         color: "red",
       });
     } finally {

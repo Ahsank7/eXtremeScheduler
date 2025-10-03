@@ -38,9 +38,9 @@ const TaskLogModal = ({ opened, onClose, taskId, taskTitle = "Task" }) => {
         pageSize,
       });
       
-      if (response.status === 200) {
-        setTaskLogs(response.data.logs || []);
-        setTotalRecords(response.data.totalRecords || 0);
+      if (response) {
+        setTaskLogs(response.logs || []);
+        setTotalRecords(response.totalRecords || 0);
       }
     } catch (error) {
       console.error("Failed to fetch task logs:", error);

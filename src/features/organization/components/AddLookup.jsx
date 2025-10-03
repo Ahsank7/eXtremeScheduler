@@ -36,14 +36,14 @@ const AddLookup = ({ organizationId, lookupId, id, onModalClose }) => {
             setIsFetching(true);
             lookupService.getLookupItem(id)
                 .then((response) => {
-                    const { data } = response;
+                    console.log('Lookup Item Response:', response); // Debug log
                     form.setValues({
-                        name: data.name,
-                        description: data.description,
-                        Otherfieldname1: data.Otherfieldname1 || "",
-                        Otherfieldvalue1: data.Otherfieldvalue1 || "",
-                        Otherfieldname2: data.Otherfieldname2 || "",
-                        Otherfieldvalue2: data.Otherfieldvalue2 || "",
+                        name: response.name || "",
+                        description: response.description || "",
+                        Otherfieldname1: response.Otherfieldname1 || "",
+                        Otherfieldvalue1: response.Otherfieldvalue1 || "",
+                        Otherfieldname2: response.Otherfieldname2 || "",
+                        Otherfieldvalue2: response.Otherfieldvalue2 || "",
                     });
                 })
                 .catch((error) => {

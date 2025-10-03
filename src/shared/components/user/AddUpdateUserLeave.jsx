@@ -68,7 +68,7 @@ export const AddUpdateUserLeave = ({
       leaveService
         .getLeaveItem(id)
         .then((response) => {
-          const { data } = response;
+          console.log('Leave Item Response:', response); // Debug log
           
           // Format dates for input fields
           const formatDateTimeForInput = (dateTimeString) => {
@@ -77,11 +77,11 @@ export const AddUpdateUserLeave = ({
           };
 
           form.setValues({
-            startTime: formatDateTimeForInput(data.startTime),
-            endTime: formatDateTimeForInput(data.endTime),
-            type: data.type,
-            status: data.status,
-            notes: data.notes,
+            startTime: formatDateTimeForInput(response?.startTime),
+            endTime: formatDateTimeForInput(response?.endTime),
+            type: response?.type || 0,
+            status: response?.status || 0,
+            notes: response?.notes || "",
           });
         })
         .catch((error) => {
@@ -108,7 +108,7 @@ export const AddUpdateUserLeave = ({
           organizationId,
         });
         setLeaveStatusOptions(
-          leavestatusResponse.data.result.map((item) => ({
+          (leavestatusResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -119,7 +119,7 @@ export const AddUpdateUserLeave = ({
           organizationId,
         });
         setLeaveTypeOptions(
-          leavetypeResponse.data.result.map((item) => ({
+          (leavetypeResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))

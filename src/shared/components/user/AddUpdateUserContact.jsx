@@ -75,29 +75,29 @@ export const AddUpdateUserContact = ({
       contactService
         .getContactItem(id)
         .then((response) => {
-          const { data } = response;
+          console.log('Contact Item Response:', response); // Debug log
           form.setValues({
-            firstName: data.firstName || "",
-            surName: data.surName || "",
-            lastName: data.lastName || "",
-            alias: data.alias || "",
-            phoneNo: data.phoneNo || "",
-            mobileNo: data.mobileNo || "",
-            email: data.email || "",
-            passportNo: data.passportNo || "",
-            identityNo: data.identityNo || "",
-            birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
-            titleId: data.titleId || 0,
-            genderId: data.genderId || 0,
-            contactTypeId: data.contactTypeId || 0,
-            addressLine1: data.addressLine1 || "",
-            addressLine2: data.addressLine2 || "",
-            addressLine3: data.addressLine3 || "",
-            countyId: data.countyId || 0,
-            stateId: data.stateId || 0,
-            countryId: data.countryId || 0,
-            latitude: data.latitude || 0.000,
-            longitude: data.longitude || 0.000,
+            firstName: response?.firstName || "",
+            surName: response?.surName || "",
+            lastName: response?.lastName || "",
+            alias: response?.alias || "",
+            phoneNo: response?.phoneNo || "",
+            mobileNo: response?.mobileNo || "",
+            email: response?.email || "",
+            passportNo: response?.passportNo || "",
+            identityNo: response?.identityNo || "",
+            birthDate: response?.birthDate ? response.birthDate.split("T")[0] : "",
+            titleId: response?.titleId || 0,
+            genderId: response?.genderId || 0,
+            contactTypeId: response?.contactTypeId || 0,
+            addressLine1: response?.addressLine1 || "",
+            addressLine2: response?.addressLine2 || "",
+            addressLine3: response?.addressLine3 || "",
+            countyId: response?.countyId || 0,
+            stateId: response?.stateId || 0,
+            countryId: response?.countryId || 0,
+            latitude: response?.latitude || 0.000,
+            longitude: response?.longitude || 0.000,
           });
         })
         .catch((error) => {
@@ -124,7 +124,7 @@ export const AddUpdateUserContact = ({
           organizationId,
         });
         setContactTypeOptions(
-          contactTypeResponse.data.result.map((item) => ({
+          (contactTypeResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -135,7 +135,7 @@ export const AddUpdateUserContact = ({
           organizationId,
         });
         setContactGenderOptions(
-          genderResponse.data.result.map((item) => ({
+          (genderResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -146,7 +146,7 @@ export const AddUpdateUserContact = ({
           organizationId,
         });
         setContactTitleOptions(
-          titleResponse.data.result.map((item) => ({
+          (titleResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -157,7 +157,7 @@ export const AddUpdateUserContact = ({
           organizationId,
         });
         setContactCountyOptions(
-          countyResponse.data.result.map((item) => ({
+          (countyResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -168,7 +168,7 @@ export const AddUpdateUserContact = ({
           organizationId,
         });
         setContactStateOptions(
-          stateResponse.data.result.map((item) => ({
+          (stateResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -179,7 +179,7 @@ export const AddUpdateUserContact = ({
           organizationId,
         });
         setContactCountryOptions(
-          countryResponse.data.result.map((item) => ({
+          (countryResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))

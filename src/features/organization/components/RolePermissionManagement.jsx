@@ -34,13 +34,31 @@ const RolePermissionManagement = ({ organizationId }) => {
   const loadRoles = async () => {
     try {
       const response = await roleService.getAvailableRoles(organizationId);
-      if (response.isSuccess) {
-        setRoles(response.data.map(role => ({
+      console.log('Role Permission Management - Role response:', response);
+      
+      // Handle different response structures
+      let rolesData = [];
+      if (Array.isArray(response)) {
+        // Direct array response
+        rolesData = response;
+      } else if (response && Array.isArray(response.data)) {
+        // Response with data property
+        rolesData = response.data;
+      } else if (response && Array.isArray(response.response)) {
+        // Response with response property
+        rolesData = response.response;
+      }
+      
+      if (rolesData.length > 0) {
+        setRoles(rolesData.map(role => ({
           value: role.id,
           label: role.name
         })));
+      } else {
+        console.log('No roles found in response:', response);
       }
     } catch (error) {
+      console.error('Failed to load roles:', error);
       notifications.show({
         title: 'Error',
         message: 'Failed to load roles',
@@ -53,8 +71,8 @@ const RolePermissionManagement = ({ organizationId }) => {
     setLoading(true);
     try {
       const response = await rolePermissionService.getAllMenus();
-      if (response.isSuccess) {
-        const menuData = response.data;
+      if (response && Array.isArray(response)) {
+        const menuData = response;
         setMenus(menuData);
         
         // Initialize permissions with default values
@@ -118,7 +136,7 @@ const RolePermissionManagement = ({ organizationId }) => {
       console.log('Request payload:', request);
 
       const response = await rolePermissionService.saveRolePermissions(request);
-      if (response.isSuccess) {
+      if (response) {
         notifications.show({
           title: 'Success',
           message: 'Role permissions saved successfully',

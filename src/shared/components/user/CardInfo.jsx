@@ -118,7 +118,7 @@ export const CardInfo = ({ userId, organizationId, userType }) => {
         organizationId,
       });
       settypesOptions(
-        typeResponse.data.result.map((item) => ({ value: item.id, label: item.name }))
+        (typeResponse?.result || []).map((item) => ({ value: item.id, label: item.name }))
       );
     } catch (error) {
       notifications.show({
@@ -140,19 +140,20 @@ export const CardInfo = ({ userId, organizationId, userType }) => {
       setIsFetching(true);
       try {
         const response = await accountService.getUserCardInfo(userId);
-        const { data } = response;
+        console.log('Card Info Response:', response); // Debug log
+        
         // Mask card number for security (show only last 4 digits)
-        const maskedCardNumber = data.cardNumber 
-          ? `**** **** **** ${data.cardNumber.slice(-4)}`
+        const maskedCardNumber = response?.cardNumber 
+          ? `**** **** **** ${response.cardNumber.slice(-4)}`
           : "";
           
         form.setValues({
-          cardHolderName: data.cardHolderName || "",
+          cardHolderName: response?.cardHolderName || "",
           cardNumber: maskedCardNumber,
-          expiryMonth: data.expiryMonth || 0,
-          expiryYear: data.expiryYear || 0,
-          cvv: data.cvv || "",
-          typeId: data.typeId || 0,
+          expiryMonth: response?.expiryMonth || 0,
+          expiryYear: response?.expiryYear || 0,
+          cvv: response?.cvv || "",
+          typeId: response?.typeId || 0,
         });
       } catch (error) {
         notifications.show({
@@ -209,13 +210,15 @@ export const CardInfo = ({ userId, organizationId, userType }) => {
 
         try {
           const testChargeResult = await paymentService.testCardCharge(testChargeData);
+          console.log('Test Charge Result:', testChargeResult); // Debug log
           
+          // Check if the response indicates success
           if (!testChargeResult.success) {
             notifications.show({
               withCloseButton: true,
               autoClose: 5000,
               title: "Card Validation Failed",
-              message: testChargeResult.data.message || "Card validation failed. Please check your card details.",
+              message: testChargeResult.message || "Card validation failed. Please check your card details.",
               color: "red",
               style: {
                 backgroundColor: "white",

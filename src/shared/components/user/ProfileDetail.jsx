@@ -151,22 +151,23 @@ export const ProfileDetail = () => {
   useEffect(() => {
       const fetchProfileData = async () => {
     try {
-      const { data } = await profileService.getUserByID(userID);
+      const response = await profileService.getUserByID(userID);
+      console.log('Profile Data Response:', response); // Debug log
       
       // Calculate age from birthDate if available
       let calculatedAge = null;
-      if (data.birthDate) {
-        calculatedAge = calculateAge(data.birthDate.split("T")[0]);
+      if (response && response.birthDate) {
+        calculatedAge = calculateAge(response.birthDate.split("T")[0]);
       }
       
       // Create profile data with calculated age
       const profileDataWithAge = {
-        ...data,
+        ...response,
         age: calculatedAge
       };
       
       setProfileData(profileDataWithAge);
-      setAvatarUrl(data.profileImagePath);
+      setAvatarUrl(response?.profileImagePath);
     } catch (error) {
       console.error("Failed to fetch profile data:", error);
     }
@@ -189,8 +190,8 @@ export const ProfileDetail = () => {
       setAvatarLoading(true);
       try {
         const response = await documentService.getUserImage(userID);
-        if (response && response.status === 200 && response.data) {
-          setAvatarUrl(response.data);
+        if (response) {
+          setAvatarUrl(response);
         } else {
           setAvatarUrl(null);
         }
@@ -258,8 +259,8 @@ export const ProfileDetail = () => {
     setAvatarLoading(true);
     try {
       const response = await documentService.uploadUserImage(userID, file);
-      if (response && response.status === 200 && response.data && response.data.filePath) {
-        setAvatarUrl(response.data.filePath);
+      if (response && response.filePath) {
+        setAvatarUrl(response.filePath);
         notifications.show({ title: "Success", message: "Profile image uploaded successfully", color: "green" });
       } else {
         notifications.show({ title: "Error", message: "Failed to upload image", color: "red" });
@@ -275,7 +276,7 @@ export const ProfileDetail = () => {
     setAvatarLoading(true);
     try {
       const response = await documentService.deleteUserImage(userID);
-      if (response && (response.status === 200 || response === "User image deleted successfully")) {
+      if (response) {
         setAvatarUrl(null);
         notifications.show({ title: "Success", message: "Profile image removed", color: "green" });
       } else {

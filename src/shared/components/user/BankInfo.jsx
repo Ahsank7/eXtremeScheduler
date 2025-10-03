@@ -41,7 +41,7 @@ export const BankInfo = ({ userId, organizationId }) => {
         organizationId,
       });
       setBankOptions(
-        bankResponse.data.result.map((item) => ({ value: item.id, label: item.name }))
+        (bankResponse?.result || []).map((item) => ({ value: item.id, label: item.name }))
       );
     } catch (error) {
       notifications.show({
@@ -57,14 +57,15 @@ export const BankInfo = ({ userId, organizationId }) => {
       setIsFetching(true);
       try {
         const response = await accountService.getUserBankAccount(userId);
-        const { data } = response;
+        console.log('Bank Info Response:', response); // Debug log
+        
         form.setValues({
-          accountHolderName: data.accountHolderName || "",
-          accountNumber: data.accountNumber || "",
-          bankId: data.bankId || null,
-          branchCode: data.branchCode || "",
-          iban: data.iban || "",
-          bankAccountId: data.bankAccountId || "", // Set bankAccountId from the response
+          accountHolderName: response?.accountHolderName || "",
+          accountNumber: response?.accountNumber || "",
+          bankId: response?.bankId || null,
+          branchCode: response?.branchCode || "",
+          iban: response?.iban || "",
+          bankAccountId: response?.bankAccountId || "", // Set bankAccountId from the response
         });
       } catch (error) {
         notifications.show({

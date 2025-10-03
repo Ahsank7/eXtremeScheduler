@@ -19,8 +19,8 @@ export const OrganizationLayout = () => {
     const userID = localStoreService.getUserID();
     const response = await organizationService.getOrganizationList(userID);
     let menus = [];
-    if (response.isSuccess) {
-      const orgs = response.data;
+    if (response && Array.isArray(response)) {
+      const orgs = response;
       menus = orgs?.map((org) => {
         return {
           id: org.id,

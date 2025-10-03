@@ -32,9 +32,9 @@ export function Schedule({ userId, organizationId, userType, readOnly = false })
     try {
       const response = await serviceMethod(request);
       //console.log("Fetched events:", response);
-      if (response.data) {
-        //console.log("Fetched events:", response.data); // Log the response data
-        const events = response.data
+      if (response) {
+        //console.log("Fetched events:", response); // Log the response data
+        const events = response
           .filter((task) => {
             // Filter out tasks with invalid dates
             const startDate = new Date(task.startTime);

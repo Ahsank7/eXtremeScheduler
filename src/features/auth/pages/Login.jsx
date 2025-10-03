@@ -12,7 +12,7 @@ import {
 import { useForm, zodResolver } from "@mantine/form";
 //import { useNavigate } from "react-router-dom";
 import { z as zod } from "zod";
-import { authenticationService, localStoreService, franchiseService, loginHistoryService } from "core/services";
+import { authenticationService, localStoreService, franchiseService, loginHistoryService, handleApiError, showErrorNotification, showSuccessNotification } from "core/services";
 import { getSystemInfo } from "core/utils/systemInfo";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
@@ -129,23 +129,14 @@ const Login = () => {
         console.log(`User type ${userType} detected, redirecting to first franchise profile`);
         try {
           // Show loading message for user experience
-          notifications.show({
-            withCloseButton: false,
-            autoClose: 3000,
-            title: "Login Successful",
-            message: "Redirecting to your profile...",
-            color: "green",
-            style: {
-              backgroundColor: "white",
-            },
-          });
+          showSuccessNotification("Redirecting to your profile...", "Login Successful");
           
           // Get franchise list for the user
           const franchiseResponse = await franchiseService.getFranchiseList(organizationId, userId);
           
-          if (franchiseResponse.isSuccess && franchiseResponse.data && franchiseResponse.data.length > 0) {
+          if (franchiseResponse && franchiseResponse.length > 0) {
             // Get the first franchise
-            const firstFranchise = franchiseResponse.data[0];
+            const firstFranchise = franchiseResponse[0];
             
             // Validate that the franchise has a name
             if (!firstFranchise.name) {
@@ -173,30 +164,12 @@ const Login = () => {
       } else {
         // For user type 3 (Staffs) and others, keep current behavior
         console.log(`User type ${userType} detected, redirecting to organizations`);
-        notifications.show({
-          withCloseButton: false,
-          autoClose: 3000,
-          title: "Login Successful",
-          message: "Redirecting to organizations...",
-          color: "green",
-          style: {
-            backgroundColor: "white",
-          },
-        });
+        showSuccessNotification("Redirecting to organizations...", "Login Successful");
         window.location.href = "/organizations";
       }
 
     } catch (error) {
-      notifications.show({
-        withCloseButton: true,
-        autoClose: 5000,
-        title: "Error",
-        message: "Please try again",
-        color: "red",
-        style: {
-          backgroundColor: "white",
-        },
-      });
+      handleApiError(error, "Login failed");
     } finally {
       setIsLoading(false);
     }

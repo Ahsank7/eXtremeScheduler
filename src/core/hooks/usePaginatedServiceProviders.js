@@ -34,8 +34,8 @@ export const usePaginatedServiceProviders = (franchiseId, startDateTime, endDate
 
       const response = await profileService.getAvailableServiceProviders(request);
       
-      if (response && response.data && response.data.response) {
-        const newProviders = response.data.response.map(provider => ({
+      if (response && response.response) {
+        const newProviders = response.response.map(provider => ({
           value: provider.UserId,
           label: provider.Name
         }));
@@ -46,8 +46,8 @@ export const usePaginatedServiceProviders = (franchiseId, startDateTime, endDate
           setServiceProviders(newProviders);
         }
 
-        setHasMore(response.data.totalRecords > (page * pageSize));
-        setTotalRecords(response.data.totalRecords);
+        setHasMore(response.totalRecords > (page * pageSize));
+        setTotalRecords(response.totalRecords);
         setCurrentPage(page);
         setIsInitialized(true);
       }

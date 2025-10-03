@@ -29,8 +29,8 @@ const Organizations = () => {
         userID
       );
 
-      if (response.isSuccess) {
-          setFranchises(response.data);
+      if (response && Array.isArray(response)) {
+          setFranchises(response);
       } else {
         console.error(response.errors);
       }

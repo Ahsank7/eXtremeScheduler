@@ -88,8 +88,7 @@ const BasicSetting = ({ organization }) => {
       form.setValues(mappedData);
       lookupService.getLookupList({ lookupType: "Currency", organizationId: organization?.id })
         .then((response) => {
-          const { data } = response;
-          setCurrencyOptions(data.result.map(item => ({ value: item.id, label: item.name })));
+          setCurrencyOptions((response?.result || []).map(item => ({ value: item.id, label: item.name })));
         })
         .catch((error) => {
           notifications.show({
@@ -101,8 +100,7 @@ const BasicSetting = ({ organization }) => {
 
       lookupService.getLookupList({ lookupType: "CurrencySign", organizationId: organization?.id })
         .then((response) => {
-          const { data } = response;
-          setCurrencySignOptions(data.result.map(item => ({ value: item.id, label: item.name })));
+          setCurrencySignOptions((response?.result || []).map(item => ({ value: item.id, label: item.name })));
         })
         .catch((error) => {
           notifications.show({
@@ -115,8 +113,7 @@ const BasicSetting = ({ organization }) => {
       // Load timezone options
       lookupService.getLookupList({ lookupType: "TimeZones", organizationId: organization?.id })
         .then((response) => {
-          const { data } = response;
-          setTimezoneOptions(data.result.map(item => ({ value: item.name, label: item.name })));
+          setTimezoneOptions((response?.result || []).map(item => ({ value: item.name, label: item.name })));
         })
         .catch((error) => {
           notifications.show({
@@ -129,11 +126,11 @@ const BasicSetting = ({ organization }) => {
       setLogoLoading(true);
       documentService.getOrganizationImage(organization.id)
         .then((response) => {
-          if (response && response.status === 200 && response.data) {
-            setLogoUrl(response.data);
-          } else {
-            setLogoUrl(null);
-          }
+      if (response) {
+        setLogoUrl(response);
+      } else {
+        setLogoUrl(null);
+      }
         })
         .catch(() => setLogoUrl(null))
         .finally(() => setLogoLoading(false));
@@ -163,8 +160,8 @@ const BasicSetting = ({ organization }) => {
     setLogoLoading(true);
     try {
       const response = await documentService.uploadOrganizationImage(organization.id, file);
-      if (response && response.status === 200 && response.data && response.data.filePath) {
-        setLogoUrl(response.data.filePath);
+      if (response && response.filePath) {
+        setLogoUrl(response.filePath);
         notifications.show({ title: "Success", message: "Logo uploaded successfully", color: "green" });
       } else {
         notifications.show({ title: "Error", message: "Failed to upload logo", color: "red" });
@@ -181,7 +178,7 @@ const BasicSetting = ({ organization }) => {
     setLogoLoading(true);
     try {
       const response = await documentService.deleteOrganizationImage(organization.id);
-      if (response && (response.status === 200 || response === "Organization logo deleted successfully")) {
+      if (response) {
         setLogoUrl(null);
         notifications.show({ title: "Success", message: "Logo removed", color: "green" });
       } else {

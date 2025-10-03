@@ -52,8 +52,8 @@ export const AddUpdateUserAddress = ({
             pageNumber: 1,
             pageSize: 100,
           };
-          const { data } = await profileService.getAddressList(request);
-          setExistingAddresses(data.response || []);
+          const response = await profileService.getAddressList(request);
+          setExistingAddresses(response?.response || []);
         } catch (error) {
           console.error("Failed to fetch existing addresses:", error);
         }
@@ -70,17 +70,17 @@ export const AddUpdateUserAddress = ({
       addressService
         .getAddressItem(id)
         .then((response) => {
-          const { data } = response;
+          console.log('Address Item Response:', response); // Debug log
           form.setValues({
-            addressLine1: data.addressLine1 || "",
-            addressLine2: data.addressLine2 || "",
-            addressLine3: data.addressLine3 || "",
-            addressTypeId: data.addressTypeId,
-            countyId: data.countyId,
-            stateId: data.stateId,
-            countryId: data.countryId,
-            latitude: data.latitude || 0,
-            longitude: data.longitude || 0,
+            addressLine1: response?.addressLine1 || "",
+            addressLine2: response?.addressLine2 || "",
+            addressLine3: response?.addressLine3 || "",
+            addressTypeId: response?.addressTypeId || 0,
+            countyId: response?.countyId || 0,
+            stateId: response?.stateId || 0,
+            countryId: response?.countryId || 0,
+            latitude: response?.latitude || 0,
+            longitude: response?.longitude || 0,
           });
         })
         .catch((error) => {
@@ -107,7 +107,7 @@ export const AddUpdateUserAddress = ({
           organizationId,
         });
         
-        let addressTypes = addressTypeResponse.data.result.map((item) => ({
+        let addressTypes = (addressTypeResponse?.result || []).map((item) => ({
           value: item.id,
           label: item.name,
         }));
@@ -131,7 +131,7 @@ export const AddUpdateUserAddress = ({
           organizationId,
         });
         setCountryOptions(
-          countryResponse.data.result.map((item) => ({
+          (countryResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -142,7 +142,7 @@ export const AddUpdateUserAddress = ({
           organizationId,
         });
         setCountyOptions(
-          countyResponse.data.result.map((item) => ({
+          (countyResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))
@@ -153,7 +153,7 @@ export const AddUpdateUserAddress = ({
           organizationId,
         });
         setStateOptions(
-          stateResponse.data.result.map((item) => ({
+          (stateResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))

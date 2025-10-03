@@ -290,7 +290,7 @@ const Planboard = () => {
           lookupType: "TaskStatus",
         });
         setStatusOptions(
-          typeResponse.data.result.map((item) => ({
+          (typeResponse?.result || []).map((item) => ({
             value: item.id,
             label: item.name,
           }))

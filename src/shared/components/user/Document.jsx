@@ -37,9 +37,9 @@ export function Document({ userId, organizationId }) {
       };
 
       const response = await documentService.getDocumentList(request);
-      if (response && response.status === 200 && response.data && Array.isArray(response.data.response)) {
-        setDocuments(response.data.response);
-        setTotalRecords(response.data.totalRecords || response.data.response.length);
+      if (response && Array.isArray(response.response)) {
+        setDocuments(response.response);
+        setTotalRecords(response.totalRecords || response.response.length);
       } else {
         setDocuments([]);
         setTotalRecords(0);
