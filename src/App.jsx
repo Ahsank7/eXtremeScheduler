@@ -13,6 +13,8 @@ import { Transactions } from "shared/components/user/Transactions";
 import { UserType } from "core/enum";
 import GenerateBilling from "features/billing/GenerateBilling";
 import GenerateWage from "features/wage/GenerateWage";
+import { ServiceProviderAttendance } from "features/attendance";
+import StandaloneAttendance from "features/attendance/pages/StandaloneAttendance";
 
 const App = () => {
   return (
@@ -33,6 +35,7 @@ const App = () => {
           />
           <Route path=":franchiseName/planboard" element={<Planboard />} />
           <Route path=":franchiseName/toConfirm" element={<ToConfirm />} />
+          <Route path=":franchiseName/attendance" element={<ServiceProviderAttendance />} />
 
           <Route path=":franchiseName/profile">
             <Route
@@ -81,6 +84,7 @@ const App = () => {
         </Route>
 
         <Route path="/login" element={<Login />} />
+        <Route path="/attendance" element={<StandaloneAttendance />} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </div>

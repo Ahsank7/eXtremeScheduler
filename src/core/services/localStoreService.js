@@ -32,6 +32,12 @@ const getFranchiseID = () => {
   return userInfo?.FranchiseId;
 };
 
+const getUserNo = () => {
+  let userInfo = jwtDecode(getToken());
+
+  return userInfo?.UserNo;
+};
+
 const setToken = (token) => {
   localStorage.setItem(token_Key, token);
 };
@@ -49,6 +55,7 @@ export {
   getOrganizationID,
   getFranchiseID,
   getUserType,
+  getUserNo,
   clearLocalStorage,
   setToken,
   getToken,

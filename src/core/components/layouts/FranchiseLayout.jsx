@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import { IconNotes, IconDashboard, IconClipboard, IconChecklist, IconUserCheck, IconCashBanknote, IconReceipt, IconUser } from "@tabler/icons";
+import { IconNotes, IconDashboard, IconClipboard, IconChecklist, IconUserCheck, IconCashBanknote, IconReceipt, IconUser, IconClock } from "@tabler/icons";
 import { Layout } from "core/components";
 import { localStoreService } from "core/services";
 
@@ -48,6 +48,15 @@ export const FranchiseLayout = () => {
         }
       ];
 
+      // Add attendance portal for service providers (userType === 2)
+      if (userType === 2) {
+        menus.push({
+          id: 2,
+          label: "Attendance Portal",
+          icon: IconClock,
+          link: `/franchises/${franchiseName}/attendance`,
+        });
+      }
     }
     else
     {
