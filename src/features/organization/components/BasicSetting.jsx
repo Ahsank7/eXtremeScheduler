@@ -5,7 +5,7 @@ import { z as zod } from "zod";
 import { organizationService, lookupService, documentService } from "core/services";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconUpload, IconEye } from "@tabler/icons";
-import imageUrlService from "../../../core/services/imageUrlService";
+import { buildImageUrl } from "../../../core/utils/urlHelper";
 
 const schema = zod.object({
   Id: zod.string(),
@@ -210,7 +210,7 @@ const BasicSetting = ({ organization }) => {
                 onMouseLeave={() => setLogoHovered(false)}
               >
                 <Avatar
-                  src={imageUrlService.buildImageUrl(logoUrl)}
+                  src={buildImageUrl(logoUrl)}
                   size={120}
                   radius={120}
                   alt="Organization Logo"
@@ -398,7 +398,7 @@ const BasicSetting = ({ organization }) => {
       >
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 300 }}>
           <img
-            src={imageUrlService.buildImageUrl(logoUrl)}
+            src={buildImageUrl(logoUrl)}
             alt="Organization Logo Large"
             style={{ maxWidth: "100%", maxHeight: 400, borderRadius: 12 }}
           />

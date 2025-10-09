@@ -1,6 +1,6 @@
 const enviroment = {
     // Use environment variables for different deployments
-    baseURL: "https://schedulerapi-demo-bbedcye9htd5ajfg.centralindia-01.azurewebsites.net/api/",
+    baseURL: process.env.REACT_APP_API_URL || "https://localhost:7094/api/",
 };
 
 export default enviroment;

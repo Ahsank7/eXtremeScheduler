@@ -97,9 +97,9 @@ export function Document({ userId, organizationId }) {
   const handleViewDocument = async (documentPath, documentId) => {
     if (documentPath) {
       try {
-        // Try to open the document using the relative path
-        const fullPath = `${window.location.origin}${documentPath}`;
-        window.open(fullPath, '_blank');
+        // Open the document directly using the provided path
+        // The path should already be a complete URL or relative path
+        window.open(documentPath, '_blank');
       } catch (error) {
         console.error("Failed to view document:", error);
         notifications.show({
@@ -173,7 +173,7 @@ export function Document({ userId, organizationId }) {
               <td>
                 <Button.Group>
                   <Button 
-                    onClick={() => handleViewDocument(row.relativeDocumentPath || row.documentPath, row.id)}
+                    onClick={() => handleViewDocument(row.documentPath, row.id)}
                     leftIcon={<IconEye size={16} />}
                   >
                     View

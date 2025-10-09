@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { localStoreService, loginHistoryService, organizationService } from "core/services";
 import { useTheme } from "../context/ThemeContext";
 import { useSidebar } from "../context/SidebarContext";
-import imageUrlService from "../services/imageUrlService";
+import { buildImageUrl } from "../utils/urlHelper";
 import { ChangePassword } from "shared/components/user/ChangePassword";
 import { AppTable, AppModal } from "shared/components";
 import React, { useState, useEffect } from "react";
@@ -168,7 +168,7 @@ export function AppHeader({ franchiseName }) {
               <UnstyledButton>
                 <Group>
                   <Avatar
-                    src={imageUrlService.buildImageUrl(userInfo?.ProfileImagePath)}
+                    src={buildImageUrl(userInfo?.ProfileImagePath)}
                     radius="xl"
                   />
                   <Stack spacing={0}>

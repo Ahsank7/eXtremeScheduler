@@ -190,12 +190,19 @@ export const ProfileDetail = () => {
       setAvatarLoading(true);
       try {
         const response = await documentService.getUserImage(userID);
-        if (response) {
-          setAvatarUrl(response);
+        console.log('Avatar Response:', response); // Debug log
+        
+        // The response should be the data field from the API response
+        // due to handleApiResponse processing in httpService
+        if (response && typeof response === 'string') {
+          // Decode URL-encoded characters (like %5C for backslashes)
+          const decodedUrl = decodeURIComponent(response);
+          setAvatarUrl(decodedUrl);
         } else {
           setAvatarUrl(null);
         }
       } catch (error) {
+        console.error('Failed to fetch avatar:', error);
         setAvatarUrl(null);
       } finally {
         setAvatarLoading(false);
@@ -475,7 +482,7 @@ export const ProfileDetail = () => {
               onMouseLeave={() => setAvatarHovered(false)}
             >
               <Avatar
-                src={avatarUrl ? backendBaseUrl + avatarUrl : undefined}
+                src={avatarUrl ? (avatarUrl.startsWith('http') ? avatarUrl : backendBaseUrl + avatarUrl) : undefined}
                 alt="Profile Image"
                 size={120}
                 radius={120}
@@ -571,7 +578,7 @@ export const ProfileDetail = () => {
       >
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 300 }}>
           <img
-            src={avatarUrl ? backendBaseUrl + avatarUrl : undefined}
+            src={avatarUrl ? (avatarUrl.startsWith('http') ? avatarUrl : backendBaseUrl + avatarUrl) : undefined}
             alt="Profile Large"
             style={{ maxWidth: "100%", maxHeight: 400, borderRadius: 12 }}
           />
