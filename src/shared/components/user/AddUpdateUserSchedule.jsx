@@ -38,7 +38,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
       serviceTypeId: '',
       serviceIds: [],
       serviceProviderIds: [],
-      recurrencePattern: '0', // 0 = No recurrence, 1 = Daily, 2 = Weekly, 3 = Monthly, 4 = Yearly
+      recurrencePattern: '1', // 0 = No recurrence, 1 = Daily, 2 = Weekly, 3 = Monthly, 4 = Yearly
       recurrenceDaysOfWeek: [],
       recurrenceDayOfMonth: [],
       recurrenceDayOfYear: [],
@@ -57,6 +57,8 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
       serviceProviderIds: (value) => (value.length === 0 ? 'At least one service provider is required' : null),
       description: (value) => (!value ? 'Description is required' : null),
     },
+    validateInputOnBlur: true,
+    validateInputOnChange: false,
   });
 
   // Load service types on component mount
@@ -209,6 +211,26 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
   };
 
   const handleSubmit = async (values) => {
+    // Manual validation check
+    const errors = {};
+    
+    if (!values.startDate) errors.startDate = 'Start date is required';
+    if (!values.endDate) errors.endDate = 'End date is required';
+    if (!values.startTime) errors.startTime = 'Start time is required';
+    if (!values.endTime) errors.endTime = 'End time is required';
+    if (!values.serviceTypeId) errors.serviceTypeId = 'Service type is required';
+    if (!values.serviceIds || values.serviceIds.length === 0) errors.serviceIds = 'At least one service is required';
+    if (!values.serviceProviderIds || values.serviceProviderIds.length === 0) errors.serviceProviderIds = 'At least one service provider is required';
+    if (!values.description) errors.description = 'Description is required';
+    
+    // Set errors in form
+    if (Object.keys(errors).length > 0) {
+      form.setErrors(errors);
+      console.log('Form has validation errors:', errors);
+      return;
+    }
+    
+    console.log('Form is valid, proceeding with submission');
     setLoading(true);
     try {
       // Prepare the request object for CreateAppointment API
@@ -272,7 +294,6 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
 
   return (
     <Paper p="md" radius="md">
-      <Title order={3} mb="md">Appointment</Title>
       
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid mt="xs">
@@ -283,6 +304,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               placeholder="Select Service Type"
               data={serviceTypes}
               required
+              error={form.errors.serviceTypeId}
               {...form.getInputProps('serviceTypeId')}
             />
           </Grid.Col>
@@ -295,6 +317,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               disabled={!form.values.serviceTypeId}
               loading={loadingServices}
               searchable
+              error={form.errors.serviceIds}
               {...form.getInputProps('serviceIds')}
             />
           </Grid.Col>
@@ -306,6 +329,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               placeholder="mm/dd/yyyy"
               type="date"
               required
+              error={form.errors.startDate}
               {...form.getInputProps('startDate')}
             />
           </Grid.Col>
@@ -315,6 +339,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               placeholder="mm/dd/yyyy"
               type="date"
               required
+              error={form.errors.endDate}
               {...form.getInputProps('endDate')}
             />
           </Grid.Col>
@@ -324,6 +349,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               placeholder="--:--"
               type="time"
               required
+              error={form.errors.startTime}
               {...form.getInputProps('startTime')}
             />
           </Grid.Col>
@@ -333,6 +359,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               placeholder="--:--"
               type="time"
               required
+              error={form.errors.endTime}
               {...form.getInputProps('endTime')}
             />
           </Grid.Col>
@@ -431,6 +458,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               required
               searchable={isInitialized}
               disabled={!isInitialized}
+              error={form.errors.serviceProviderIds}
               rightSection={
                 <Group spacing="xs">
                   {loading && <Loader size="xs" />}
@@ -472,6 +500,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
               required
               minRows={3}
               maxRows={6}
+              error={form.errors.description}
               {...form.getInputProps('description')}
             />
           </Grid.Col>

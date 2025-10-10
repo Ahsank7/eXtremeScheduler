@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AppTable, AppModal } from "shared/components"; // Added Button import
-import { Button } from "@mantine/core";
+import { Button, Badge } from "@mantine/core";
 import { profileService, expenseService } from "core/services";
 import { helperFunctions } from "shared/utils";
 import { notifications } from "@mantine/notifications"; // Import notifications for success message
@@ -105,30 +105,36 @@ export function Expense({ userId, organizationId }) {
       </div>
       <AppTable thead={tableColumns}>
         {Expense &&
-          Expense.map((row, index) => (
-            <tr key={index}>
-              <td>{helperFunctions.getRowNumber(100, 1, index)}</td>
-              <td>{row.type}</td>
-              <td>{row.taskId}</td>
-              <td>{row.date}</td>
-              <td>{row.amount}</td>
-              <td>{row.isConfirmed ? "Yes" : "No"}</td>
-              <td>{row.isPaid ? "Yes" : "No"}</td>
-              <td>
-                <Button.Group>
-                  <Button onClick={() => handleActionClick("Edit", row.id)}>
-                    Edit
-                  </Button>
-                  <Button
-                    color="red"
-                    onClick={() => handleActionClick("Delete", row.id)}
-                  >
-                    Delete
-                  </Button>
-                </Button.Group>
-              </td>
-            </tr>
-          ))}
+          Expense
+            .filter((row) => row.isActive !== false) // Filter out inactive records
+            .map((row, index) => (
+              <tr key={index}>
+                <td>{helperFunctions.getRowNumber(100, 1, index)}</td>
+                <td>
+                  <Badge color="blue" variant="light">
+                    {row.type}
+                  </Badge>
+                </td>
+                <td>{row.taskId}</td>
+                <td>{row.date ? new Date(row.date).toLocaleDateString() : ''}</td>
+                <td>${parseFloat(row.amount || 0).toFixed(2)}</td>
+                <td>{row.isConfirmed ? "Yes" : "No"}</td>
+                <td>{row.isPaid ? "Yes" : "No"}</td>
+                <td>
+                  <Button.Group>
+                    <Button onClick={() => handleActionClick("Edit", row.id)}>
+                      Edit
+                    </Button>
+                    <Button
+                      color="red"
+                      onClick={() => handleActionClick("Delete", row.id)}
+                    >
+                      Delete
+                    </Button>
+                  </Button.Group>
+                </td>
+              </tr>
+            ))}
       </AppTable>
 
       <AppModal
