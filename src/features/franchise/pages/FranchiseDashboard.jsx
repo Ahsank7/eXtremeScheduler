@@ -62,7 +62,7 @@ Chart.register(
 
 const FranchiseDashboard = () => {
   const { franchiseName } = useParams();
-  const { loading: permissionsLoading, userInfo } = usePermissions();
+  const { loading: permissionsLoading, initialized } = usePermissions();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -77,7 +77,8 @@ const FranchiseDashboard = () => {
       setError(null);
       
       // Check if user is authenticated
-      if (!userInfo || !userInfo.UserID) {
+      const userId = localStoreService.getUserID();
+      if (!userId) {
         setError("User not authenticated. Please log in again.");
         setLoading(false);
         return;
@@ -133,10 +134,10 @@ const FranchiseDashboard = () => {
   };
 
   useEffect(() => {
-    if (!permissionsLoading && userInfo) {
+    if (!permissionsLoading && initialized) {
       fetchDashboardData();
     }
-  }, [filters, permissionsLoading, userInfo]);
+  }, [filters, permissionsLoading, initialized]);
 
   const handleRefresh = () => {
     fetchDashboardData();

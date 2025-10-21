@@ -2,6 +2,7 @@ export * as httpService from "./httpService";
 export * as franchiseService from "./franchiseService";
 export * as localStoreService from "./localStoreService";
 export * as organizationService from "./organizationService";
+export * as organizationBillingSettingsService from "./organizationBillingSettingsService";
 export * as planboardService from "./planboardService";
 export * as profileService from "./profileService";
 export * as toConfirmService from "./toConfirmService";

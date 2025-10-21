@@ -32,4 +32,14 @@ const deleteService = async (serviceId) => {
     return await remove(`Services/${serviceId}`);
 };
 
-export { getServiceTypes, getServicesByType, addServiceType, updateServiceType, deleteServiceType, addService, updateService, deleteService }; 
+const getServicesList = async (params) => {
+    const queryParams = new URLSearchParams();
+    if (params.organizationId) queryParams.append('organizationId', params.organizationId);
+    if (params.serviceTypeId) queryParams.append('serviceTypeId', params.serviceTypeId);
+    
+    const queryString = queryParams.toString();
+    const url = queryString ? `Services/List?${queryString}` : 'Services/List';
+    return await get(url);
+};
+
+export { getServiceTypes, getServicesByType, addServiceType, updateServiceType, deleteServiceType, addService, updateService, deleteService, getServicesList }; 

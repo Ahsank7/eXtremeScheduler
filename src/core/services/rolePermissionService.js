@@ -15,5 +15,11 @@ export const rolePermissionService = {
     // Save role permissions
     saveRolePermissions: async (permissions) => {
         return await post('RolePermission/save-permissions', permissions);
+    },
+
+    // Get role permissions (for role management)
+    getRolePermissions: async (roleId, organizationId) => {
+        const params = organizationId ? `?organizationId=${organizationId}` : '';
+        return await get(`RolePermission/role-permissions/${roleId}${params}`);
     }
 }; 

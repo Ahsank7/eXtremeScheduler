@@ -30,6 +30,16 @@ const assignRoleToUser = async (userId, roleId, createdBy = null) => {
     return await post('Role/assign', request);
 };
 
+const roleService = {
+    getAvailableRoles,
+    getRoleById,
+    createRole,
+    updateRole,
+    deleteRole,
+    assignRoleToUser
+};
+
+export default roleService;
 export {
     getAvailableRoles,
     getRoleById,

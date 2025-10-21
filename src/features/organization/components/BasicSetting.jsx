@@ -23,7 +23,7 @@ const schema = zod.object({
   CalculationTypeId: zod.number(),
   TaxPercentage: zod.number(),
   DiscountPercentage: zod.number(),
-  UseServiceRateForBilling: zod.boolean(),
+  ServiceRateForBilling: zod.number(),
   TimeZone: zod.string().optional(),
 });
 
@@ -58,7 +58,7 @@ const BasicSetting = ({ organization }) => {
       CalculationTypeId: 1,
       TaxPercentage: 0.0,
       DiscountPercentage: 0.0,
-      UseServiceRateForBilling: false,
+      ServiceRateForBilling: 1,
       TimeZone: 'Pakistan Standard Time',
     },
   });
@@ -82,7 +82,7 @@ const BasicSetting = ({ organization }) => {
         CalculationTypeId: organization.calculationTypeId,
         TaxPercentage: organization.taxPercentage,
         DiscountPercentage: organization.discountPercentage,
-        UseServiceRateForBilling: organization.useServiceRateForBilling,
+        ServiceRateForBilling: organization.serviceRateForBilling,
         TimeZone: organization.timeZone || 'Pakistan Standard Time',
       };
       form.setValues(mappedData);
@@ -326,11 +326,16 @@ const BasicSetting = ({ organization }) => {
             />
           </Grid.Col>
           <Grid.Col xs={12} md={6}>
-            <Switch 
-              label="Use Service Rate for Billing" 
-              description="When enabled, uses service-specific rates. When disabled or service rate is 0, uses default rate."
-              {...form.getInputProps('UseServiceRateForBilling', { type: 'checkbox' })} 
-              mb="sm" 
+            <Select
+              label="Billing Rate Mode"
+              placeholder="Select billing mode"
+              data={[
+                { value: 1, label: 'Default Rate' },
+                { value: 2, label: 'Service-Specific Rate' },
+                { value: 3, label: 'Time-Based Rate' }
+              ]}
+              {...form.getInputProps('ServiceRateForBilling')}
+              mb="sm"
             />
           </Grid.Col>
           <Grid.Col xs={12} md={6}>

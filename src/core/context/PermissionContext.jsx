@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { localStoreService } from 'core/services';
 import { rolePermissionService } from 'core/services';
+import { localStoreService } from 'core/services';
 
 const PermissionContext = createContext();
 
@@ -14,66 +14,72 @@ export const usePermissions = () => {
 
 export const PermissionProvider = ({ children }) => {
   const [permissions, setPermissions] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState(null);
-
-  useEffect(() => {
-    loadUserPermissions();
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   const loadUserPermissions = async () => {
     try {
-      const userInfo = localStoreService.getUserInfo();
-      const token = localStoreService.getToken();
+      setLoading(true);
+      const userId = localStoreService.getUserID();
+      const userType = localStoreService.getUserType();
+      const organizationId = localStoreService.getOrganizationID();
       
-      console.log('Loading permissions for user:', userInfo);
-      console.log('Token available:', !!token);
+      console.log('Loading permissions for user:', userId, 'type:', userType, 'org:', organizationId);
       
-      if (!userInfo || !userInfo.UserID) {
-        console.warn('No user info or UserID found');
-        setLoading(false);
-        return;
-      }
-      
-      if (!token) {
-        console.warn('No authentication token found');
-        setLoading(false);
-        return;
-      }
-      
-      setUserInfo(userInfo);
-      
-      // Get user permissions
-      const response = await rolePermissionService.getUserMenuPermissions(
-        userInfo.UserID,
-        userInfo.OrganizationId
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Permission loading timeout')), 10000)
       );
       
-      if (response && Array.isArray(response)) {
-        const permissionsMap = {};
-        response.forEach(permission => {
-          permissionsMap[permission.menuId] = permission;
-        });
-        setPermissions(permissionsMap);
-        console.log('Permissions loaded successfully:', permissionsMap);
+      // Only load permissions for staff users (userType === 3)
+      if (userType === '3' || userType === 3) {
+        const response = await Promise.race([
+          rolePermissionService.getUserMenuPermissions(userId, organizationId),
+          timeoutPromise
+        ]);
+        console.log('User permissions response:', response);
+        
+        if (response && Array.isArray(response)) {
+          const permissionMap = {};
+          response.forEach(permission => {
+            permissionMap[permission.menuId] = {
+              canView: permission.canView,
+              canCreate: permission.canCreate,
+              canEdit: permission.canEdit,
+              canDelete: permission.canDelete
+            };
+          });
+          setPermissions(permissionMap);
+          console.log('Set permissions:', permissionMap);
+        }
       } else {
-        console.warn('Failed to load permissions:', response.message);
+        // For non-staff users, set default permissions (allow all)
+        setPermissions({});
       }
+      
+      setInitialized(true);
     } catch (error) {
       console.error('Failed to load user permissions:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
+      // Set default permissions on error to prevent blocking
+      setPermissions({});
+      setInitialized(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const hasPermission = (menuId, action = 'canView') => {
-    if (!permissions[menuId]) return false;
-    return permissions[menuId][action] || false;
+  const hasPermission = (menuId, permission = 'canView') => {
+    // If no permissions loaded or user is not staff, allow access
+    if (!initialized || Object.keys(permissions).length === 0) {
+      return true;
+    }
+    
+    const menuPermissions = permissions[menuId];
+    if (!menuPermissions) {
+      return true; // Allow access if no specific permission found
+    }
+    
+    return menuPermissions[permission] === true;
   };
 
   const canView = (menuId) => hasPermission(menuId, 'canView');
@@ -81,16 +87,20 @@ export const PermissionProvider = ({ children }) => {
   const canEdit = (menuId) => hasPermission(menuId, 'canEdit');
   const canDelete = (menuId) => hasPermission(menuId, 'canDelete');
 
+  useEffect(() => {
+    loadUserPermissions();
+  }, []);
+
   const value = {
     permissions,
     loading,
-    userInfo,
+    initialized,
     hasPermission,
     canView,
     canCreate,
     canEdit,
     canDelete,
-    refreshPermissions: loadUserPermissions
+    reloadPermissions: loadUserPermissions
   };
 
   return (
@@ -98,4 +108,4 @@ export const PermissionProvider = ({ children }) => {
       {children}
     </PermissionContext.Provider>
   );
-}; 
+};

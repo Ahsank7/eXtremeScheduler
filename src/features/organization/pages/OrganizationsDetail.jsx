@@ -9,6 +9,7 @@ import { organizationService } from "core/services";
 import { notifications } from "@mantine/notifications";
 import Services from '../components/Services';
 import RolePermissionManagement from '../components/RolePermissionManagement';
+import RatesAndBillingSettings from '../components/RatesAndBillingSettings';
 import { LoginHistory } from "features/loginHistory";
 
 const useStyles = createStyles((theme) => ({
@@ -36,7 +37,7 @@ const OrganizationDetail = () => {
 
     const tabs = [
         'Basic Settings',
-
+        'Rates & Billing',
         'Lookups',
         //'Document',
         'Services',
@@ -85,7 +86,9 @@ const OrganizationDetail = () => {
                     <BasicSetting organization={org}></BasicSetting>
                 </Tabs.Panel>
 
-
+                <Tabs.Panel value="Rates & Billing" className={classes.panel}>
+                    <RatesAndBillingSettings organizationId={organizationID} organizationName={org?.name} />
+                </Tabs.Panel>
 
                 <Tabs.Panel value="Lookups" className={classes.panel}>
                     <Lookup organizationid={organizationID}></Lookup>

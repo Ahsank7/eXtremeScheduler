@@ -15,11 +15,13 @@ import GenerateBilling from "features/billing/GenerateBilling";
 import GenerateWage from "features/wage/GenerateWage";
 import { ServiceProviderAttendance } from "features/attendance";
 import StandaloneAttendance from "features/attendance/pages/StandaloneAttendance";
+import { PermissionProvider } from "core/context/PermissionContext";
 
 const App = () => {
   return (
-    <div>
-      <Routes>
+    <PermissionProvider>
+      <div>
+        <Routes>
         <Route path="/organizations" element={<OrganizationLayout />}>
           <Route path=":orgName" element={<Organizations />} />
           <Route
@@ -86,8 +88,9 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/attendance" element={<StandaloneAttendance />} />
         <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </div>
+        </Routes>
+      </div>
+    </PermissionProvider>
   );
 };
 

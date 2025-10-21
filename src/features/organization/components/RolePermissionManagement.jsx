@@ -17,6 +17,7 @@ import {
 import { IconShield, IconCheck, IconX } from '@tabler/icons';
 import { notifications } from '@mantine/notifications';
 import { roleService, rolePermissionService } from 'core/services';
+import { usePermissions } from 'core/context/PermissionContext';
 
 const RolePermissionManagement = ({ organizationId }) => {
   const [loading, setLoading] = useState(false);
@@ -25,14 +26,23 @@ const RolePermissionManagement = ({ organizationId }) => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState({});
   const [saving, setSaving] = useState(false);
+  const { reloadPermissions } = usePermissions();
 
   useEffect(() => {
     loadRoles();
     loadMenus();
   }, []);
 
+  // Load existing permissions when role is selected
+  useEffect(() => {
+    if (selectedRole && menus.length > 0) {
+      loadExistingPermissions();
+    }
+  }, [selectedRole, menus]);
+
   const loadRoles = async () => {
     try {
+      console.log('Loading roles for organization:', organizationId);
       const response = await roleService.getAvailableRoles(organizationId);
       console.log('Role Permission Management - Role response:', response);
       
@@ -49,13 +59,22 @@ const RolePermissionManagement = ({ organizationId }) => {
         rolesData = response.response;
       }
       
+      console.log('Processed roles data:', rolesData);
+      
       if (rolesData.length > 0) {
-        setRoles(rolesData.map(role => ({
+        const roleOptions = rolesData.map(role => ({
           value: role.id,
           label: role.name
-        })));
+        }));
+        setRoles(roleOptions);
+        console.log('Set roles:', roleOptions);
       } else {
         console.log('No roles found in response:', response);
+        notifications.show({
+          title: 'Info',
+          message: 'No roles available for this organization. Please create roles first.',
+          color: 'blue'
+        });
       }
     } catch (error) {
       console.error('Failed to load roles:', error);
@@ -71,6 +90,8 @@ const RolePermissionManagement = ({ organizationId }) => {
     setLoading(true);
     try {
       const response = await rolePermissionService.getAllMenus();
+      console.log('Menu response:', response);
+      
       if (response && Array.isArray(response)) {
         const menuData = response;
         setMenus(menuData);
@@ -88,8 +109,24 @@ const RolePermissionManagement = ({ organizationId }) => {
           };
         });
         setPermissions(initialPermissions);
+        console.log('Initialized permissions:', initialPermissions);
+        
+        // Show success notification for menu loading
+        notifications.show({
+          title: 'Success',
+          message: `Loaded ${menuData.length} menu items for permission configuration`,
+          color: 'green'
+        });
+      } else {
+        console.log('No menu data received or invalid format:', response);
+        notifications.show({
+          title: 'Warning',
+          message: 'No menu data available. Please ensure menus are configured in the database.',
+          color: 'yellow'
+        });
       }
     } catch (error) {
+      console.error('Error loading menus:', error);
       notifications.show({
         title: 'Error',
         message: 'Failed to load menus',
@@ -97,6 +134,67 @@ const RolePermissionManagement = ({ organizationId }) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadExistingPermissions = async () => {
+    if (!selectedRole) return;
+    
+    try {
+      console.log('Loading existing permissions for role:', selectedRole, 'organization:', organizationId);
+      const response = await rolePermissionService.getRolePermissions(selectedRole, organizationId);
+      console.log('Existing permissions response:', response);
+      
+      if (response && Array.isArray(response)) {
+        const existingPermissions = {};
+        response.forEach(permission => {
+          existingPermissions[permission.menuId] = {
+            menuId: permission.menuId,
+            menuName: permission.menuName,
+            canView: permission.canView,
+            canCreate: permission.canCreate,
+            canEdit: permission.canEdit,
+            canDelete: permission.canDelete
+          };
+        });
+        
+        console.log('Processed existing permissions:', existingPermissions);
+        
+        // Merge with existing permissions, keeping defaults for menus not in response
+        const mergedPermissions = { ...permissions };
+        Object.keys(mergedPermissions).forEach(menuId => {
+          if (existingPermissions[menuId]) {
+            mergedPermissions[menuId] = existingPermissions[menuId];
+          }
+        });
+        
+        setPermissions(mergedPermissions);
+        console.log('Final merged permissions:', mergedPermissions);
+        
+        // Show info notification for existing permissions
+        const permissionCount = Object.keys(existingPermissions).length;
+        if (permissionCount > 0) {
+          notifications.show({
+            title: 'Info',
+            message: `Loaded ${permissionCount} existing permissions for this role`,
+            color: 'blue'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load existing permissions:', error);
+      // Don't show error notification as this is not critical
+    }
+  };
+
+  const handleRoleChange = (roleId) => {
+    setSelectedRole(roleId);
+    if (roleId) {
+      notifications.show({
+        title: 'Info',
+        message: 'Role selected. Loading existing permissions...',
+        color: 'blue'
+      });
     }
   };
 
@@ -120,34 +218,73 @@ const RolePermissionManagement = ({ organizationId }) => {
       return;
     }
 
+    if (!organizationId) {
+      notifications.show({
+        title: 'Error',
+        message: 'Organization ID is required',
+        color: 'red'
+      });
+      return;
+    }
+
     setSaving(true);
+    
+    // Show loading notification
+    notifications.show({
+      title: 'Info',
+      message: 'Saving role permissions...',
+      color: 'blue'
+    });
+    
     try {
-      const permissionsArray = Object.values(permissions);
+      const permissionsArray = Object.values(permissions).filter(permission => 
+        permission && permission.menuId
+      );
+      
+      if (permissionsArray.length === 0) {
+        notifications.show({
+          title: 'Error',
+          message: 'No valid permissions to save',
+          color: 'red'
+        });
+        return;
+      }
       
       // Debug: Log what we're sending
       console.log('Saving permissions:', permissionsArray);
+      console.log('Selected role:', selectedRole, 'Type:', typeof selectedRole);
+      console.log('Organization ID:', organizationId, 'Type:', typeof organizationId);
       
       const request = {
-        roleId: selectedRole,
+        roleId: parseInt(selectedRole),
         organizationId: organizationId,
         permissions: permissionsArray
       };
 
       console.log('Request payload:', request);
+      console.log('Request payload JSON:', JSON.stringify(request, null, 2));
 
       const response = await rolePermissionService.saveRolePermissions(request);
-      if (response) {
-        notifications.show({
-          title: 'Success',
-          message: 'Role permissions saved successfully',
-          color: 'green'
-        });
-      }
+      console.log('Save response:', response);
+      
+      // The response should be a boolean (true/false) from the backend
+      // If we get here without an exception, the operation was successful
+      notifications.show({
+        title: 'Success',
+        message: 'Role permissions saved successfully',
+        color: 'green'
+      });
+      
+      // Reload existing permissions to reflect the saved state
+      await loadExistingPermissions();
+      
+      // Reload user permissions in the context
+      await reloadPermissions();
     } catch (error) {
       console.error('Error saving permissions:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to save role permissions',
+        message: error.message || 'Failed to save role permissions',
         color: 'red'
       });
     } finally {
@@ -188,7 +325,7 @@ const RolePermissionManagement = ({ organizationId }) => {
             placeholder="Select role"
             data={roles}
             value={selectedRole}
-            onChange={setSelectedRole}
+            onChange={handleRoleChange}
             style={{ flex: 1 }}
             required
           />
