@@ -88,11 +88,22 @@ const GenerateWage = () => {
   };
 
   const columns = [
-    { key: 'taskId', label: 'Task ID' },
-    { key: 'serviceProviderName', label: 'Service Provider' },
-    { key: 'clientName', label: 'Client Name' },
-    { key: 'taskDate', label: 'Task Date', render: (value) => new Date(value).toLocaleDateString() },
-    { key: 'wageAmount', label: 'Wage Amount', render: (value) => `${parseFloat(value).toFixed(2)}` },
+    { key: 'recordType', label: 'Type', render: (value) => (
+      <span style={{ 
+        fontWeight: 'bold',
+        color: value === 'Task' ? '#228be6' : '#40c057',
+        fontSize: '12px'
+      }}>
+        {value}
+      </span>
+    )},
+    { key: 'taskId', label: 'Task ID', render: (value) => <span style={{ fontSize: '12px' }}>{value}</span> },
+    { key: 'serviceProviderName', label: 'Service Provider', render: (value) => <span style={{ fontSize: '12px' }}>{value}</span> },
+    { key: 'clientName', label: 'Client', render: (value) => <span style={{ fontSize: '12px' }}>{value}</span> },
+    { key: 'taskDate', label: 'Date', render: (value) => <span style={{ fontSize: '12px' }}>{new Date(value).toLocaleDateString()}</span> },
+    { key: 'wageAmount', label: 'Wage Amount', render: (value) => <span style={{ fontSize: '12px' }}>{`${parseFloat(value).toFixed(2)}`}</span> },
+    { key: 'expenseType', label: 'Expense Type', render: (value) => <span style={{ fontSize: '12px' }}>{value || '-'}</span> },
+    { key: 'expenseAmount', label: 'Expense Amount', render: (value) => <span style={{ fontSize: '12px' }}>{value ? `${parseFloat(value).toFixed(2)}` : '-'}</span> },
   ];
 
   return (

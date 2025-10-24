@@ -16,8 +16,13 @@ const deleteUserExpenseItem = async (userExpenseId) => {
     return await remove(`Expenses/Delete?userExpenseId=${userExpenseId}`);
 };
 
+const getExpenseList = async (request) => {
+    return await post(`Expenses/List`, request);
+};
+
 export {
     getUserExpenseItem,
     saveUpdateUserExpense,
     deleteUserExpenseItem,
+    getExpenseList,
 };

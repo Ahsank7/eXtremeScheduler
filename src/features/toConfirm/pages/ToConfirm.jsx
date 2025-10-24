@@ -11,7 +11,7 @@ import {
 } from "shared/components";
 import { localStoreService, toConfirmService } from "core/services";
 import { DataTable } from "mantine-datatable";
-import { IconEdit, IconSend, IconTrash, IconDownload, IconCalendar, IconUser, IconUserCheck } from "@tabler/icons";
+import { IconEdit, IconSend, IconTrash, IconDownload, IconCalendar, IconUser, IconUserCheck, IconReceipt, IconClipboard } from "@tabler/icons";
 import { notifications } from "@mantine/notifications";
 
 const ToConfirm = () => {
@@ -40,6 +40,27 @@ const ToConfirm = () => {
   const pageSize = 25;
 
   const tableColumns = [
+    {
+      accessor: "recordType",
+      title: "Type",
+      textAlignment: "left",
+      render: (record) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {record.recordType === 'Task' ? (
+            <IconClipboard size={16} color="#228be6" />
+          ) : (
+            <IconReceipt size={16} color="#40c057" />
+          )}
+          <span style={{ 
+            fontWeight: 'bold',
+            color: record.recordType === 'Task' ? '#228be6' : '#40c057'
+          }}>
+            {record.recordType}
+          </span>
+        </div>
+      ),
+      noWrap: true,
+    },
     {
       accessor: "isConfirmed",
       title: "IsConfirmed",
@@ -150,6 +171,20 @@ const ToConfirm = () => {
       accessor: "serviceProviderMobile",
       title: "ServiceProvider Mobile",
       textAlignment: "left",
+      noWrap: true,
+    },
+    {
+      accessor: "expenseType",
+      title: "Expense Type",
+      textAlignment: "left",
+      render: (record) => record.recordType === 'Expense' ? record.expenseType : '-',
+      noWrap: true,
+    },
+    {
+      accessor: "expenseAmount",
+      title: "Expense Amount",
+      textAlignment: "left",
+      render: (record) => record.recordType === 'Expense' ? `$${parseFloat(record.expenseAmount || 0).toFixed(2)}` : '-',
       noWrap: true,
     },
   ];
@@ -389,9 +424,20 @@ const ToConfirm = () => {
           page={pageNumber}
           onPageChange={(p) => handlePagination(p)}
           paginationSize="lg"
-          selectedRecords={selectedServicesTasks}
-          onSelectedRecordsChange={setSelectedServicesTasks}
-          idAccessor="taskId"
+          selectedRecords={selectedServicesTasks.filter(record => record.recordType === 'Task')}
+          onSelectedRecordsChange={(records) => {
+            // Only allow selection of Task records, filter out Expense records
+            const taskRecords = records.filter(record => record.recordType === 'Task');
+            setSelectedServicesTasks(taskRecords);
+          }}
+          idAccessor={(record) => {
+            // Create unique ID by combining record type with appropriate ID
+            if (record.recordType === 'Task') {
+              return `task_${record.taskId}`;
+            } else {
+              return `expense_${record.expenseId}`;
+            }
+          }}
         />
       </AppContainer>
 
@@ -475,10 +521,16 @@ const ToConfirm = () => {
         opened={isConfirmationModalOpen}
         onClose={async (confirmed) => {
           if (confirmed) {
-            await toConfirmService.CalculateBillingAndWageAmounts(
-              selectedServicesTasks.map((row) => row.taskId).join(","),
-              localStoreService.getOrganizationID()
-            );
+            // Since we only allow selection of Task records, selectedServicesTasks contains only tasks
+            const tasks = selectedServicesTasks;
+            
+            // Confirm tasks - this will automatically confirm associated expenses
+            if (tasks.length > 0) {
+              await toConfirmService.CalculateBillingAndWageAmounts(
+                tasks.map((row) => row.taskId).join(","),
+                localStoreService.getOrganizationID()
+              );
+            }
 
             setSelectedServicesTasks([]);
             setIsConfirmationModalOpen(false);
@@ -487,7 +539,11 @@ const ToConfirm = () => {
         }}
         title="Confirm Tasks"
       >
-        Are you sure you want to confirm tasks?
+        Are you sure you want to confirm the selected tasks? 
+        <br />
+        <small style={{ color: '#666' }}>
+          Note: Confirming tasks will automatically confirm their associated expenses.
+        </small>
       </AppConfirmationModal>
     </>
   );

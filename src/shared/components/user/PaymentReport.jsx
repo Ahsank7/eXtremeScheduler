@@ -25,6 +25,15 @@ export default function PaymentReport({ info, type }) {
   const [isLoading, setIsLoading] = useState(true);
   const [currencySign, setCurrencySign] = useState('$');
 
+  // Debug state changes
+  useEffect(() => {
+    console.log("PaymentReport: Organization info changed", organizationInfo);
+  }, [organizationInfo]);
+
+  useEffect(() => {
+    console.log("PaymentReport: User info changed", userInfo);
+  }, [userInfo]);
+
   const fetchCurrencySign = async () => {
     try {
       const organizationId = localStoreService.getOrganizationID();
@@ -42,13 +51,44 @@ export default function PaymentReport({ info, type }) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        console.log("PaymentReport: Starting data fetch", { info, type });
+        console.log("PaymentReport: Full info object", JSON.stringify(info, null, 2));
+        
         // Fetch currency sign
         await fetchCurrencySign();
         
         // Fetch organization info
-        const orgResponse = await organizationService.getOrganizationById(localStoreService.getOrganizationID());
-        if (orgResponse.isSuccess) {
-          setOrganizationInfo(orgResponse.data);
+        const organizationId = localStoreService.getOrganizationID();
+        console.log("PaymentReport: Organization ID", organizationId);
+        
+        if (organizationId) {
+          const orgResponse = await organizationService.getOrganizationById(organizationId);
+          console.log("PaymentReport: Organization response", orgResponse);
+          if (orgResponse.isSuccess) {
+            console.log("PaymentReport: Organization data", orgResponse.data);
+            setOrganizationInfo(orgResponse.data);
+            console.log("PaymentReport: Organization info set", orgResponse.data);
+          } else {
+            console.log("PaymentReport: Organization fetch failed, using fallback");
+            // Set a fallback organization info
+            setOrganizationInfo({
+              name: 'Your Company Name',
+              completeAddress: 'Your Business Address',
+              contactNo: 'City, Country',
+              email: 'Postal Code',
+              webSite: ''
+            });
+          }
+        } else {
+          console.log("PaymentReport: No organization ID available, using fallback");
+          // Set a fallback organization info
+          setOrganizationInfo({
+            name: 'Your Company Name',
+            completeAddress: 'Your Business Address',
+            contactNo: 'City, Country',
+            email: 'Postal Code',
+            webSite: ''
+          });
         }
 
         // Fetch list data
@@ -62,25 +102,86 @@ export default function PaymentReport({ info, type }) {
         let dataList = [];
         if (type === 'billing') {
           request.billingId = info.id;
+          console.log("PaymentReport: Fetching billing data", request);
           const response = await paymentService.getBillingInfoList(request);
+          console.log("PaymentReport: Billing response", response);
           dataList = response.response || [];
         } else if (type === 'wage') {
           request.wageId = info.id;
+          console.log("PaymentReport: Fetching wage data", request);
           const response = await paymentService.getWageInfoList(request);
+          console.log("PaymentReport: Wage response", response);
           dataList = response.response || [];
         }
         setListData(dataList);
+        console.log("PaymentReport: Detail data", dataList);
+        
+        // Initialize userId variable
+        let userId = type === 'wage' ? info.serviceProviderId : info.clientId;
+        
+        // Try to get user info from the detail data if available
+        if (dataList && dataList.length > 0) {
+          const firstRecord = dataList[0];
+          console.log("PaymentReport: First detail record", firstRecord);
+          
+          // Check if the detail record has user information
+          if (firstRecord.clientId && type === 'billing') {
+            console.log("PaymentReport: Found clientId in detail record", firstRecord.clientId);
+            userId = firstRecord.clientId;
+          } else if (firstRecord.serviceProviderId && type === 'wage') {
+            console.log("PaymentReport: Found serviceProviderId in detail record", firstRecord.serviceProviderId);
+            userId = firstRecord.serviceProviderId;
+          }
+        }
 
         // Fetch user info
-        let userId = type === 'wage' ? info.serviceProviderId : info.clientId;
+        console.log("PaymentReport: User ID", userId);
+        console.log("PaymentReport: Available fields in info", Object.keys(info));
+        
+        // If we don't have the ID fields, try to get them from other fields
+        if (!userId) {
+          if (type === 'wage' && info.serviceProviderName) {
+            // For wage, we might need to find the service provider by name
+            console.log("PaymentReport: No serviceProviderId, trying to find by name");
+          } else if (type === 'billing' && info.clientName) {
+            // For billing, we might need to find the client by name
+            console.log("PaymentReport: No clientId, trying to find by name");
+          }
+        }
+        
         if (userId) {
           const userResponse = await profileService.getUserByID(userId);
+          console.log("PaymentReport: User response", userResponse);
+          console.log("PaymentReport: User response data", userResponse.data);
           if (userResponse.isSuccess) {
             setUserInfo(userResponse.data);
+            console.log("PaymentReport: User info set", userResponse.data);
+          } else {
+            console.log("PaymentReport: User fetch failed", userResponse);
+          }
+        } else {
+          console.log("PaymentReport: No user ID available, skipping user fetch");
+          // Set a fallback user info object with the name from the main record
+          if (type === 'billing' && info.clientName) {
+            setUserInfo({
+              firstName: info.clientName.split(' ')[0] || '',
+              lastName: info.clientName.split(' ').slice(1).join(' ') || '',
+              phoneNo: '',
+              email: '',
+              addressLine1: ''
+            });
+          } else if (type === 'wage' && info.serviceProviderName) {
+            setUserInfo({
+              firstName: info.serviceProviderName.split(' ')[0] || '',
+              lastName: info.serviceProviderName.split(' ').slice(1).join(' ') || '',
+              phoneNo: '',
+              email: '',
+              addressLine1: ''
+            });
           }
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("PaymentReport: Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -262,6 +363,11 @@ export default function PaymentReport({ info, type }) {
               text-align: left;
               font-weight: 600;
               color: #2A5DAA;
+            }
+            
+            .items-table .date {
+              text-align: left;
+              font-size: 12px;
             }
             
             .items-table .quantity {
@@ -502,6 +608,7 @@ export default function PaymentReport({ info, type }) {
               <thead>
                 <tr>
                   <th>ITEMS</th>
+                  <th>DATE</th>
                   <th>QUANTITY</th>
                   <th>PRICE</th>
                   <th>AMOUNT</th>
@@ -510,14 +617,16 @@ export default function PaymentReport({ info, type }) {
               <tbody>
                 ${listData && listData.length > 0 ? listData.map(item => `
                   <tr>
-                    <td class="item-name">${item.serviceType || 'Service'}</td>
+                    <td class="item-name">${item.recordType === 'Expense' ? item.expenseType : item.serviceType || 'Service'}</td>
+                    <td class="date">${item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
                     <td class="quantity">${item.qty || '1'}</td>
-                    <td class="price">${formatAmount(item.rate)}</td>
+                    <td class="price">${item.recordType === 'Expense' ? '-' : formatAmount(item.rate)}</td>
                     <td class="amount">${formatAmount(item.amount)}</td>
                   </tr>
                 `).join('') : `
                   <tr>
                     <td class="item-name">${type === 'billing' ? 'Service 1' : 'Work Hours'}</td>
+                    <td class="date">-</td>
                     <td class="quantity">1</td>
                     <td class="price">${formatAmount(info.totalAmount)}</td>
                     <td class="amount">${formatAmount(info.totalAmount)}</td>
@@ -590,6 +699,14 @@ export default function PaymentReport({ info, type }) {
     printWindow.document.close();
     printWindow.focus();
   };
+
+  // Debug current state values
+  console.log("PaymentReport: Current state", {
+    isLoading,
+    organizationInfo,
+    userInfo,
+    listData: listData?.length || 0
+  });
 
   if (isLoading) {
     return (
@@ -697,10 +814,13 @@ export default function PaymentReport({ info, type }) {
                <Title order={5} mb="md">TO:</Title>
               {userInfo ? (
                 <Stack spacing="xs">
-                  <Text size="lg" weight={600}>{userInfo.firstName} {userInfo.lastName}  ({userInfo.userNo})</Text>
-                  <Text size="sm">{userInfo.phoneNo}</Text>
-                  <Text size="sm">{userInfo.email}</Text>
-                  <Text size="sm">{userInfo.addressLine1}</Text>
+                  <Text size="lg" weight={600}>
+                    {userInfo.firstName || ''} {userInfo.lastName || ''}  
+                    {userInfo.userNo ? ` (${userInfo.userNo})` : ''}
+                  </Text>
+                  <Text size="sm">{userInfo.phoneNo || ''}</Text>
+                  <Text size="sm">{userInfo.email || ''}</Text>
+                  <Text size="sm">{userInfo.addressLine1 || ''}</Text>
                 </Stack>
               ) : (
                 <Text color="dimmed">User information not available</Text>
@@ -738,10 +858,11 @@ export default function PaymentReport({ info, type }) {
               <Table striped highlightOnHover withBorder>
                 <thead>
                   <tr>
-                    <th style={{ width: '50%' }}>Service Type</th>
-                    <th style={{ width: '15%' }}>Qty/hrs</th>
+                    <th style={{ width: '30%' }}>Service Type</th>
+                    <th style={{ width: '10%' }}>Date</th>
+                    <th style={{ width: '10%' }}>Qty/hrs</th>
                     <th style={{ width: '15%' }}>Rate (Per Hour)</th>
-                    <th style={{ width: '20%', textAlign: 'right' }}>Total</th>
+                    <th style={{ width: '15%', textAlign: 'right' }}>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -749,18 +870,33 @@ export default function PaymentReport({ info, type }) {
                     listData.map((item, index) => (
                       <tr key={index}>
                         <td>
-                          <Text weight={500}>{item.serviceType || '-'}</Text>
+                          <Text weight={500} color={item.recordType === 'Expense' ? 'green' : 'dark'}>
+                            {item.recordType === 'Expense' ? item.expenseType : item.serviceType || '-'}
+                          </Text>
+                        </td>
+                        <td>
+                          <Text size="sm">
+                            {item.date ? new Date(item.date).toLocaleDateString() : '-'}
+                          </Text>
                         </td>
                         <td>{item.qty || '-'}</td>
-                        <td>{formatAmount(item.rate)}</td>
+                        <td>
+                          {item.recordType === 'Expense' ? (
+                            <Text color="dimmed" size="sm">-</Text>
+                          ) : (
+                            formatAmount(item.rate)
+                          )}
+                        </td>
                         <td style={{ textAlign: 'right' }}>
-                          <Text weight={600}>{formatAmount(item.amount)}</Text>
+                          <Text weight={600} color={item.recordType === 'Expense' ? 'green' : 'dark'}>
+                            {formatAmount(item.amount)}
+                          </Text>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={4}>
+                      <td colSpan={5}>
                         <Text align="center" color="dimmed" py="md">
                           No service details available
                         </Text>

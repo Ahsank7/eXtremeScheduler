@@ -63,7 +63,7 @@ const PreviewModal = ({
       opened={opened}
       onClose={onClose}
       title={title}
-      size="xl"
+      size="90%"
       closeButtonProps={{ icon: <IconX size={16} /> }}
     >
       <div style={{ position: 'relative', minHeight: '400px' }}>
@@ -85,14 +85,15 @@ const PreviewModal = ({
               </Button>
             </Group>
 
-            <AppTable
-              thead={columns.map(col => col.label)}
-              currentPage={currentPage}
-              pageSize={pageSize}
-              totalRecords={totalRecords}
-              onPagination={onPageChange}
-              showPagination={false}
-            >
+            <div style={{ overflowX: 'auto', maxHeight: '500px' }}>
+              <AppTable
+                thead={columns.map(col => col.label)}
+                currentPage={currentPage}
+                pageSize={pageSize}
+                totalRecords={totalRecords}
+                onPagination={onPageChange}
+                showPagination={false}
+              >
               {data.map((item, index) => (
                 <tr key={index}>
                   {columns.map(col => (
@@ -102,7 +103,8 @@ const PreviewModal = ({
                   ))}
                 </tr>
               ))}
-            </AppTable>
+              </AppTable>
+            </div>
 
             {totalPages > 1 && (
               <Group position="center" mt="md">

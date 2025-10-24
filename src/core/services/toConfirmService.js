@@ -8,7 +8,12 @@ const CalculateBillingAndWageAmounts = async (servicesTaskIds, organizationId) =
   return await post(`ToConfirm/CalculateBillingAndWageAmounts?servicesTaskIds=${servicesTaskIds}&organizationId=${organizationId}`);
 };
 
+const ConfirmExpenses = async (expenseIds) => {
+  return await post(`ToConfirm/ConfirmExpenses?expenseIds=${expenseIds}`);
+};
+
 export {
   getServicesTasks,
-  CalculateBillingAndWageAmounts
+  CalculateBillingAndWageAmounts,
+  ConfirmExpenses
 };

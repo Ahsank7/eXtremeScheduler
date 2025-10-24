@@ -27,13 +27,17 @@ import {
   AppModal,
   TaskLogModal,
 } from "shared/components";
+import { TaskExpenses } from "shared/components/planboard/TaskExpenses";
+import { AddTaskExpense } from "shared/components/planboard/AddTaskExpense";
 import { notifications } from "@mantine/notifications";
 import { DataTable } from "mantine-datatable";
-import { IconEdit, IconSend, IconTrash, IconDownload, IconCalendar, IconHistory, IconUser, IconUserCheck } from "@tabler/icons";
+import { IconEdit, IconSend, IconTrash, IconDownload, IconCalendar, IconHistory, IconUser, IconUserCheck, IconReceipt, IconPlus } from "@tabler/icons";
 
 const Planboard = () => {
   const { franchiseName } = useParams();
   const navigate = useNavigate();
+  
+  // Components imported successfully
   const [isLoading, setIsLoading] = useState(false);
   const [servicesTasks, setServicesTasks] = useState([]);
   const [clientName, setClientName] = useState("");
@@ -52,6 +56,9 @@ const Planboard = () => {
   const [tableHeight, setTableHeight] = useState(500);
   const [isTaskLogModalOpen, setIsTaskLogModalOpen] = useState(false);
   const [selectedTaskForLog, setSelectedTaskForLog] = useState(null);
+  const [isTaskExpensesModalOpen, setIsTaskExpensesModalOpen] = useState(false);
+  const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
+  const [selectedTaskForExpense, setSelectedTaskForExpense] = useState(null);
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -322,6 +329,24 @@ const Planboard = () => {
     setIsTaskLogModalOpen(true);
   };
 
+  const handleViewTaskExpenses = (selectedRow) => {
+    setSelectedTaskForExpense({
+      taskId: selectedRow.taskId,
+      userId: selectedRow.serviceProviderId, // Assuming service provider is the user
+      taskStatus: selectedRow.taskStatus,
+      isConfirmed: selectedRow.isConfirmed,
+    });
+    setIsTaskExpensesModalOpen(true);
+  };
+
+  const handleAddExpenseToTask = (selectedRow) => {
+    setSelectedTaskForExpense({
+      taskId: selectedRow.taskId,
+      userId: selectedRow.serviceProviderId, // Assuming service provider is the user
+    });
+    setIsAddExpenseModalOpen(true);
+  };
+
   const handleOpenClientProfile = (selectedRow) => {
     if (selectedRow.clientId) {
       navigate(`/franchises/${franchiseName}/profile/${selectedRow.clientId}/1`);
@@ -447,28 +472,44 @@ const Planboard = () => {
           records={servicesTasks}
           noRecordsText={isLoading ? 'Loading Planboard Task...' : 'No tasks found'}
           rowContextMenu={{
-            items: (record) => [
-              {
-                key: "update appointment",
-                icon: <IconEdit size={16} />,
-                onClick: () => handleProfileDetail(record),
-              },
-              {
-                key: "view task log",
-                icon: <IconHistory size={16} />,
-                onClick: () => handleViewTaskLog(record),
-              },
-              {
-                key: "open client profile",
-                icon: <IconUser size={16} />,
-                onClick: () => handleOpenClientProfile(record),
-              },
-              {
-                key: "open service provider profile",
-                icon: <IconUserCheck size={16} />,
-                onClick: () => handleOpenServiceProviderProfile(record),
-              },
-            ],
+            items: (record) => {
+              const isTaskCompletedAndConfirmed = record.taskStatus === 'Completed' && record.isConfirmed;
+              
+              const items = [
+                {
+                  key: "update appointment",
+                  icon: <IconEdit size={16} />,
+                  onClick: () => handleProfileDetail(record),
+                },
+                {
+                  key: "view task log",
+                  icon: <IconHistory size={16} />,
+                  onClick: () => handleViewTaskLog(record),
+                },
+                {
+                  key: "view task expenses",
+                  icon: <IconReceipt size={16} />,
+                  onClick: () => handleViewTaskExpenses(record),
+                },
+                // Only show add expense option if task is not completed and confirmed
+                ...(isTaskCompletedAndConfirmed ? [] : [{
+                  key: "add expense to task",
+                  icon: <IconPlus size={16} />,
+                  onClick: () => handleAddExpenseToTask(record),
+                }]),
+                {
+                  key: "open client profile",
+                  icon: <IconUser size={16} />,
+                  onClick: () => handleOpenClientProfile(record),
+                },
+                {
+                  key: "open service provider profile",
+                  icon: <IconUserCheck size={16} />,
+                  onClick: () => handleOpenServiceProviderProfile(record),
+                },
+              ];
+              return items;
+            },
           }}
           totalRecords={totalRecords}
           recordsPerPage={pageSize}
@@ -608,6 +649,30 @@ const Planboard = () => {
          onClose={() => setIsTaskLogModalOpen(false)}
          taskId={selectedTaskForLog?.id}
          taskTitle={selectedTaskForLog?.title}
+       />
+
+       <TaskExpenses
+         opened={isTaskExpensesModalOpen}
+         onClose={() => setIsTaskExpensesModalOpen(false)}
+         taskId={selectedTaskForExpense?.taskId}
+         userId={selectedTaskForExpense?.userId}
+         organizationId={localStoreService.getOrganizationID()}
+         taskStatus={selectedTaskForExpense?.taskStatus}
+         isConfirmed={selectedTaskForExpense?.isConfirmed}
+       />
+
+       <AddTaskExpense
+         opened={isAddExpenseModalOpen}
+         onClose={() => setIsAddExpenseModalOpen(false)}
+         taskId={selectedTaskForExpense?.taskId}
+         userId={selectedTaskForExpense?.userId}
+         organizationId={localStoreService.getOrganizationID()}
+         onExpenseAdded={() => {
+           // Refresh the expenses modal if it's open
+           if (isTaskExpensesModalOpen) {
+             // This will trigger a refresh when the user opens the expenses modal again
+           }
+         }}
        />
     </>
   );
