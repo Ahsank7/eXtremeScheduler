@@ -148,12 +148,12 @@ const Planboard = () => {
       textAlignment: "left",
       noWrap: true,
     },
-    {
-      accessor: "serviceName",
-      title: "Service Name",
-      textAlignment: "left",
-      noWrap: true,
-    },
+    //{
+    //  accessor: "serviceName",
+    //  title: "Service Name",
+    //  textAlignment: "left",
+    //  noWrap: true,
+    //},
     {
       accessor: "clientUserNo",
       title: "Client UserNo",

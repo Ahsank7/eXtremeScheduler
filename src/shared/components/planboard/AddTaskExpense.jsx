@@ -54,10 +54,31 @@ export function AddTaskExpense({ opened, onClose, taskId, userId, organizationId
   };
 
   const handleSubmit = async () => {
-    if (!formData.type || formData.amount <= 0) {
+    // Validate expense type
+    if (!formData.type) {
       notifications.show({
         title: "Validation Error",
-        message: "Please fill in all required fields",
+        message: "Please select an expense type",
+        color: "red",
+      });
+      return;
+    }
+    
+    // Validate amount
+    if (!formData.amount || formData.amount <= 0) {
+      notifications.show({
+        title: "Validation Error",
+        message: "Please enter a valid amount greater than 0",
+        color: "red",
+      });
+      return;
+    }
+    
+    // Validate date
+    if (!formData.date || isNaN(new Date(formData.date).getTime())) {
+      notifications.show({
+        title: "Validation Error",
+        message: "Please enter a valid date",
         color: "red",
       });
       return;

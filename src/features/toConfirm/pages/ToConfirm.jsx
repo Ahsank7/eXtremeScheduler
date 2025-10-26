@@ -84,14 +84,14 @@ const ToConfirm = () => {
       accessor: "startTime",
       title: "StartTime",
       textAlignment: "left",
-      render: (record) => Moment(record.startTime).format("HH:mm"),
+        render: (record) => Moment(record.startTime).format("h:mm a"),
       noWrap: true,
     },
     {
       accessor: "endTime",
       title: "EndTime",
       textAlignment: "left",
-      render: (record) => Moment(record.endTime).format("HH:mm"),
+        render: (record) => Moment(record.endTime).format("h:mm a"),
       noWrap: true,
     },
     {
@@ -100,16 +100,24 @@ const ToConfirm = () => {
       textAlignment: "left",
       render: (record) => Moment(record.date).format("YYYY-MM-DD"),
       noWrap: true,
-    },
+      },
+     {
+          accessor: "checkInTime",
+          title: "Check In",
+          textAlignment: "left",
+         render: (record) => record.checkInTime ? Moment(record.checkInTime).format("h:mm a") : '-',
+          noWrap: true,
+     },
+     {
+          accessor: "checkOutTime",
+          title: "Check Out",
+          textAlignment: "left",
+         render: (record) => record.checkOutTime ? Moment(record.checkOutTime).format("h:mm a") : '-',
+          noWrap: true,
+     },
     {
       accessor: "serviceType",
       title: "Service Type",
-      textAlignment: "left",
-      noWrap: true,
-    },
-    {
-      accessor: "serviceName",
-      title: "Service Name",
       textAlignment: "left",
       noWrap: true,
     },
@@ -173,20 +181,7 @@ const ToConfirm = () => {
       textAlignment: "left",
       noWrap: true,
     },
-    {
-      accessor: "expenseType",
-      title: "Expense Type",
-      textAlignment: "left",
-      render: (record) => record.recordType === 'Expense' ? record.expenseType : '-',
-      noWrap: true,
-    },
-    {
-      accessor: "expenseAmount",
-      title: "Expense Amount",
-      textAlignment: "left",
-      render: (record) => record.recordType === 'Expense' ? `$${parseFloat(record.expenseAmount || 0).toFixed(2)}` : '-',
-      noWrap: true,
-    },
+
   ];
 
   useEffect(() => {
