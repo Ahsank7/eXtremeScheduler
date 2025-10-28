@@ -64,10 +64,10 @@ export default function PaymentReport({ info, type }) {
         if (organizationId) {
           const orgResponse = await organizationService.getOrganizationById(organizationId);
           console.log("PaymentReport: Organization response", orgResponse);
-          if (orgResponse.isSuccess) {
-            console.log("PaymentReport: Organization data", orgResponse.data);
-            setOrganizationInfo(orgResponse.data);
-            console.log("PaymentReport: Organization info set", orgResponse.data);
+          if (orgResponse) {
+            console.log("PaymentReport: Organization data", orgResponse);
+            setOrganizationInfo(orgResponse);
+            console.log("PaymentReport: Organization info set", orgResponse);
           } else {
             console.log("PaymentReport: Organization fetch failed, using fallback");
             // Set a fallback organization info
@@ -152,10 +152,9 @@ export default function PaymentReport({ info, type }) {
         if (userId) {
           const userResponse = await profileService.getUserByID(userId);
           console.log("PaymentReport: User response", userResponse);
-          console.log("PaymentReport: User response data", userResponse.data);
-          if (userResponse.isSuccess) {
-            setUserInfo(userResponse.data);
-            console.log("PaymentReport: User info set", userResponse.data);
+          if (userResponse) {
+            setUserInfo(userResponse);
+            console.log("PaymentReport: User info set", userResponse);
           } else {
             console.log("PaymentReport: User fetch failed", userResponse);
           }
@@ -620,7 +619,7 @@ export default function PaymentReport({ info, type }) {
                     <td class="item-name">${item.recordType === 'Expense' ? item.expenseType : item.serviceType || 'Service'}</td>
                     <td class="date">${item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
                     <td class="quantity">${item.qty || '1'}</td>
-                    <td class="price">${item.recordType === 'Expense' ? '-' : formatAmount(item.rate)}</td>
+                    <td class="price">${formatAmount(item.rate)}</td>
                     <td class="amount">${formatAmount(item.amount)}</td>
                   </tr>
                 `).join('') : `
@@ -881,11 +880,7 @@ export default function PaymentReport({ info, type }) {
                         </td>
                         <td>{item.qty || '-'}</td>
                         <td>
-                          {item.recordType === 'Expense' ? (
-                            <Text color="dimmed" size="sm">-</Text>
-                          ) : (
-                            formatAmount(item.rate)
-                          )}
+                          {formatAmount(item.rate)}
                         </td>
                         <td style={{ textAlign: 'right' }}>
                           <Text weight={600} color={item.recordType === 'Expense' ? 'green' : 'dark'}>

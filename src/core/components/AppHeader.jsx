@@ -103,7 +103,7 @@ export function AppHeader({ franchiseName }) {
       <Group position="apart" style={{ height: "100%" }}>
         <Group>
           <Burger opened={!isCollapsed} onClick={toggleSidebar} size="sm" />
-          <Logo width={120} />
+          <Logo width={180} />
           {(organizationName && franchiseName && userType == UserType.Staffs) && (
             <Group spacing={4} style={{ marginLeft: "16px" }}>
               {organizationName && (
@@ -232,24 +232,28 @@ export function AppHeader({ franchiseName }) {
 
 export function Logo(props) {
   return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 623 163">
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 45">
       <g fill="none" fillRule="evenodd">
-        <path
-          fill="#1864ab"
-          fillRule="nonzero"
-          d="M162.162 81.5c0-45.011-36.301-81.5-81.08-81.5C36.301 0 0 36.489 0 81.5 0 126.51 36.301 163 81.081 163s81.081-36.49 81.081-81.5z"
-        />
-        <g fill="#FFF">
-          {/* Letter "A" */}
-          <path
-            fillRule="nonzero"
-            d="M 85 60 Q 85 30 115 30 Q 145 30 145 60 Q 145 75 130 85 L 100 110 Q 90 120 90 130 L 145 130 L 145 140 L 85 140 Q 85 120 100 105 L 125 85 Q 135 75 135 60 Q 135 40 115 40 Q 95 40 95 60 Z"
-          />
-          {/* Number "2" */}
-          <path d="M 20 140 L 60 20 L 100 140 L 85 140 L 75 110 L 45 110 L 35 140 Z M 52 95 L 68 95 L 60 70 Z" />
+        {/* Calendar Icon */}
+        <g transform="translate(0, 4)">
+          <rect x="2" y="7" width="32" height="30" rx="3" fill="#3b82f6" stroke="#3b82f6" strokeWidth="1"/>
+          <rect x="2" y="5" width="32" height="7" rx="2" fill="#60a5fa"/>
+          <line x1="9" y1="2" x2="9" y2="9" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="27" y1="2" x2="27" y2="9" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round"/>
+          <g fill="white">
+            <rect x="7" y="16" width="5" height="4" rx="1"/>
+            <rect x="16" y="16" width="5" height="4" rx="1"/>
+            <rect x="25" y="16" width="5" height="4" rx="1"/>
+            <rect x="7" y="24" width="5" height="4" rx="1"/>
+            <rect x="16" y="24" width="5" height="4" rx="1"/>
+            <rect x="25" y="24" width="5" height="4" rx="1"/>
+          </g>
         </g>
-        {/* Text "Scheduler" */}
-        <text x="200" y="100" fill="currentColor" fontSize="85" fontFamily="Arial, sans-serif" fontWeight="bold">
+        {/* Text "CareSync Scheduler" */}
+        <text x="42" y="32" fill="#3b82f6" fontSize="26" fontFamily="Arial, sans-serif" fontWeight="700">
+          CareSync
+        </text>
+        <text x="165" y="32" fill="#6b7280" fontSize="26" fontFamily="Arial, sans-serif" fontWeight="500">
           Scheduler
         </text>
       </g>

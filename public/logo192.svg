@@ -1,5 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
-  <circle cx="96" cy="96" r="96" fill="#2563eb"/>
-  <text x="72" y="132" font-family="Arial, sans-serif" font-size="108" font-weight="bold" fill="white">A</text>
-  <text x="120" y="84" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white">2</text>
-</svg> 
+  <rect x="16" y="48" width="160" height="128" rx="16" fill="#3b82f6"/>
+  <rect x="16" y="36" width="160" height="32" rx="12" fill="#60a5fa"/>
+  <line x1="48" y1="24" x2="48" y2="56" stroke="#3b82f6" strokeWidth="8" strokeLinecap="round"/>
+  <line x1="144" y1="24" x2="144" y2="56" stroke="#3b82f6" strokeWidth="8" strokeLinecap="round"/>
+  <g fill="white">
+    <rect x="36" y="84" width="28" height="24" rx="4"/>
+    <rect x="82" y="84" width="28" height="24" rx="4"/>
+    <rect x="128" y="84" width="28" height="24" rx="4"/>
+    <rect x="36" y="120" width="28" height="24" rx="4"/>
+    <rect x="82" y="120" width="28" height="24" rx="4"/>
+    <rect x="128" y="120" width="28" height="24" rx="4"/>
+    <rect x="36" y="156" width="28" height="12" rx="4"/>
+    <rect x="82" y="156" width="28" height="12" rx="4"/>
+  </g>
+</svg>

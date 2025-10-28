@@ -98,7 +98,7 @@ const Login = () => {
           userType: userType,
           organizationId: organizationId,
           franchiseId: userInfo.FranchiseId || null,
-          ipAddress: systemInfo.ipAddress || 'Unknown',
+          ipAddress: null, // IP address will be captured by the backend
           userAgent: systemInfo.userAgent,
           browserName: systemInfo.browserName,
           browserVersion: systemInfo.browserVersion,
@@ -186,7 +186,7 @@ const Login = () => {
             mt="md"
             mb={50}
           >
-            Welcome back to A2 Scheduler!
+            Welcome back to CareSync!
           </Title>
 
           <TextInput
