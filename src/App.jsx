@@ -16,6 +16,7 @@ import GenerateWage from "features/wage/GenerateWage";
 import { ServiceProviderAttendance } from "features/attendance";
 import StandaloneAttendance from "features/attendance/pages/StandaloneAttendance";
 import { PermissionProvider } from "core/context/PermissionContext";
+import { Reports } from "features/reports";
 
 const App = () => {
   return (
@@ -82,6 +83,10 @@ const App = () => {
           <Route
             path=":franchiseName/transactionDetails"
             element={<Transactions />}
+          />
+          <Route
+            path=":franchiseName/reports"
+            element={<Reports />}
           />
         </Route>
 

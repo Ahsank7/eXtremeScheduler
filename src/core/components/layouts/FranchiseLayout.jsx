@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import { IconNotes, IconDashboard, IconClipboard, IconChecklist, IconUserCheck, IconCashBanknote, IconReceipt, IconUser, IconClock } from "@tabler/icons";
+import { IconNotes, IconDashboard, IconClipboard, IconChecklist, IconUserCheck, IconCashBanknote, IconReceipt, IconUser, IconClock, IconFileText, IconFileInvoice, IconChartBar } from "@tabler/icons";
 import { Layout } from "core/components";
 import { localStoreService } from "core/services";
 import { usePermissions } from "core/context/PermissionContext";
@@ -189,7 +189,9 @@ export const FranchiseLayout = () => {
       {
         id: 8,
         label: "Reports",
-        icon: IconNotes,
+        icon: IconFileText,
+        link: `/franchises/${franchiseName}/reports`,
+        menuId: "reports"
       }
     ];
 
