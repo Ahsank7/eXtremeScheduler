@@ -19,10 +19,39 @@ export const PermissionProvider = ({ children }) => {
 
   const loadUserPermissions = async () => {
     try {
+      // Check if user is logged in first
+      const token = localStoreService.getToken();
+      if (!token) {
+        // No token means user is not logged in, skip permission loading
+        console.log('No token found, skipping permission loading');
+        setPermissions({});
+        setInitialized(true);
+        return;
+      }
+
       setLoading(true);
-      const userId = localStoreService.getUserID();
-      const userType = localStoreService.getUserType();
-      const organizationId = localStoreService.getOrganizationID();
+      
+      // Safely get user info with error handling
+      let userId, userType, organizationId;
+      try {
+        userId = localStoreService.getUserID();
+        userType = localStoreService.getUserType();
+        organizationId = localStoreService.getOrganizationID();
+      } catch (error) {
+        // Token might be invalid or expired
+        console.log('Error decoding token, skipping permission loading:', error);
+        setPermissions({});
+        setInitialized(true);
+        return;
+      }
+      
+      // Validate we have required user info
+      if (!userId || !organizationId) {
+        console.log('Missing user info, skipping permission loading');
+        setPermissions({});
+        setInitialized(true);
+        return;
+      }
       
       console.log('Loading permissions for user:', userId, 'type:', userType, 'org:', organizationId);
       

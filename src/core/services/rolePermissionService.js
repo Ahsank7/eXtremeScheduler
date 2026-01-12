@@ -8,8 +8,21 @@ export const rolePermissionService = {
     },
 
     // Get all menus for role permission management
-    getAllMenus: async () => {
-        return await get('RolePermission/menus');
+    getAllMenus: async (organizationId) => {
+        return await get(`RolePermission/menus/${organizationId}`);
+    },
+
+    // Get all menus for admin (including inactive)
+    getAllMenusForAdmin: async (organizationId) => {
+        return await get(`RolePermission/menus-for-admin/${organizationId}`);
+    },
+
+    // Update menu status (enable/disable)
+    updateMenuStatus: async (menuId, isActive) => {
+        return await post('RolePermission/update-menu-status', {
+            menuId: menuId,
+            isActive: isActive
+        });
     },
 
     // Save role permissions

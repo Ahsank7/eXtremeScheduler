@@ -87,9 +87,10 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
 
   const loadAvailableRoles = async () => {
     try {
-      console.log('Loading available roles for organization:', organizationId);
+      console.log('Loading available roles for assignment for organization:', organizationId);
       setIsLoading(true);
-      const roleResponse = await roleService.getAvailableRoles(organizationId);
+      // Use the new endpoint that filters roles based on current user's role level
+      const roleResponse = await roleService.getAvailableRolesForAssignment(organizationId);
       console.log('Role response:', roleResponse);
       
       // Handle different response structures
@@ -116,16 +117,16 @@ export function RoleManagement({ userId, userType, readOnly = false }) {
       } else {
         console.log('No roles found in response:', roleResponse);
         notifications.show({
-          title: "Error",
-          message: "No roles found",
-          color: "red",
+          title: "Warning",
+          message: "No assignable roles found. You may not have permission to assign roles.",
+          color: "yellow",
         });
       }
     } catch (error) {
       console.error("Failed to fetch roles:", error);
       notifications.show({
         title: "Error",
-        message: "Failed to load available roles",
+        message: "Failed to load available roles. You may not have permission to assign roles.",
         color: "red",
       });
     } finally {

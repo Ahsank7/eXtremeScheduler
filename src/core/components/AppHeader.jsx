@@ -21,6 +21,7 @@ import { ChangePassword } from "shared/components/user/ChangePassword";
 import { AppTable, AppModal } from "shared/components";
 import React, { useState, useEffect } from "react";
 import { UserType } from "core/enum";
+import { NotificationBell } from "./NotificationBell";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -148,6 +149,8 @@ export function AppHeader({ franchiseName }) {
         </Group>
 
         <Group className={classes.headerMenu}>
+          <NotificationBell theme={theme} />
+          
           <Tooltip label={colorScheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
             <ActionIcon
               variant="outline"

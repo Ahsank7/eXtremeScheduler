@@ -89,7 +89,7 @@ const RolePermissionManagement = ({ organizationId }) => {
   const loadMenus = async () => {
     setLoading(true);
     try {
-      const response = await rolePermissionService.getAllMenus();
+      const response = await rolePermissionService.getAllMenus(organizationId);
       console.log('Menu response:', response);
       
       if (response && Array.isArray(response)) {

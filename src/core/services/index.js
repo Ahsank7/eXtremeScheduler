@@ -3,6 +3,7 @@ export * as franchiseService from "./franchiseService";
 export * as localStoreService from "./localStoreService";
 export * as organizationService from "./organizationService";
 export * as organizationBillingSettingsService from "./organizationBillingSettingsService";
+export { packageService } from "./packageService";
 export * as planboardService from "./planboardService";
 export * as profileService from "./profileService";
 export * as toConfirmService from "./toConfirmService";
@@ -26,6 +27,8 @@ export * as billingService from "./billingService";
 export * as wageService from "./wageService";
 export { rolePermissionService } from './rolePermissionService';
 export * as roleService from './roleService';
+export { landingService } from './landingService';
+export { default as notificationService } from './notificationService';
 
 // Export utility functions
 export * from '../utils/responseHandler';

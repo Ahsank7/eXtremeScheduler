@@ -5,6 +5,11 @@ const getAvailableRoles = async (organizationId = null) => {
     return await get(`Role/available${params}`);
 };
 
+const getAvailableRolesForAssignment = async (organizationId = null) => {
+    const params = organizationId ? `?organizationId=${organizationId}` : '';
+    return await get(`Role/available-for-assignment${params}`);
+};
+
 const getRoleById = async (roleId) => {
     return await get(`Role/${roleId}`);
 };
@@ -32,6 +37,7 @@ const assignRoleToUser = async (userId, roleId, createdBy = null) => {
 
 const roleService = {
     getAvailableRoles,
+    getAvailableRolesForAssignment,
     getRoleById,
     createRole,
     updateRole,
@@ -42,6 +48,7 @@ const roleService = {
 export default roleService;
 export {
     getAvailableRoles,
+    getAvailableRolesForAssignment,
     getRoleById,
     createRole,
     updateRole,

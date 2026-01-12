@@ -2,11 +2,19 @@ import { get, post } from "./httpService";
 
 let organizations = [];
 
-const getOrganizationList = async (userID) => {
-  if (organizations.length > 0) return organizations;
+const getOrganizationList = async (userID, forceRefresh = false) => {
+  if (organizations.length > 0 && !forceRefresh) return organizations;
 
   organizations = await get(`Organization/List/${userID}`);
   return organizations;
+};
+
+const clearOrganizationCache = () => {
+  organizations = [];
+};
+
+const getAllOrganizations = async () => {
+  return await get(`Organization/All`);
 };
 
 const getOrganizationByOrganizationName = async (orgName, userID) => {
@@ -56,9 +64,11 @@ const getCurrencySign = async (organizationId) => {
 
 export {
   getOrganizationList,
+  getAllOrganizations,
   getOrganizationByOrganizationName,
   getOrganizationByOrganizationID,
   getOrganizationById,
   saveUpdateOrganization,
-  getCurrencySign
+  getCurrencySign,
+  clearOrganizationCache
 };

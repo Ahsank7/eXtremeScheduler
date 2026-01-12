@@ -15,8 +15,10 @@ import GenerateBilling from "features/billing/GenerateBilling";
 import GenerateWage from "features/wage/GenerateWage";
 import { ServiceProviderAttendance } from "features/attendance";
 import StandaloneAttendance from "features/attendance/pages/StandaloneAttendance";
+import { StandaloneAdminPortal } from "features/admin";
 import { PermissionProvider } from "core/context/PermissionContext";
 import { Reports } from "features/reports";
+import { LandingPage } from "features/landing";
 
 const App = () => {
   return (
@@ -90,9 +92,11 @@ const App = () => {
           />
         </Route>
 
+        <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/attendance" element={<StandaloneAttendance />} />
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/admin" element={<StandaloneAdminPortal />} />
+        <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
       </div>
     </PermissionProvider>
