@@ -457,8 +457,8 @@ const LandingPage = () => {
                     </ThemeIcon>
                     <Stack spacing={0}>
                       <Text fw={600}>Email</Text>
-                      <Anchor href="mailto:support@CareSync.com" c="blue">
-                        support@CareSync.com
+                      <Anchor href="mailto:asproducts123@hotmail.com" c="blue">
+                       asproducts123@hotmail.com
                       </Anchor>
                     </Stack>
                   </Group>
