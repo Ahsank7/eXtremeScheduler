@@ -75,7 +75,9 @@ export function Schedule({ userId, organizationId, userType, readOnly = false })
                         ? "#228be6"
                         : task.taskStatus === "Cancelled"
                           ? "#fab005"
-                          : "#ffa447", // Default color for demonstration
+                          : task.taskStatus === "Unassigned"
+                            ? "#B8956A" // Light brown for unassigned tasks
+                            : "#ffa447", // Default color for demonstration
               isAllDay: false,
             };
           });
@@ -268,6 +270,16 @@ export function Schedule({ userId, organizationId, userType, readOnly = false })
             cursor: "default",
             userSelect: "none"
           }}>Delay</div>
+        </Tooltip>
+        <Tooltip label="Unassigned">
+          <div style={{ 
+            backgroundColor: "#B8956A", 
+            color: "white", 
+            padding: "8px 16px", 
+            borderRadius: "4px", 
+            cursor: "default",
+            userSelect: "none"
+          }}>Unassigned</div>
         </Tooltip>
       </Group>
     </Container>

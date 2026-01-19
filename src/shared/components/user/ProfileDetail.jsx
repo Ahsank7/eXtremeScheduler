@@ -25,6 +25,7 @@ import { ServiceProviderContractInfo } from "shared/components/user/ServiceProvi
 import { Payments } from "shared/components/user/Payments";
 import { Transactions } from "shared/components/user/Transactions";
 import { RoleManagement } from "shared/components/user/RoleManagement";
+import { FranchiseAssignment } from "shared/components/user/FranchiseAssignment";
 import { useState, useEffect } from "react";
 import { localStoreService, profileService, documentService, authenticationService } from "core/services";
 import { useParams } from "react-router-dom";
@@ -221,7 +222,7 @@ export const ProfileDetail = () => {
         "Schedule",
         "Address",
         "Contact",
-        "Leave",
+        "Off Service",
         "Document",
         "Credentials",
         "Credit/Debit Card",
@@ -248,7 +249,7 @@ export const ProfileDetail = () => {
       ];
       
     } else if (userType == UserType.Staffs) {
-      tabs = ["Profile", "Role Management", "Address", "Contact", "Leave", "Document", "Credentials"];
+      tabs = ["Profile", "Role Management", "Franchise Assignment", "Address", "Contact", "Leave", "Document", "Credentials"];
       
  
     } else {
@@ -319,6 +320,15 @@ export const ProfileDetail = () => {
             />
           </Tabs.Panel>
         );
+      case "Franchise Assignment":
+        return (
+          <Tabs.Panel value="Franchise Assignment" className={classes.panel}>
+            <FranchiseAssignment
+              userId={userID}
+              readOnly={readOnly}
+            />
+          </Tabs.Panel>
+        );
       case "Schedule":
         return (
           <Tabs.Panel value="Schedule" className={classes.panel}>
@@ -345,7 +355,13 @@ export const ProfileDetail = () => {
       case "Leave":
         return (
           <Tabs.Panel value="Leave" className={classes.panel}>
-            <Leave userId={userID} organizationId={organizationId} readOnly={readOnly} />
+            <Leave userId={userID} organizationId={organizationId} userType={numericUserType} readOnly={readOnly} />
+          </Tabs.Panel>
+        );
+      case "Off Service":
+        return (
+          <Tabs.Panel value="Off Service" className={classes.panel}>
+            <Leave userId={userID} organizationId={organizationId} userType={numericUserType} readOnly={readOnly} />
           </Tabs.Panel>
         );
       case "Document":

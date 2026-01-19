@@ -9,12 +9,16 @@ import { AppConfirmationModal } from "shared/components/modal/AppConfirmationMod
 import { IconPlus, IconEdit, IconTrash } from "@tabler/icons";
 import Moment from "moment";
 
-export function Leave({ userId, organizationId }) {
+export function Leave({ userId, organizationId, userType }) {
   const [Leave, setLeave] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [currentRowId, setCurrentRowId] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Determine if this is a client (userType 1 = Client)
+  const isClient = userType === 1;
+  const leaveLabel = isClient ? "Off Service" : "Leave";
 
   const tableColumns = [
     "SrNo",
@@ -66,7 +70,7 @@ export function Leave({ userId, organizationId }) {
       await leaveService.deleteLeaveItem(currentRowId);
       notifications.show({
         title: "Success",
-        message: "Leave item deleted successfully",
+        message: `${leaveLabel} item deleted successfully`,
         color: "green",
       });
       fetchLeave();
@@ -145,13 +149,14 @@ export function Leave({ userId, organizationId }) {
       <AppModal
         opened={isModalOpen}
         onClose={closeModal}
-        title={currentRowId ? "Edit Leave" : "Add Leave"}
+        title={currentRowId ? `Edit ${leaveLabel}` : `Add ${leaveLabel}`}
       >
         <AddUpdateUserLeave
           userId={userId}
           id={currentRowId}
           onModalClose={closeModal}
           organizationId={organizationId}
+          userType={userType}
         />
       </AppModal>
 
@@ -163,7 +168,7 @@ export function Leave({ userId, organizationId }) {
         }}
         title="Confirm Deletion"
       >
-        Are you sure you want to delete this Leave item?
+        Are you sure you want to delete this {leaveLabel} item?
       </AppConfirmationModal>
     </>
   );

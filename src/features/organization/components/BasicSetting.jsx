@@ -293,10 +293,10 @@ const BasicSetting = ({ organization }) => {
         <Divider my="lg" label="Financial Info" labelPosition="center" />
         <Grid gutter="md">
           <Grid.Col xs={12} md={6}>
-            <NumberInput label="Default Billing Rate" {...form.getInputProps('DefaultBillingRate')} mb="sm" min={0} />
+            <NumberInput label="Default Billing Rate (Per Hour)" {...form.getInputProps('DefaultBillingRate')} mb="sm" min={0} />
           </Grid.Col>
           <Grid.Col xs={12} md={6}>
-            <NumberInput label="Default Wage Rate" {...form.getInputProps('DefaultWageRate')} mb="sm" min={0} />
+            <NumberInput label="Default Wage Rate (Per Hour)" {...form.getInputProps('DefaultWageRate')} mb="sm" min={0} />
           </Grid.Col>
           <Grid.Col xs={12} md={6}>
             <Select

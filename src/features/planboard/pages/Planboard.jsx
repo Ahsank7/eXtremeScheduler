@@ -27,6 +27,7 @@ import {
   AppModal,
   TaskLogModal,
 } from "shared/components";
+import { useFranchise } from "core/context/FranchiseContext";
 import { TaskExpenses } from "shared/components/planboard/TaskExpenses";
 import { AddTaskExpense } from "shared/components/planboard/AddTaskExpense";
 import { notifications } from "@mantine/notifications";
@@ -35,6 +36,7 @@ import { IconEdit, IconSend, IconTrash, IconDownload, IconCalendar, IconHistory,
 
 const Planboard = () => {
   const { franchiseName } = useParams();
+  const { franchiseId, loading: franchiseLoading } = useFranchise();
   const navigate = useNavigate();
   
   // Components imported successfully
@@ -68,12 +70,6 @@ const Planboard = () => {
     {
       accessor: "taskId",
       title: "TaskId",
-      textAlignment: "left",
-      noWrap: true,
-    },
-    {
-      accessor: "scheduleId",
-      title: "ScheduleId",
       textAlignment: "left",
       noWrap: true,
     },
@@ -137,9 +133,13 @@ const Planboard = () => {
                   ? {
                     background: "#fab005",
                   }
-                  : {
-                    background: "lightOrange",
-                  },
+                  : row.taskStatus === "Unassigned"
+                    ? {
+                      background: "#B8956A", // Light brown for unassigned tasks
+                    }
+                    : {
+                      background: "lightOrange",
+                    },
       noWrap: true,
     },
     {
@@ -224,8 +224,10 @@ const Planboard = () => {
   ];
 
   useEffect(() => {
-    getServicesTasks();
-  }, [pageNumber]);
+    if (franchiseId && !franchiseLoading) {
+      getServicesTasks();
+    }
+  }, [pageNumber, franchiseId, franchiseLoading]);
 
   useEffect(() => {
     const calculateTableHeight = () => {
@@ -257,7 +259,7 @@ const Planboard = () => {
     obj.clientName = clientName;
     obj.serviceProviderUserNo = serviceProviderUserNo;
     obj.serviceProviderName = serviceProviderName;
-    obj.franchiseId = localStoreService.getFranchiseID();
+    obj.franchiseId = franchiseId; // Use franchise ID from context
     obj.pageNumber = pageNumber;
     obj.pageSize = pageSize;
 
@@ -378,7 +380,6 @@ const Planboard = () => {
     const excelData = servicesTasks.map((record, index) => ({
       'Sr No': index + 1,
       'Task ID': record.taskId || '-',
-      'Schedule ID': record.scheduleId || '-',
       'Start Time': record.startTime ? Moment(record.startTime).format("h:mm a") : '-',
       'End Time': record.endTime ? Moment(record.endTime).format("h:mm a") : '-',
       'Date': record.date ? Moment(record.date).format("YYYY-MM-DD") : '-',
@@ -626,6 +627,9 @@ const Planboard = () => {
         </Tooltip>
         <Tooltip label="Delay">
           <Button color="red">Delay</Button>
+        </Tooltip>
+        <Tooltip label="Unassigned">
+          <Button style={{ backgroundColor: "#B8956A" }}>Unassigned</Button>
         </Tooltip>
       </Group>
              <AppModal

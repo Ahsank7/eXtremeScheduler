@@ -1,17 +1,21 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {  AppModal, AppDrawer, AppContainer } from "shared/components";
-import { Button, TextInput, LoadingOverlay, Badge, Group, Text, Card, Stack, Menu, Paper } from "@mantine/core";
+import { Button, TextInput, LoadingOverlay, Badge, Group, Text, Card, Stack, Menu, Paper, Textarea, Modal } from "@mantine/core";
 import { localStoreService, profileService, organizationService } from "core/services";
+import { manualMarkAsPaid } from "core/services/paymentService";
 import { helperFunctions } from "shared/utils";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEye, IconFilter, IconRefresh, IconDownload, IconFileText, IconReceipt } from '@tabler/icons';
+import { IconEye, IconFilter, IconRefresh, IconDownload, IconFileText, IconReceipt, IconCheck } from '@tabler/icons';
 import Moment from 'moment';
 import PaymentReport from "./PaymentReport";
 import { DataTable } from "mantine-datatable";
 import { Transactions } from "./Transactions";
+import { showNotification } from '@mantine/notifications';
+import { useFranchise } from "core/context/FranchiseContext";
 
 export function Payments({ userId, type, readOnly = false }) {
   //  type Billing Wage
+  const { franchiseId: currentFranchiseId, loading: franchiseLoading } = useFranchise();
   const [userNo, setUserNo] = useState("");
   const [date, setDate] = useState(null);
   const [transactionId, setTransactionId] = useState("");
@@ -25,6 +29,10 @@ export function Payments({ userId, type, readOnly = false }) {
   const [totalRecords, setTotalRecords] = useState(0);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currencySign, setCurrencySign] = useState('$');
+  const [manualPaymentModalOpened, setManualPaymentModalOpened] = useState(false);
+  const [selectedPaymentForManual, setSelectedPaymentForManual] = useState(null);
+  const [manualPaymentReason, setManualPaymentReason] = useState('');
+  const [isMarkingPaid, setIsMarkingPaid] = useState(false);
 
   const pageSize = 25;
   const tableColumns = [
@@ -149,13 +157,11 @@ export function Payments({ userId, type, readOnly = false }) {
 
   const fetchPayments = useCallback(async () => {
     const getPayments = async () => {
-      // Get franchise ID dynamically
-      const franchise = localStoreService.getFranchiseID();
+      // Get franchise ID from context (currently selected franchise)
+      const franchise = currentFranchiseId || localStoreService.getFranchiseID();
       
-      if (!franchise) {
-        console.error('Franchise ID not available');
-        setPayments([]);
-        setTotalRecords(0);
+      if (!franchise || franchiseLoading) {
+        console.error('Franchise ID not available or still loading');
         return;
       }
 
@@ -226,7 +232,7 @@ export function Payments({ userId, type, readOnly = false }) {
     };
 
     getPayments();
-  }, [userId, type, userNo, date, transactionId, pageNumber, pageSize]);
+  }, [userId, type, userNo, date, transactionId, pageNumber, pageSize, currentFranchiseId, franchiseLoading]);
 
   const handleFilter = async () => {
     close();
@@ -331,6 +337,64 @@ export function Payments({ userId, type, readOnly = false }) {
     document.body.removeChild(link);
   };
 
+  const handleManualMarkAsPaid = (record) => {
+    setSelectedPaymentForManual(record);
+    setManualPaymentReason('');
+    setManualPaymentModalOpened(true);
+  };
+
+  const handleConfirmManualPayment = async () => {
+    if (!manualPaymentReason.trim()) {
+      showNotification({
+        title: 'Error',
+        message: 'Please provide a reason for manual payment',
+        color: 'red',
+      });
+      return;
+    }
+
+    setIsMarkingPaid(true);
+    try {
+      const paymentType = type === "billing" ? "INVOICE" : "WAGE";
+      const response = await manualMarkAsPaid({
+        paymentType: paymentType,
+        paymentId: selectedPaymentForManual.id,
+        reason: manualPaymentReason,
+        paymentDate: new Date().toISOString(),
+      });
+
+      console.log('Manual payment response:', response);
+
+      // handleApiResponse returns the data directly, so check response.success
+      if (response?.success) {
+        showNotification({
+          title: 'Success',
+          message: response?.message || `${type === "billing" ? "Invoice" : "Wage"} has been marked as paid successfully`,
+          color: 'green',
+        });
+        
+        // Close modal first
+        setManualPaymentModalOpened(false);
+        setSelectedPaymentForManual(null);
+        setManualPaymentReason('');
+        
+        // Refresh the payment list
+        await fetchPayments();
+      } else {
+        throw new Error(response?.message || 'Failed to mark payment as paid');
+      }
+    } catch (error) {
+      console.error('Error marking payment as paid:', error);
+      showNotification({
+        title: 'Error',
+        message: error?.message || 'Failed to mark payment as paid',
+        color: 'red',
+      });
+    } finally {
+      setIsMarkingPaid(false);
+    }
+  };
+
 
 
   useEffect(() => {
@@ -411,6 +475,23 @@ export function Payments({ userId, type, readOnly = false }) {
           page={pageNumber}
           onPageChange={(p) => handlePagination(p)}
           paginationSize="lg"
+          rowContextMenu={{
+            items: (record) => {
+              const items = [];
+              
+              // Only show "Mark as Paid" for unpaid records
+              if (!record.isPaid && !readOnly) {
+                items.push({
+                  key: 'mark-paid',
+                  icon: <IconCheck size={16} />,
+                  title: `Mark ${type === "billing" ? "Invoice" : "Wage"} as Paid`,
+                  onClick: () => handleManualMarkAsPaid(record),
+                });
+              }
+              
+              return items;
+            },
+          }}
         />
         
       </AppContainer>
@@ -468,6 +549,87 @@ export function Payments({ userId, type, readOnly = false }) {
           type={type}
         />
       </AppModal>
+
+      <Modal
+        opened={manualPaymentModalOpened}
+        onClose={() => {
+          setManualPaymentModalOpened(false);
+          setSelectedPaymentForManual(null);
+          setManualPaymentReason('');
+        }}
+        title={`Mark ${type === "billing" ? "Invoice" : "Wage"} as Paid`}
+        size="md"
+      >
+        <Stack spacing="md">
+          <Text size="sm" color="dimmed">
+            You are about to manually mark {type === "billing" ? "invoice" : "wage"} #{selectedPaymentForManual?.id} as paid.
+          </Text>
+          
+          {selectedPaymentForManual && (
+            <Card withBorder padding="sm">
+              <Stack spacing="xs">
+                <Group position="apart">
+                  <Text size="sm" weight={500}>
+                    {type === "billing" ? "Invoice ID:" : "Payroll ID:"}
+                  </Text>
+                  <Text size="sm" color="blue" weight={600}>
+                    #{selectedPaymentForManual.id}
+                  </Text>
+                </Group>
+                <Group position="apart">
+                  <Text size="sm" weight={500}>
+                    {type === "billing" ? "Client:" : "Service Provider:"}
+                  </Text>
+                  <Text size="sm">
+                    {type === "billing" 
+                      ? selectedPaymentForManual.clientName 
+                      : selectedPaymentForManual.serviceProviderName}
+                  </Text>
+                </Group>
+                <Group position="apart">
+                  <Text size="sm" weight={500}>Amount:</Text>
+                  <Text size="sm" weight={600} color="green">
+                    {formatAmount(selectedPaymentForManual.totalAmount)}
+                  </Text>
+                </Group>
+              </Stack>
+            </Card>
+          )}
+
+          <Textarea
+            label="Reason for Manual Payment"
+            placeholder="Enter the reason why this payment is being marked as paid manually (e.g., 'Paid via check', 'Cash payment received', 'Bank transfer completed')"
+            required
+            minRows={4}
+            value={manualPaymentReason}
+            onChange={(e) => setManualPaymentReason(e.target.value)}
+            disabled={isMarkingPaid}
+          />
+
+          <Group position="right" mt="md">
+            <Button
+              variant="subtle"
+              onClick={() => {
+                setManualPaymentModalOpened(false);
+                setSelectedPaymentForManual(null);
+                setManualPaymentReason('');
+              }}
+              disabled={isMarkingPaid}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="green"
+              leftIcon={<IconCheck size={16} />}
+              onClick={handleConfirmManualPayment}
+              loading={isMarkingPaid}
+              disabled={!manualPaymentReason.trim()}
+            >
+              Mark as Paid
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </>
   );
 }

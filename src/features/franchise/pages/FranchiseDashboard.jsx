@@ -32,6 +32,7 @@ import { franchiseDashboardService } from "core/services/franchiseDashboardServi
 import { localStoreService } from "core/services";
 import { useParams } from "react-router-dom";
 import { usePermissions } from "core/context/PermissionContext";
+import { useFranchise } from "core/context/FranchiseContext";
 
 // Chart.js imports
 import { Line, Bar, Pie, Doughnut } from "react-chartjs-2";
@@ -62,6 +63,7 @@ Chart.register(
 
 const FranchiseDashboard = () => {
   const { franchiseName } = useParams();
+  const { franchiseId, loading: franchiseLoading } = useFranchise();
   const { loading: permissionsLoading, initialized } = usePermissions();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -72,28 +74,13 @@ const FranchiseDashboard = () => {
   });
 
   const fetchDashboardData = async () => {
+    if (!franchiseId || franchiseLoading) {
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-      
-      // Check if user is authenticated
-      const userId = localStoreService.getUserID();
-      if (!userId) {
-        setError("User not authenticated. Please log in again.");
-        setLoading(false);
-        return;
-      }
-      
-      // Get franchise ID from local storage or use organization ID as fallback
-      let franchiseId = localStoreService.getFranchiseID();
-      if (!franchiseId) {
-        franchiseId = localStoreService.getOrganizationID();
-        if (!franchiseId) {
-          setError("No franchise or organization ID found. Please log in again.");
-          setLoading(false);
-          return;
-        }
-      }
       
       console.log('Fetching dashboard data for franchise:', franchiseId);
       console.log('Date range:', filters.startDate, 'to', filters.endDate);
@@ -134,10 +121,10 @@ const FranchiseDashboard = () => {
   };
 
   useEffect(() => {
-    if (!permissionsLoading && initialized) {
+    if (!permissionsLoading && initialized && franchiseId && !franchiseLoading) {
       fetchDashboardData();
     }
-  }, [filters, permissionsLoading, initialized]);
+  }, [filters, permissionsLoading, initialized, franchiseId, franchiseLoading]);
 
   const handleRefresh = () => {
     fetchDashboardData();

@@ -18,8 +18,10 @@ import { localStoreService, profileService, organizationService } from 'core/ser
 import { helperFunctions } from 'shared/utils';
 import Moment from 'moment';
 import ReportLayout from './ReportLayout';
+import { useFranchise } from 'core/context/FranchiseContext';
 
 export default function BillingReport({ config }) {
+  const { franchiseId: currentFranchiseId, loading: franchiseLoading } = useFranchise();
   const [startDate, setStartDate] = useState(Moment(new Date(new Date().getFullYear(), new Date().getMonth(), 1)).format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(Moment(new Date()).format('YYYY-MM-DD'));
   const [selectedClient, setSelectedClient] = useState(null);
@@ -46,10 +48,14 @@ export default function BillingReport({ config }) {
   };
 
   const fetchBillingData = useCallback(async () => {
+    const franchise = currentFranchiseId || localStoreService.getFranchiseID();
+    
+    if (!franchise || franchiseLoading) {
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      const franchise = localStoreService.getFranchiseID();
-      
       const request = {
         userId: selectedClient || null,
         userNo: null,

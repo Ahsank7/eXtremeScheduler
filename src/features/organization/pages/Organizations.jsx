@@ -54,7 +54,7 @@ const Organizations = () => {
     <>
       <AppContainer
         title={org?.label}
-        button={<Button onClick={open}>Create Franchise</Button>}
+        // button={<Button onClick={open}>Create Franchise</Button>} // Hidden as per requirement
         showDivider="true"
         margionTop="2rem"
       >

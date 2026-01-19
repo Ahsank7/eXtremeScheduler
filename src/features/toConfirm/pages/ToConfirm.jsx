@@ -13,9 +13,11 @@ import { localStoreService, toConfirmService } from "core/services";
 import { DataTable } from "mantine-datatable";
 import { IconEdit, IconSend, IconTrash, IconDownload, IconCalendar, IconUser, IconUserCheck, IconReceipt, IconClipboard } from "@tabler/icons";
 import { notifications } from "@mantine/notifications";
+import { useFranchise } from "core/context/FranchiseContext";
 
 const ToConfirm = () => {
   const { franchiseName } = useParams();
+  const { franchiseId, loading: franchiseLoading } = useFranchise();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [clientName, setClientName] = useState("");
@@ -71,12 +73,6 @@ const ToConfirm = () => {
     {
       accessor: "taskId",
       title: "TaskId",
-      textAlignment: "left",
-      noWrap: true,
-    },
-    {
-      accessor: "scheduleId",
-      title: "ScheduleId",
       textAlignment: "left",
       noWrap: true,
     },
@@ -185,8 +181,10 @@ const ToConfirm = () => {
   ];
 
   useEffect(() => {
-    getServicesTasks();
-  }, [pageNumber]);
+    if (franchiseId && !franchiseLoading) {
+      getServicesTasks();
+    }
+  }, [pageNumber, franchiseId, franchiseLoading]);
 
   const getServicesTasks = async () => {
     const obj = {};
@@ -198,7 +196,7 @@ const ToConfirm = () => {
     obj.clientName = clientName;
     obj.serviceProviderUserNo = serviceProviderUserNo;
     obj.serviceProviderName = serviceProviderName;
-    obj.franchiseId = localStoreService.getFranchiseID();
+    obj.franchiseId = franchiseId; // Use franchise ID from context
     obj.pageNumber = pageNumber;
     obj.pageSize = pageSize;
 

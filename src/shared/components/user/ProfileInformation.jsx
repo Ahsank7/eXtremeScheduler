@@ -26,6 +26,7 @@ import { calculateAge } from "shared/utils/ageUtils";
 import { AppConfirmationModal } from "shared/components/modal/AppConfirmationModal";
 import { UserStatusAction, UserType } from "core/enum";
 import { AppDivider } from "../AppDivider";
+import { useFranchise } from "core/context/FranchiseContext";
 
 const schema = zod.object({
   id: zod.string().nullable(),
@@ -62,6 +63,7 @@ const schema = zod.object({
 });
 
 export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly = false }) {
+  const { franchiseId: currentFranchiseId, loading: franchiseLoading } = useFranchise();
   const [genderOptions, setGenderOptions] = useState([]);
   const [ethnicityOptions, setEthnicityOptions] = useState([]);
   const [nationalityOptions, setNationalityOptions] = useState([]);
@@ -113,10 +115,17 @@ export function ProfileInformation({ id, userType, onProfileDataUpdate, readOnly
       titleId: 0,
       genderId: 0,
       nationalityID: 0,
-      franchiseId: localStoreService.getFranchiseID(),
+      franchiseId: currentFranchiseId || localStoreService.getFranchiseID(), // Use current franchise from context
     },
     validateInputOnBlur: true,
   });
+
+  // Update franchiseId when currentFranchiseId changes
+  useEffect(() => {
+    if (currentFranchiseId && !isValidUserID) {
+      form.setFieldValue('franchiseId', currentFranchiseId);
+    }
+  }, [currentFranchiseId, isValidUserID]);
 
   useEffect(() => {
     const fetchLookupData = async () => {

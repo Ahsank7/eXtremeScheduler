@@ -227,8 +227,8 @@ const AddOrganization = ({ onModalClose }) => {
 
         <Grid.Col span={12} md={6}>
           <NumberInput
-            label="Default Billing Rate"
-            placeholder="Enter default billing rate"
+            label="Default Billing Rate (Per Hour)"
+            placeholder="Enter default billing rate per hour"
             size="md"
             min={0}
             {...form.getInputProps("DefaultBillingRate")}
@@ -237,8 +237,8 @@ const AddOrganization = ({ onModalClose }) => {
 
         <Grid.Col span={12} md={6}>
           <NumberInput
-            label="Default Wage Rate"
-            placeholder="Enter default wage rate"
+            label="Default Wage Rate (Per Hour)"
+            placeholder="Enter default wage rate per hour"
             size="md"
             min={0}
             {...form.getInputProps("DefaultWageRate")}

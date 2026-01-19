@@ -8,8 +8,10 @@ import { helperFunctions } from "shared/utils";
 import { UserType } from "core/enum";
 import { DataTable } from "mantine-datatable";
 import { IconEdit, IconSend, IconTrash } from "@tabler/icons";
+import { useFranchise } from "core/context/FranchiseContext";
 
 const Users = ({ userTypeID }) => {
+  const { franchiseId, loading: franchiseLoading } = useFranchise();
   const [isLoading, setIsLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -151,13 +153,20 @@ const Users = ({ userTypeID }) => {
   ];
 
   useEffect(() => {
-    getUsers();
-  }, [pageNumber, userTypeID]);
+    if (franchiseId && !franchiseLoading) {
+      getUsers();
+    }
+  }, [pageNumber, userTypeID, franchiseId, franchiseLoading]);
 
   const getUsers = async () => {
+    if (!franchiseId) {
+      console.error('Franchise ID not available');
+      return;
+    }
+
     const obj = {};
 
-    obj.franchiseId = localStoreService.getFranchiseID();
+    obj.franchiseId = franchiseId; // Use franchise ID from context
     obj.firstName = firstName;
     obj.lastName = lastName;
     obj.phoneNumber = phoneNumber;

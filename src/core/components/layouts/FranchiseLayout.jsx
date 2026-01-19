@@ -4,6 +4,7 @@ import { IconNotes, IconDashboard, IconClipboard, IconChecklist, IconUserCheck, 
 import { Layout } from "core/components";
 import { localStoreService } from "core/services";
 import { usePermissions } from "core/context/PermissionContext";
+import { FranchiseProvider } from "core/context/FranchiseContext";
 
 export const FranchiseLayout = () => {
   const [franchisesSidebarMenu, setFranchisesSidebarMenu] = useState([]);
@@ -305,7 +306,9 @@ export const FranchiseLayout = () => {
       onSidebarMenu={handleFranchiseSidebarMenu}
       franchiseName={franchiseName}
     >
-      <Outlet context={{ selectedMenu }} />
+      <FranchiseProvider>
+        <Outlet context={{ selectedMenu }} />
+      </FranchiseProvider>
     </Layout>
   );
 };

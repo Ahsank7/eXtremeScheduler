@@ -17,8 +17,10 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { profileService, localStoreService, servicesService, scheduleService } from "core/services";
+import { useFranchise } from "core/context/FranchiseContext";
 
 const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
+  const { franchiseId: currentFranchiseId, loading: franchiseLoading } = useFranchise();
   const [serviceProviders, setServiceProviders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -161,12 +163,12 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
 
   const loadServiceProviders = async (page = 1, append = false, startDateTime, endDateTime, timezone) => {
     if (!startDateTime || !endDateTime) return;
+    if (!currentFranchiseId) return; // Wait for franchise ID to be available
 
     setLoading(true);
     try {
-      const franchiseId = localStoreService.getFranchiseID();
       const request = {
-        FranchiseId: franchiseId, // Use franchiseId instead of organizationId
+        FranchiseId: currentFranchiseId, // Use current franchise from context
         StartDateTime: startDateTime.toISOString(),
         EndDateTime: endDateTime.toISOString(),
         SearchText: '',

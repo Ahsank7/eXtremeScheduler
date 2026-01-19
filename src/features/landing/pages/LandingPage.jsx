@@ -19,7 +19,24 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconCalendar, IconUsers, IconChartBar, IconPhone, IconMail, IconCheck } from "@tabler/icons";
+import { 
+  IconCalendar, 
+  IconUsers, 
+  IconChartBar, 
+  IconPhone, 
+  IconMail, 
+  IconCheck,
+  IconDashboard,
+  IconCreditCard,
+  IconCash,
+  IconReportAnalytics,
+  IconFileInvoice,
+  IconClipboardCheck,
+  IconBell,
+  IconSettings,
+  IconClock,
+  IconMapPin,
+} from "@tabler/icons";
 import { packageService, landingService } from "core/services";
 import { useNavigate } from "react-router-dom";
 
@@ -153,7 +170,7 @@ const LandingPage = () => {
 
   return (
     <Box>
-      {/* Header with Login Button */}
+      {/* Enhanced Navigation Header */}
       <Box
         style={{
           position: "sticky",
@@ -162,119 +179,489 @@ const LandingPage = () => {
           backgroundColor: "white",
           borderBottom: "1px solid #e9ecef",
           padding: "1rem 0",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
         }}
       >
         <Container size="xl">
           <Group position="apart" align="center">
-            <Title order={3} c="blue">
-              CareSync
-            </Title>
-            <Button onClick={() => navigate("/login")} variant="filled" color="blue">
-              Login
+            {/* Logo and Brand */}
+            <Group spacing="xs">
+              <IconCalendar size={32} color="#228be6" />
+              <Title order={2} c="blue" style={{ fontWeight: 700 }}>
+                CareSync Scheduler
+              </Title>
+            </Group>
+
+            {/* Navigation Menu */}
+            <Group spacing="xs" style={{ display: window.innerWidth > 768 ? 'flex' : 'none' }}>
+              <Button
+                variant="subtle"
+                color="gray"
+                size="md"
+                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+                style={{ 
+                  fontWeight: 600,
+                  transition: "all 0.2s ease",
+                }}
+                styles={(theme) => ({
+                  root: {
+                    '&:hover': {
+                      backgroundColor: theme.colors.blue[0],
+                      color: theme.colors.blue[7],
+                    }
+                  }
+                })}
+              >
+                About
+              </Button>
+              <Button
+                variant="subtle"
+                color="gray"
+                size="md"
+                onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
+                style={{ 
+                  fontWeight: 600,
+                  transition: "all 0.2s ease",
+                }}
+                styles={(theme) => ({
+                  root: {
+                    '&:hover': {
+                      backgroundColor: theme.colors.blue[0],
+                      color: theme.colors.blue[7],
+                    }
+                  }
+                })}
+              >
+                Features
+              </Button>
+              <Button
+                variant="subtle"
+                color="gray"
+                size="md"
+                onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
+                style={{ 
+                  fontWeight: 600,
+                  transition: "all 0.2s ease",
+                }}
+                styles={(theme) => ({
+                  root: {
+                    '&:hover': {
+                      backgroundColor: theme.colors.blue[0],
+                      color: theme.colors.blue[7],
+                    }
+                  }
+                })}
+              >
+                Pricing
+              </Button>
+              <Button
+                variant="subtle"
+                color="gray"
+                size="md"
+                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                style={{ 
+                  fontWeight: 600,
+                  transition: "all 0.2s ease",
+                }}
+                styles={(theme) => ({
+                  root: {
+                    '&:hover': {
+                      backgroundColor: theme.colors.blue[0],
+                      color: theme.colors.blue[7],
+                    }
+                  }
+                })}
+              >
+                Contact
+              </Button>
+            </Group>
+
+            {/* Live Demo Button */}
+            <Button onClick={() => navigate("/login")} variant="gradient" gradient={{ from: 'blue', to: 'cyan' }} size="md">
+              Live Demo
             </Button>
           </Group>
         </Container>
       </Box>
 
-      {/* Hero Section */}
+      {/* Enhanced Hero Section with Animated Background */}
       <Box
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
           color: "white",
-          padding: "4rem 0",
+          padding: "5rem 0",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Container size="xl">
+        {/* Animated background elements */}
+        <Box
+          style={{
+            position: "absolute",
+            top: "-50%",
+            right: "-10%",
+            width: "500px",
+            height: "500px",
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.1)",
+            animation: "float 6s ease-in-out infinite",
+          }}
+        />
+        <Box
+          style={{
+            position: "absolute",
+            bottom: "-30%",
+            left: "-5%",
+            width: "400px",
+            height: "400px",
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.08)",
+            animation: "float 8s ease-in-out infinite reverse",
+          }}
+        />
+        
+        <Container size="xl" style={{ position: "relative", zIndex: 1 }}>
           <Stack align="center" spacing="xl">
-            <Title order={1} size={48} ta="center" fw={700}>
-              Transform Your Home Care Management
+            <Badge size="lg" variant="light" color="white" style={{ color: "#667eea" }}>
+              🚀 The Future of Home Care Management
+            </Badge>
+            <Title order={1} size={56} ta="center" fw={800} style={{ lineHeight: 1.2 }}>
+              Transform Your Home Care
+              <br />
+              <Text component="span" variant="gradient" gradient={{ from: 'yellow', to: 'orange', deg: 45 }}>
+                Management Today
+              </Text>
             </Title>
-            <Text size="xl" ta="center" maw={800}>
+            <Text size="xl" ta="center" maw={900} fw={400} style={{ lineHeight: 1.6 }}>
               The ultimate scheduling solution designed specifically for home care organizations.
-              Streamline caregiver management, optimize scheduling, and deliver exceptional care
-              with our comprehensive platform.
+              Streamline caregiver management, optimize scheduling, billing, payroll, and deliver 
+              exceptional care with our comprehensive all-in-one platform.
             </Text>
-            <Group>
-              <Button size="lg" variant="white" color="blue" onClick={() => {
-                document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-              }}>
+            <Group spacing="lg" mt="lg">
+              <Button 
+                size="xl" 
+                variant="filled" 
+                leftIcon={<IconCreditCard size={24} />}
+                onClick={() => {
+                  document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{ 
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  backgroundColor: "#ffffff",
+                  color: "#667eea",
+                  border: "2px solid #ffffff",
+                  fontWeight: 700,
+                }}
+                styles={(theme) => ({
+                  root: {
+                    '&:hover': {
+                      backgroundColor: "#f8f9fa",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
+                    }
+                  }
+                })}
+              >
                 View Pricing
               </Button>
               <Button
-                size="lg"
-                variant="white"
-                color="blue"
+                size="xl"
+                variant="filled"
+                leftIcon={<IconCalendar size={24} />}
                 onClick={() => {
                   document.getElementById("request-demo")?.scrollIntoView({ behavior: "smooth" });
                 }}
+                style={{ 
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  backgroundColor: "#ffffff",
+                  color: "#667eea",
+                  border: "2px solid #ffffff",
+                  fontWeight: 700,
+                }}
+                styles={(theme) => ({
+                  root: {
+                    '&:hover': {
+                      backgroundColor: "#f8f9fa",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
+                    }
+                  }
+                })}
               >
                 Request Demo
               </Button>
             </Group>
           </Stack>
         </Container>
+        
+        <style>{`
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+          }
+        `}</style>
       </Box>
 
-      {/* Features Section */}
-      <Container size="xl" py={60}>
-        <Title order={2} ta="center" mb={40}>
-          Powerful Features for Home Care Management
-        </Title>
-        <Grid>
-          <Grid.Col md={4}>
-            <Card shadow="sm" padding="lg" radius="md" withBorder h="100%">
-              <Stack align="center" ta="center">
-                <ThemeIcon size={60} radius="md" variant="light" color="blue">
-                  <IconCalendar size={30} />
-                </ThemeIcon>
-                <Title order={4}>Smart Scheduling</Title>
-                <Text c="dimmed">
-                  Intelligent scheduling system that optimizes caregiver assignments and ensures
-                  seamless coverage for all your clients.
-                </Text>
-              </Stack>
-            </Card>
-          </Grid.Col>
-          <Grid.Col md={4}>
-            <Card shadow="sm" padding="lg" radius="md" withBorder h="100%">
-              <Stack align="center" ta="center">
-                <ThemeIcon size={60} radius="md" variant="light" color="green">
-                  <IconUsers size={30} />
-                </ThemeIcon>
-                <Title order={4}>Caregiver Management</Title>
-                <Text c="dimmed">
-                  Comprehensive tools to manage your caregiver team, track availability, and
-                  maintain detailed profiles.
-                </Text>
-              </Stack>
-            </Card>
-          </Grid.Col>
-          <Grid.Col md={4}>
-            <Card shadow="sm" padding="lg" radius="md" withBorder h="100%">
-              <Stack align="center" ta="center">
-                <ThemeIcon size={60} radius="md" variant="light" color="orange">
-                  <IconChartBar size={30} />
-                </ThemeIcon>
-                <Title order={4}>Analytics & Reports</Title>
-                <Text c="dimmed">
-                  Real-time insights and comprehensive reporting to help you make data-driven
-                  decisions and improve operations.
-                </Text>
-              </Stack>
-            </Card>
-          </Grid.Col>
-        </Grid>
-      </Container>
-
-      {/* Pricing Section */}
-      <Box id="pricing" style={{ backgroundColor: "#f8f9fa", padding: "4rem 0" }}>
+      {/* About Section */}
+      <Box id="about" style={{ backgroundColor: "#fff", padding: "4rem 0" }}>
         <Container size="xl">
-          <Stack align="center" spacing="xl" mb={40}>
-            <Title order={2} ta="center">
-              Choose Your Plan
+          <Grid align="center" gutter="xl">
+            <Grid.Col md={6}>
+              <Stack spacing="lg">
+                <Badge size="lg" variant="dot" color="blue">About Scheduler</Badge>
+                <Title order={2} size={42} fw={700}>
+                  Your Complete Home Care Management Solution
+                </Title>
+                <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
+                  Scheduler is a comprehensive platform built from the ground up to address the 
+                  unique challenges of home care organizations. We understand that managing caregivers, 
+                  clients, schedules, billing, and payroll can be overwhelming. That's why we've created 
+                  an all-in-one solution that streamlines every aspect of your operations.
+                </Text>
+                <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
+                  With powerful features like real-time dashboards, automated billing, wage management, 
+                  comprehensive reporting, and more - you can focus on what matters most: delivering 
+                  exceptional care to your clients.
+                </Text>
+                <Group>
+                  <Button 
+                    size="lg" 
+                    variant="gradient" 
+                    gradient={{ from: 'blue', to: 'cyan' }}
+                    onClick={() => {
+                      document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                  >
+                    Explore Features
+                  </Button>
+                </Group>
+              </Stack>
+            </Grid.Col>
+            <Grid.Col md={6}>
+              <Paper 
+                shadow="xl" 
+                p="xl" 
+                radius="lg"
+                style={{ 
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  color: "white",
+                  minHeight: "400px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <Stack spacing="xl">
+                  <Group>
+                    <ThemeIcon size={50} radius="md" variant="white" color="blue">
+                      <IconCheck size={30} />
+                    </ThemeIcon>
+                    <div>
+                      <Text size="xl" fw={700}>10,000+</Text>
+                      <Text size="sm">Tasks Scheduled</Text>
+                    </div>
+                  </Group>
+                  <Group>
+                    <ThemeIcon size={50} radius="md" variant="white" color="blue">
+                      <IconUsers size={30} />
+                    </ThemeIcon>
+                    <div>
+                      <Text size="xl" fw={700}>500+</Text>
+                      <Text size="sm">Active Users</Text>
+                    </div>
+                  </Group>
+                  <Group>
+                    <ThemeIcon size={50} radius="md" variant="white" color="blue">
+                      <IconClock size={30} />
+                    </ThemeIcon>
+                    <div>
+                      <Text size="xl" fw={700}>24/7</Text>
+                      <Text size="sm">Support Available</Text>
+                    </div>
+                  </Group>
+                </Stack>
+              </Paper>
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Enhanced Features Section */}
+      <Box id="features" style={{ backgroundColor: "#f8f9fa", padding: "5rem 0" }}>
+        <Container size="xl">
+          <Stack align="center" spacing="md" mb={50}>
+            <Badge size="lg" variant="dot" color="blue">Features</Badge>
+            <Title order={2} ta="center" size={42} fw={700}>
+              Everything You Need in One Platform
             </Title>
-            <Text size="lg" c="dimmed" ta="center" maw={600}>
-              Flexible pricing options designed to scale with your home care organization
+            <Text size="lg" c="dimmed" ta="center" maw={700}>
+              From scheduling to payroll, we've got you covered with powerful features 
+              designed specifically for home care organizations.
+            </Text>
+          </Stack>
+          
+          <Grid gutter="lg">
+            <Grid.Col md={4} sm={6}>
+              <Card 
+                shadow="md" 
+                padding="xl" 
+                radius="lg" 
+                withBorder 
+                h="100%"
+                style={{ 
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  cursor: "pointer",
+                  "&:hover": { transform: "translateY(-5px)" }
+                }}
+              >
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
+                    <IconDashboard size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Real-Time Dashboard</Title>
+                  <Text c="dimmed" size="sm">
+                    Get instant insights with live dashboards showing tasks, schedules, 
+                    staff availability, and key metrics at a glance.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'indigo', to: 'blue' }}>
+                    <IconCalendar size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Smart Scheduling</Title>
+                  <Text c="dimmed" size="sm">
+                    Intelligent scheduling system that optimizes caregiver assignments 
+                    and ensures seamless coverage for all clients.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'teal', to: 'green' }}>
+                    <IconUsers size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Team Management</Title>
+                  <Text c="dimmed" size="sm">
+                    Manage clients, service providers, and staff with comprehensive 
+                    profiles, documents, and availability tracking.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'orange', to: 'red' }}>
+                    <IconFileInvoice size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Billing Management</Title>
+                  <Text c="dimmed" size="sm">
+                    Automated billing generation, invoice tracking, payment status 
+                    monitoring, and comprehensive billing reports.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'pink', to: 'purple' }}>
+                    <IconCash size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Wage Management</Title>
+                  <Text c="dimmed" size="sm">
+                    Streamlined payroll processing, automatic wage calculations, 
+                    payment tracking, and detailed wage reports.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'violet', to: 'grape' }}>
+                    <IconReportAnalytics size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Advanced Reports</Title>
+                  <Text c="dimmed" size="sm">
+                    Comprehensive reporting tools for billing, payroll, attendance, 
+                    and performance analytics with export capabilities.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'lime', to: 'teal' }}>
+                    <IconClipboardCheck size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Attendance Tracking</Title>
+                  <Text c="dimmed" size="sm">
+                    Real-time check-in/check-out tracking, attendance logs, 
+                    and automated time sheet generation for accurate records.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%">
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="gradient" gradient={{ from: 'yellow', to: 'orange' }}>
+                    <IconMapPin size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Multi-Franchise Support</Title>
+                  <Text c="dimmed" size="sm">
+                    Manage multiple locations seamlessly with franchise-specific 
+                    settings, staff assignments, and reporting.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+
+            <Grid.Col md={4} sm={6}>
+              <Card shadow="md" padding="xl" radius="lg" withBorder h="100%" style={{ border: "2px dashed #dee2e6" }}>
+                <Stack align="center" ta="center" spacing="md">
+                  <ThemeIcon size={70} radius="md" variant="light" color="gray">
+                    <IconBell size={35} />
+                  </ThemeIcon>
+                  <Title order={4}>Complaint Management</Title>
+                  <Badge color="yellow" size="sm">Coming Soon</Badge>
+                  <Text c="dimmed" size="sm">
+                    Track and manage client complaints, feedback, and resolution 
+                    workflows for improved service quality.
+                  </Text>
+                </Stack>
+              </Card>
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Enhanced Pricing Section */}
+      <Box id="pricing" style={{ backgroundColor: "#fff", padding: "5rem 0" }}>
+        <Container size="xl">
+          <Stack align="center" spacing="md" mb={50}>
+            <Badge size="lg" variant="dot" color="blue">Pricing</Badge>
+            <Title order={2} ta="center" size={42} fw={700}>
+              Simple, Transparent Pricing
+            </Title>
+            <Text size="lg" c="dimmed" ta="center" maw={700}>
+              Flexible pricing options designed to scale with your home care organization. 
+              No hidden fees, no surprises.
             </Text>
           </Stack>
 
@@ -288,70 +675,118 @@ const LandingPage = () => {
             </Text>
           ) : (
             <Grid>
-              {packages.map((pkg) => (
+              {packages.map((pkg, index) => (
                 <Grid.Col key={pkg.id} md={4} sm={6}>
-                  <Card shadow="md" padding="xl" radius="md" withBorder h="100%">
+                  <Card 
+                    shadow="xl" 
+                    padding="xl" 
+                    radius="lg" 
+                    withBorder 
+                    h="100%"
+                    style={{
+                      borderWidth: pkg.isActive ? 3 : 1,
+                      borderColor: pkg.isActive ? "#228be6" : "#dee2e6",
+                      transform: pkg.isActive ? "scale(1.05)" : "scale(1)",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
                     <Stack>
                       <Group position="apart" align="flex-start">
-                        <Title order={3}>{pkg.name}</Title>
-                        {pkg.isActive && <Badge color="green">Active</Badge>}
+                        <div>
+                          <Title order={3} c={pkg.isActive ? "blue" : "dark"}>{pkg.name}</Title>
+                          {pkg.isActive && (
+                            <Badge color="blue" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }} mt="xs">
+                              Most Popular
+                            </Badge>
+                          )}
+                        </div>
                       </Group>
                       {pkg.description && (
-                        <Text size="sm" c="dimmed">
+                        <Text size="sm" c="dimmed" style={{ minHeight: "40px" }}>
                           {pkg.description}
                         </Text>
                       )}
-                      <Divider />
+                      
+                      <Box
+                        style={{
+                          background: pkg.isActive 
+                            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                            : "#f8f9fa",
+                          padding: "1.5rem",
+                          borderRadius: "12px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <Text 
+                          size="xs" 
+                          fw={600} 
+                          tt="uppercase" 
+                          c={pkg.isActive ? "white" : "dimmed"}
+                          mb="xs"
+                        >
+                          Monthly Total
+                        </Text>
+                        <Group position="center" spacing={4}>
+                          <Text 
+                            size={42} 
+                            fw={800} 
+                            c={pkg.isActive ? "white" : "blue"}
+                            style={{ lineHeight: 1 }}
+                          >
+                            {formatCurrency(calculateTotalMonthly(pkg)).split('.')[0]}
+                          </Text>
+                          <Text size="lg" c={pkg.isActive ? "gray.3" : "dimmed"}>
+                            /mo
+                          </Text>
+                        </Group>
+                      </Box>
+
+                      <Divider label="What's included" labelPosition="center" />
+                      
                       <Stack spacing="xs">
                         {pkg.initialOneTimeCost > 0 && (
-                          <Group position="apart">
-                            <Text size="sm">One-Time Setup:</Text>
-                            <Text fw={600}>{formatCurrency(pkg.initialOneTimeCost)}</Text>
+                          <Group position="apart" noWrap>
+                            <Text size="sm" c="dimmed">One-Time Setup</Text>
+                            <Text fw={600} size="sm">{formatCurrency(pkg.initialOneTimeCost)}</Text>
                           </Group>
                         )}
                         {pkg.perClientCharge > 0 && (
-                          <Group position="apart">
-                            <Text size="sm">Per Client:</Text>
-                            <Text fw={600}>{formatCurrency(pkg.perClientCharge)}</Text>
+                          <Group position="apart" noWrap>
+                            <Text size="sm" c="dimmed">Per Client</Text>
+                            <Text fw={600} size="sm">{formatCurrency(pkg.perClientCharge)}</Text>
                           </Group>
                         )}
                         {pkg.infrastructureCost > 0 && (
-                          <Group position="apart">
-                            <Text size="sm">Infrastructure:</Text>
-                            <Text fw={600}>{formatCurrency(pkg.infrastructureCost)}</Text>
+                          <Group position="apart" noWrap>
+                            <Text size="sm" c="dimmed">Infrastructure</Text>
+                            <Text fw={600} size="sm">{formatCurrency(pkg.infrastructureCost)}</Text>
                           </Group>
                         )}
                         {pkg.supportCharges > 0 && (
-                          <Group position="apart">
-                            <Text size="sm">Support:</Text>
-                            <Text fw={600}>{formatCurrency(pkg.supportCharges)}</Text>
+                          <Group position="apart" noWrap>
+                            <Text size="sm" c="dimmed">24/7 Support</Text>
+                            <Text fw={600} size="sm">{formatCurrency(pkg.supportCharges)}</Text>
                           </Group>
                         )}
                         {pkg.newFeatureReportCharges > 0 && (
-                          <Group position="apart">
-                            <Text size="sm">New Features:</Text>
-                            <Text fw={600}>{formatCurrency(pkg.newFeatureReportCharges)}</Text>
+                          <Group position="apart" noWrap>
+                            <Text size="sm" c="dimmed">New Features</Text>
+                            <Text fw={600} size="sm">{formatCurrency(pkg.newFeatureReportCharges)}</Text>
                           </Group>
                         )}
-                        <Divider />
-                        <Group position="apart">
-                          <Text size="lg" fw={700}>
-                            Monthly Total:
-                          </Text>
-                          <Text size="xl" fw={700} c="blue">
-                            {formatCurrency(calculateTotalMonthly(pkg))}
-                          </Text>
-                        </Group>
                       </Stack>
+
                       <Button
                         fullWidth
+                        size="lg"
                         mt="md"
-                        variant="light"
+                        variant={pkg.isActive ? "gradient" : "light"}
+                        gradient={pkg.isActive ? { from: 'blue', to: 'cyan' } : undefined}
                         onClick={() => {
                           document.getElementById("request-demo")?.scrollIntoView({ behavior: "smooth" });
                         }}
                       >
-                        Get Started
+                        {pkg.isActive ? "Get Started Now" : "Choose Plan"}
                       </Button>
                     </Stack>
                   </Card>
@@ -362,75 +797,134 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Request Demo Section */}
-      <Box id="request-demo" style={{ padding: "4rem 0" }}>
+      {/* Enhanced Request Demo Section */}
+      <Box 
+        id="request-demo" 
+        style={{ 
+          background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+          padding: "5rem 0" 
+        }}
+      >
         <Container size="xl">
-          <Grid>
+          <Grid align="center" gutter="xl">
             <Grid.Col md={6}>
-              <Stack>
-                <Title order={2}>Request a Demo</Title>
-                <Text size="lg" c="dimmed">
-                  See how CareSync can transform your home care operations. Schedule a
-                  personalized demo with our team.
+              <Stack spacing="lg">
+                <Badge size="lg" variant="dot" color="blue">Request Demo</Badge>
+                <Title order={2} size={42} fw={700}>
+                  See Scheduler in Action
+                </Title>
+                <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
+                  Experience firsthand how Scheduler can transform your home care operations. 
+                  Schedule a personalized demo with our team and discover all the features.
                 </Text>
-                <Stack spacing="xs" mt="md">
+                
+                <Stack spacing="md" mt="lg">
                   <Group>
-                    <IconCheck size={20} color="green" />
-                    <Text>Live product walkthrough</Text>
+                    <ThemeIcon size={40} radius="md" variant="light" color="green">
+                      <IconCheck size={22} />
+                    </ThemeIcon>
+                    <div>
+                      <Text fw={600}>Live Product Walkthrough</Text>
+                      <Text size="sm" c="dimmed">See all features in real-time</Text>
+                    </div>
                   </Group>
                   <Group>
-                    <IconCheck size={20} color="green" />
-                    <Text>Customized to your needs</Text>
+                    <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                      <IconCheck size={22} />
+                    </ThemeIcon>
+                    <div>
+                      <Text fw={600}>Customized to Your Needs</Text>
+                      <Text size="sm" c="dimmed">Tailored demo for your organization</Text>
+                    </div>
                   </Group>
                   <Group>
-                    <IconCheck size={20} color="green" />
-                    <Text>Q&A with our experts</Text>
+                    <ThemeIcon size={40} radius="md" variant="light" color="purple">
+                      <IconCheck size={22} />
+                    </ThemeIcon>
+                    <div>
+                      <Text fw={600}>Q&A with Our Experts</Text>
+                      <Text size="sm" c="dimmed">Get all your questions answered</Text>
+                    </div>
+                  </Group>
+                  <Group>
+                    <ThemeIcon size={40} radius="md" variant="light" color="orange">
+                      <IconCheck size={22} />
+                    </ThemeIcon>
+                    <div>
+                      <Text fw={600}>No Commitment Required</Text>
+                      <Text size="sm" c="dimmed">Free demo with no obligations</Text>
+                    </div>
                   </Group>
                 </Stack>
               </Stack>
             </Grid.Col>
+            
             <Grid.Col md={6}>
-              <Paper shadow="sm" p="xl" radius="md" withBorder>
+              <Paper shadow="xl" p="xl" radius="lg" withBorder style={{ backgroundColor: "white" }}>
+                <Stack spacing="md" mb="xl">
+                  <Title order={3}>Schedule Your Demo</Title>
+                  <Text size="sm" c="dimmed">
+                    Fill out the form below and we'll get back to you within 24 hours.
+                  </Text>
+                </Stack>
+                
                 <form onSubmit={demoForm.onSubmit(handleDemoSubmit)}>
-                  <Stack>
+                  <Stack spacing="md">
                     <TextInput
                       label="Full Name"
                       placeholder="John Doe"
                       required
+                      size="md"
                       {...demoForm.getInputProps("name")}
                     />
                     <TextInput
-                      label="Email"
+                      label="Email Address"
                       placeholder="john@example.com"
                       type="email"
                       required
+                      size="md"
                       {...demoForm.getInputProps("email")}
                     />
                     <TextInput
-                      label="Phone"
+                      label="Phone Number"
                       placeholder="+1 (555) 123-4567"
+                      size="md"
                       {...demoForm.getInputProps("phone")}
                     />
                     <TextInput
                       label="Company Name"
                       placeholder="Your Company"
                       required
+                      size="md"
                       {...demoForm.getInputProps("company")}
                     />
                     <TextInput
                       label="Preferred Date/Time"
                       placeholder="e.g., Next Monday at 2 PM"
+                      size="md"
                       {...demoForm.getInputProps("preferredDate")}
                     />
                     <Textarea
-                      label="Additional Notes"
-                      placeholder="Tell us about your specific needs..."
+                      label="Additional Notes (Optional)"
+                      placeholder="Tell us about your specific needs and requirements..."
                       minRows={3}
+                      size="md"
                       {...demoForm.getInputProps("message")}
                     />
-                    <Button type="submit" fullWidth loading={isSubmittingDemo}>
-                      Request Demo
+                    <Button 
+                      type="submit" 
+                      fullWidth 
+                      size="lg"
+                      loading={isSubmittingDemo}
+                      variant="gradient"
+                      gradient={{ from: 'blue', to: 'cyan' }}
+                      leftIcon={<IconCalendar size={20} />}
+                    >
+                      Request Demo Now
                     </Button>
+                    <Text size="xs" c="dimmed" ta="center">
+                      We respect your privacy. Your information will never be shared.
+                    </Text>
                   </Stack>
                 </form>
               </Paper>
@@ -439,73 +933,130 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Contact Us Section */}
-      <Box id="contact" style={{ backgroundColor: "#f8f9fa", padding: "4rem 0" }}>
+      {/* Enhanced Contact Us Section */}
+      <Box id="contact" style={{ backgroundColor: "#fff", padding: "5rem 0" }}>
         <Container size="xl">
-          <Grid>
-            <Grid.Col md={6}>
-              <Stack>
-                <Title order={2}>Contact Us</Title>
-                <Text size="lg" c="dimmed">
-                  Have questions? We're here to help. Reach out to our team and we'll get back to
-                  you as soon as possible.
+          <Stack align="center" spacing="md" mb={50}>
+            <Badge size="lg" variant="dot" color="blue">Contact Us</Badge>
+            <Title order={2} ta="center" size={42} fw={700}>
+              Get in Touch
+            </Title>
+            <Text size="lg" c="dimmed" ta="center" maw={700}>
+              Have questions or need assistance? Our team is here to help. 
+              Reach out and we'll get back to you as soon as possible.
+            </Text>
+          </Stack>
+          
+          <Grid align="center" gutter="xl">
+            <Grid.Col md={5}>
+              <Stack spacing="xl">
+                <Paper 
+                  p="xl" 
+                  radius="lg" 
+                  style={{ 
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    color: "white"
+                  }}
+                >
+                  <Stack spacing="xl">
+                    <div>
+                      <Title order={4} c="white" mb="md">Contact Information</Title>
+                      <Text size="sm" c="gray.3">
+                        We're available 24/7 to answer your questions and provide support.
+                      </Text>
+                    </div>
+                    
+                    <Group>
+                      <ThemeIcon size={50} radius="md" variant="white" color="blue">
+                        <IconMail size={26} />
+                      </ThemeIcon>
+                      <Stack spacing={2}>
+                        <Text fw={600} size="sm">Email Us</Text>
+                        <Anchor href="mailto:asproducts123@hotmail.com" c="white" size="sm">
+                          products123@hotmail.com
+                        </Anchor>
+                      </Stack>
+                    </Group>
+                    
+                    <Group>
+                      <ThemeIcon size={50} radius="md" variant="white" color="blue">
+                        <IconPhone size={26} />
+                      </ThemeIcon>
+                      <Stack spacing={2}>
+                        <Text fw={600} size="sm">Call Us</Text>
+                        <Anchor href="tel:+1-555-123-4567" c="white" size="sm">
+                          +1 (555) 123-4567
+                        </Anchor>
+                      </Stack>
+                    </Group>
+                    
+                    <Group>
+                      <ThemeIcon size={50} radius="md" variant="white" color="blue">
+                        <IconClock size={26} />
+                      </ThemeIcon>
+                      <Stack spacing={2}>
+                        <Text fw={600} size="sm">Business Hours</Text>
+                        <Text size="sm" c="gray.3">24/7 Support Available</Text>
+                      </Stack>
+                    </Group>
+                  </Stack>
+                </Paper>
+                
+                <Text size="sm" c="dimmed" ta="center">
+                  Need immediate assistance? Try our <strong>Live Demo</strong> to explore features instantly!
                 </Text>
-                <Stack spacing="md" mt="md">
-                  <Group>
-                    <ThemeIcon size={40} radius="md" variant="light" color="blue">
-                      <IconMail size={20} />
-                    </ThemeIcon>
-                    <Stack spacing={0}>
-                      <Text fw={600}>Email</Text>
-                      <Anchor href="mailto:asproducts123@hotmail.com" c="blue">
-                       asproducts123@hotmail.com
-                      </Anchor>
-                    </Stack>
-                  </Group>
-                  <Group>
-                    <ThemeIcon size={40} radius="md" variant="light" color="green">
-                      <IconPhone size={20} />
-                    </ThemeIcon>
-                    <Stack spacing={0}>
-                      <Text fw={600}>Phone</Text>
-                      <Anchor href="tel:+1-555-123-4567" c="blue">
-                        +1 (555) 123-4567
-                      </Anchor>
-                    </Stack>
-                  </Group>
-                </Stack>
               </Stack>
             </Grid.Col>
-            <Grid.Col md={6}>
-              <Paper shadow="sm" p="xl" radius="md" withBorder>
+            
+            <Grid.Col md={7}>
+              <Paper shadow="xl" p="xl" radius="lg" withBorder style={{ backgroundColor: "white" }}>
+                <Stack spacing="md" mb="xl">
+                  <Title order={3}>Send us a Message</Title>
+                  <Text size="sm" c="dimmed">
+                    Fill out the form and our team will respond within 24 hours.
+                  </Text>
+                </Stack>
+                
                 <form onSubmit={contactForm.onSubmit(handleContactSubmit)}>
-                  <Stack>
+                  <Stack spacing="md">
                     <TextInput
-                      label="Name"
-                      placeholder="Your name"
+                      label="Your Name"
+                      placeholder="John Doe"
                       required
+                      size="md"
                       {...contactForm.getInputProps("name")}
                     />
                     <TextInput
-                      label="Email"
+                      label="Email Address"
                       placeholder="your.email@example.com"
                       type="email"
                       required
+                      size="md"
                       {...contactForm.getInputProps("email")}
                     />
                     <TextInput
-                      label="Phone"
+                      label="Phone Number"
                       placeholder="+1 (555) 123-4567"
+                      size="md"
                       {...contactForm.getInputProps("phone")}
                     />
                     <Textarea
-                      label="Message"
+                      label="Your Message"
                       placeholder="How can we help you?"
                       required
-                      minRows={4}
+                      minRows={5}
+                      size="md"
                       {...contactForm.getInputProps("message")}
                     />
-                    <Button type="submit" fullWidth loading={isSubmittingContact}>
+                    <Button 
+                      type="submit" 
+                      fullWidth 
+                      size="lg"
+                      loading={isSubmittingContact}
+                      variant="gradient"
+                      gradient={{ from: 'blue', to: 'cyan' }}
+                      leftIcon={<IconMail size={20} />}
+                    >
                       Send Message
                     </Button>
                   </Stack>
@@ -516,29 +1067,101 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Footer */}
-      <Box style={{ backgroundColor: "#2c3e50", color: "white", padding: "2rem 0" }}>
+      {/* Enhanced Footer */}
+      <Box style={{ background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)", color: "white", padding: "3rem 0" }}>
         <Container size="xl">
-          <Group position="apart">
-            <Text>© {new Date().getFullYear()} CareSync. All rights reserved.</Text>
-            <Group>
-              <Anchor href="#pricing" c="white" onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-              }}>
-                Pricing
-              </Anchor>
-              <Anchor href="#contact" c="white" onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-              }}>
-                Contact
-              </Anchor>
-              <Button variant="subtle" color="white" onClick={() => navigate("/login")}>
-                Login
-              </Button>
-            </Group>
-          </Group>
+          <Grid gutter="xl">
+            <Grid.Col md={4}>
+              <Stack spacing="md">
+                <Group spacing="xs">
+                  <IconCalendar size={32} color="#3498db" />
+                  <Title order={3} c="white">
+                    CareSync Scheduler
+                  </Title>
+                </Group>
+                <Text c="gray.4" size="sm">
+                  Your complete home care management solution. Streamline operations, 
+                  optimize scheduling, and deliver exceptional care.
+                </Text>
+                <Group spacing="xs">
+                  <Text c="gray.4" size="sm">© {new Date().getFullYear()} Scheduler. All rights reserved.</Text>
+                </Group>
+              </Stack>
+            </Grid.Col>
+            
+            <Grid.Col md={4}>
+              <Stack spacing="md">
+                <Title order={5} c="white">Quick Links</Title>
+                <Stack spacing="xs">
+                  <Anchor 
+                    c="gray.4" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    About Us
+                  </Anchor>
+                  <Anchor 
+                    c="gray.4" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Features
+                  </Anchor>
+                  <Anchor 
+                    c="gray.4" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Pricing
+                  </Anchor>
+                  <Anchor 
+                    c="gray.4" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Contact
+                  </Anchor>
+                </Stack>
+              </Stack>
+            </Grid.Col>
+            
+            <Grid.Col md={4}>
+              <Stack spacing="md">
+                <Title order={5} c="white">Get Started</Title>
+                <Text c="gray.4" size="sm">
+                  Ready to transform your home care management?
+                </Text>
+                <Button 
+                  variant="gradient" 
+                  gradient={{ from: 'blue', to: 'cyan' }}
+                  fullWidth
+                  size="md"
+                  onClick={() => navigate("/login")}
+                >
+                  Try Live Demo
+                </Button>
+                <Text c="gray.5" size="xs" ta="center">
+                  No credit card required • Free trial available
+                </Text>
+              </Stack>
+            </Grid.Col>
+          </Grid>
         </Container>
       </Box>
     </Box>

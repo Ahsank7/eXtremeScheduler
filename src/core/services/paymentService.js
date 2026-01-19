@@ -13,9 +13,14 @@ const testCardCharge = async (cardData) => {
     return await post("Payment/test-charge", cardData);
 };
 
+const manualMarkAsPaid = async (paymentData) => {
+    return await post("Payment/manual-mark-as-paid", paymentData);
+};
+
 export {
     getBillingInfoList,
     getWageInfoList,
-    testCardCharge
+    testCardCharge,
+    manualMarkAsPaid
 };
 

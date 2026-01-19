@@ -239,6 +239,7 @@ const AdminOrganizationList = ({
                     {org.isActive ? "Enabled" : "Disabled"}
                   </Text>
                 </Group>
+                {/* Hidden as per requirement
                 <Button
                   size="sm"
                   variant="light"
@@ -251,6 +252,7 @@ const AdminOrganizationList = ({
                 >
                   Add Franchise
                 </Button>
+                */}
               </Group>
             </Stack>
           </Card>

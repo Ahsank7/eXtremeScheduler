@@ -187,6 +187,7 @@ const TaskLogModal = ({ opened, onClose, taskId, taskTitle = "Task" }) => {
         </Group>
       }
       size="xl"
+      zIndex={10001}
       styles={(theme) => ({
         title: {
           fontSize: theme.fontSizes.lg,
