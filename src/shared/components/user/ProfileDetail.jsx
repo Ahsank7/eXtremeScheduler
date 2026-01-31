@@ -26,6 +26,9 @@ import { Payments } from "shared/components/user/Payments";
 import { Transactions } from "shared/components/user/Transactions";
 import { RoleManagement } from "shared/components/user/RoleManagement";
 import { FranchiseAssignment } from "shared/components/user/FranchiseAssignment";
+import { ClientPreferences } from "shared/components/user/ClientPreferences";
+import { ServiceProviderAttributes } from "shared/components/user/ServiceProviderAttributes";
+import { UserComplaints } from "shared/components/user/UserComplaints";
 import { useState, useEffect } from "react";
 import { localStoreService, profileService, documentService, authenticationService } from "core/services";
 import { useParams } from "react-router-dom";
@@ -219,6 +222,8 @@ export const ProfileDetail = () => {
     if (userType == UserType.Clients) {
       tabs = [
         "Profile",
+        "Preferences",
+        "Complaints",
         "Schedule",
         "Address",
         "Contact",
@@ -234,6 +239,8 @@ export const ProfileDetail = () => {
     } else if (userType == UserType["Service Providers"]) {
       tabs = [
         "Profile",
+        "Attributes",
+        "Complaints",
         "Schedule",
         "Address",
         "Contact",
@@ -306,6 +313,34 @@ export const ProfileDetail = () => {
               id={userID} 
               userType={numericUserType} 
               onProfileDataUpdate={(updatedData) => setProfileData(updatedData)}
+              readOnly={readOnly}
+            />
+          </Tabs.Panel>
+        );
+      case "Preferences":
+        return (
+          <Tabs.Panel value="Preferences" className={classes.panel}>
+            <ClientPreferences 
+              clientId={userID} 
+              readOnly={readOnly}
+            />
+          </Tabs.Panel>
+        );
+      case "Attributes":
+        return (
+          <Tabs.Panel value="Attributes" className={classes.panel}>
+            <ServiceProviderAttributes 
+              serviceProviderId={userID} 
+              readOnly={readOnly}
+            />
+          </Tabs.Panel>
+        );
+      case "Complaints":
+        return (
+          <Tabs.Panel value="Complaints" className={classes.panel}>
+            <UserComplaints 
+              userId={userID} 
+              userType={numericUserType}
               readOnly={readOnly}
             />
           </Tabs.Panel>

@@ -24,6 +24,9 @@ const UpdateTaskNotes = async (updateTaskNotes) => {
   return await post(`PlanBoard/UpdateTaskNotes`, updateTaskNotes);
 };
 
+const AssignServiceProvider = async (assignRequest) => {
+  return await post(`PlanBoard/AssignServiceProvider`, assignRequest);
+};
 
 export {
   getServicesTasks,
@@ -31,5 +34,6 @@ export {
   AddTaskAttendance,
   UpdateTaskStatus,
   UpdateTaskAttendance,
-  UpdateTaskNotes
+  UpdateTaskNotes,
+  AssignServiceProvider
 };

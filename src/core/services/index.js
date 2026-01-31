@@ -29,6 +29,8 @@ export { rolePermissionService } from './rolePermissionService';
 export * as roleService from './roleService';
 export { landingService } from './landingService';
 export { default as notificationService } from './notificationService';
+export { default as preferenceService } from './preferenceService';
+export { default as complaintService } from './complaintService';
 
 // Export utility functions
 export * from '../utils/responseHandler';

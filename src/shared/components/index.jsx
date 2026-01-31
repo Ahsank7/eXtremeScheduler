@@ -31,5 +31,6 @@ export { ProfileDetail } from "./user/ProfileDetail";
 export { ProfileInformation } from "./user/ProfileInformation";
 export { Schedule } from "./user/Schedule";
 export { SearchServiceProviders } from "./user/SearchServiceProviders";
+export { default as ServiceProviderSelector } from "./user/ServiceProviderSelector";
 export { Transactions } from "./user/Transactions";
 export { default as UpdateAppointment } from "./user/UpdateAppointment";

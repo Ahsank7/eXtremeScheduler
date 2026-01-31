@@ -13,15 +13,23 @@ import {
   Checkbox, 
   Switch,
   Divider,
-  Title
+  Title,
+  Badge,
+  ActionIcon,
+  Alert,
+  Stack
 } from "@mantine/core";
+import { IconUsers, IconAlertCircle } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { profileService, localStoreService, servicesService, scheduleService } from "core/services";
 import { useFranchise } from "core/context/FranchiseContext";
+import ServiceProviderSelector from "./ServiceProviderSelector";
+import { AppConfirmationModal } from "shared/components";
 
 const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
   const { franchiseId: currentFranchiseId, loading: franchiseLoading } = useFranchise();
   const [serviceProviders, setServiceProviders] = useState([]);
+  const [selectedProviderDetails, setSelectedProviderDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +38,10 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
   const [serviceTypes, setServiceTypes] = useState([]);
   const [services, setServices] = useState([]);
   const [loadingServices, setLoadingServices] = useState(false);
+  const [showProviderSelector, setShowProviderSelector] = useState(false);
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [conflictingProviders, setConflictingProviders] = useState([]);
+  const [pendingSubmitValues, setPendingSubmitValues] = useState(null);
 
   const form = useForm({
     initialValues: {
@@ -212,6 +224,13 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
     }
   };
 
+  const checkProvidersAvailability = () => {
+    const unavailableProviders = selectedProviderDetails.filter(
+      (p) => p.finalAvailabilityStatus?.toLowerCase() !== "available"
+    );
+    return unavailableProviders;
+  };
+
   const handleSubmit = async (values) => {
     // Manual validation check
     const errors = {};
@@ -231,7 +250,31 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
       console.log('Form has validation errors:', errors);
       return;
     }
+
+    // Check for provider conflicts
+    const unavailableProviders = checkProvidersAvailability();
     
+    if (unavailableProviders.length > 0) {
+      // Show confirmation dialog
+      setConflictingProviders(unavailableProviders);
+      setPendingSubmitValues(values);
+      setShowConflictModal(true);
+    } else {
+      // No conflicts, proceed directly
+      submitAppointment(values);
+    }
+  };
+
+  const handleConflictModalClose = (confirmed) => {
+    if (confirmed && pendingSubmitValues) {
+      submitAppointment(pendingSubmitValues);
+    }
+    setShowConflictModal(false);
+    setConflictingProviders([]);
+    setPendingSubmitValues(null);
+  };
+
+  const submitAppointment = async (values) => {
     console.log('Form is valid, proceeding with submission');
     setLoading(true);
     try {
@@ -294,10 +337,101 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
     return "Select Service Providers";
   };
 
+  const handleProviderSelection = (providers) => {
+    // Store full provider details
+    setSelectedProviderDetails(providers);
+    
+    // Update form with provider IDs
+    const providerIds = providers.map(p => p.userId);
+    form.setFieldValue('serviceProviderIds', providerIds);
+  };
+
+  const handleOpenProviderSelector = () => {
+    if (isInitialized) {
+      setShowProviderSelector(true);
+    }
+  };
+
+  const getSelectedProvidersDisplay = () => {
+    if (form.values.serviceProviderIds.length === 0) {
+      return null;
+    }
+
+    return (
+      <Group spacing="xs" mt="xs">
+        {selectedProviderDetails.map((provider) => {
+          const isAvailable = provider.finalAvailabilityStatus?.toLowerCase() === "available";
+          return (
+            <Badge
+              key={provider.userId}
+              color={isAvailable ? "green" : "orange"}
+              variant="filled"
+              size="lg"
+            >
+              {provider.name} - {provider.finalAvailabilityStatus}
+            </Badge>
+          );
+        })}
+      </Group>
+    );
+  };
+
   return (
-    <Paper p="md" radius="md">
-      
-      <form onSubmit={form.onSubmit(handleSubmit)}>
+    <>
+      {/* Service Provider Selector Modal */}
+      <ServiceProviderSelector
+        opened={showProviderSelector}
+        onClose={() => setShowProviderSelector(false)}
+        onSelect={handleProviderSelection}
+        selectedProviders={form.values.serviceProviderIds}
+        startDateTime={
+          form.values.startDate && form.values.startTime
+            ? new Date(`${form.values.startDate}T${form.values.startTime}`)
+            : null
+        }
+        endDateTime={
+          form.values.endDate && form.values.endTime
+            ? new Date(`${form.values.endDate}T${form.values.endTime}`)
+            : null
+        }
+        multiSelect={true}
+      />
+
+      {/* Conflict Warning Modal */}
+      <AppConfirmationModal
+        opened={showConflictModal}
+        onClose={handleConflictModalClose}
+        title="Service Provider Conflicts Detected"
+        isLoading={loading}
+      >
+        <Stack spacing="md">
+          <Group>
+            <IconAlertCircle size={24} color="orange" />
+            <Text>The following service providers have scheduling conflicts:</Text>
+          </Group>
+          
+          {conflictingProviders.map((provider) => (
+            <Alert key={provider.userId} color="orange">
+              <Text size="sm" weight={500}>{provider.name}</Text>
+              <Text size="xs">
+                Status: {provider.finalAvailabilityStatus}
+                {provider.taskCount > 0 && ` - Has ${provider.taskCount} task(s) already scheduled`}
+                {provider.finalAvailabilityStatus?.toLowerCase() === "on leave" && 
+                  provider.leaveStartDate && 
+                  ` - Leave period: ${new Date(provider.leaveStartDate).toLocaleDateString()} to ${new Date(provider.leaveEndDate).toLocaleDateString()}`
+                }
+              </Text>
+            </Alert>
+          ))}
+          
+          <Text weight={500} color="orange">
+            Do you want to proceed with the assignment anyway?
+          </Text>
+        </Stack>
+      </AppConfirmationModal>
+
+      <Paper p="md" radius="md">
+        <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid mt="xs">
           {/* Service Type and Services */}
           <Grid.Col span={6}>
@@ -451,40 +585,40 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
 
           {/* Service Providers */}
           <Grid.Col span={12}>
-            <MultiSelect
-              label="Service Providers"
-              placeholder={getPlaceholder()}
-              data={serviceProviders}
-              value={form.values.serviceProviderIds}
-              onChange={(value) => form.setFieldValue('serviceProviderIds', value)}
-              required
-              searchable={isInitialized}
+            <Text size="sm" weight={500} mb="xs">
+              Service Providers <span style={{ color: 'red' }}>*</span>
+            </Text>
+            <Button
+              fullWidth
+              variant="outline"
+              onClick={handleOpenProviderSelector}
               disabled={!isInitialized}
-              error={form.errors.serviceProviderIds}
-              rightSection={
-                <Group spacing="xs">
-                  {loading && <Loader size="xs" />}
-                  {hasMore && !loading && isInitialized && (
-                    <Button
-                      size="xs"
-                      variant="subtle"
-                      onClick={handleLoadMore}
-                      style={{ fontSize: '12px', padding: '2px 6px' }}
-                    >
-                      Load More
-                    </Button>
-                  )}
-                </Group>
-              }
-              styles={{
-                rightSection: {
-                  pointerEvents: 'auto',
+              leftIcon={<IconUsers size={16} />}
+              styles={(theme) => ({
+                root: {
+                  borderColor: form.errors.serviceProviderIds ? theme.colors.red[6] : undefined,
+                  height: 'auto',
+                  minHeight: '36px',
+                  justifyContent: 'flex-start'
                 }
-              }}
-            />
-            {isInitialized && hasMore && (
-              <Text size="xs" color="dimmed" mt={4}>
-                Showing {serviceProviders.length} of {totalRecords} service providers
+              })}
+            >
+              <Group spacing="xs" position="apart" style={{ width: '100%' }}>
+                <Text>
+                  {form.values.serviceProviderIds.length === 0
+                    ? getPlaceholder()
+                    : `${form.values.serviceProviderIds.length} provider(s) selected`}
+                </Text>
+                {form.values.serviceProviderIds.length > 0 && (
+                  <Badge color="blue" variant="filled">
+                    {form.values.serviceProviderIds.length}
+                  </Badge>
+                )}
+              </Group>
+            </Button>
+            {form.errors.serviceProviderIds && (
+              <Text size="xs" color="red" mt={4}>
+                {form.errors.serviceProviderIds}
               </Text>
             )}
             {!isInitialized && (
@@ -492,6 +626,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
                 Select start and end date/time to load available service providers
               </Text>
             )}
+            {getSelectedProvidersDisplay()}
           </Grid.Col>
 
           {/* Description */}
@@ -519,6 +654,7 @@ const AddUpdateUserSchedule = ({ userId, organizationId, onModalClose }) => {
         </Button>
       </form>
     </Paper>
+    </>
   );
 };
 

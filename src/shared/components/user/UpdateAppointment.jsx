@@ -29,9 +29,11 @@ import {
   IconAlertCircle,
   IconInfoCircle,
   IconHistory,
+  IconUsers,
 } from "@tabler/icons";
 import TaskLogModal from "../modal/TaskLogModal";
 import { notifications } from "@mantine/notifications";
+import ServiceProviderSelector from "./ServiceProviderSelector";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -124,6 +126,8 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
   const [taskInfo, setTaskInfo] = useState(null);
   const [isTaskLogModalOpen, setIsTaskLogModalOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [showProviderSelector, setShowProviderSelector] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(null);
   let franchise = currentFranchiseId || localStoreService.getFranchiseID(); // Use current franchise from context
 
   // Helper function to check if check-out time is valid compared to check-in time
@@ -145,6 +149,7 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
       case 'completed': return 'teal';
       case 'cancelled': return 'red';
       case 'delayed': return 'orange';
+      case 'unassigned': return 'gray';
       default: return 'gray';
     }
   };
@@ -249,6 +254,26 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
           notes: notes,
           updatedBy: localStoreService.getUserID(),
         });
+      } else if (action === "assignServiceProvider") {
+        if (!selectedProvider) {
+          notifications.show({
+            title: "Error",
+            message: "Please select a service provider",
+            color: "red",
+          });
+          setIsLoading(false);
+          return;
+        }
+        await planboardService.AssignServiceProvider({
+          taskId: taskID,
+          serviceProviderId: selectedProvider.userId,
+          updatedBy: localStoreService.getUserID(),
+        });
+        notifications.show({
+          title: "Success",
+          message: `Service provider ${selectedProvider.name} assigned successfully`,
+          color: "green",
+        });
       }
       
       onModalClose(); // Close the modal after saving
@@ -266,6 +291,7 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
   const actionOptions = [
     { value: "updateAttendance", label: "Update Attendance", icon: IconClock },
     { value: "updateNotes", label: "Update Notes", icon: IconNotes },
+    { value: "assignServiceProvider", label: "Assign Service Provider", icon: IconUsers },
     { value: "cancelTask", label: "Cancel Task", icon: IconX },
   ];
 
@@ -273,11 +299,13 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
     taskInfo?.taskStatus === "Cancelled" || taskInfo?.taskStatus === "Completed"
       ? actionOptions.filter(
         (action) =>
-          action.value !== "updateAttendance" && action.value !== "cancelTask"
+          action.value !== "updateAttendance" && action.value !== "cancelTask" && action.value !== "assignServiceProvider"
       )
       : taskInfo?.taskStatus === "In-Progress"
-        ? actionOptions.filter((action) => action.value !== "cancelTask")
-        : actionOptions;
+        ? actionOptions.filter((action) => action.value !== "cancelTask" && action.value !== "assignServiceProvider")
+        : taskInfo?.taskStatus === "Unassigned"
+          ? actionOptions.filter((action) => action.value === "assignServiceProvider" || action.value === "updateNotes" || action.value === "cancelTask")
+          : actionOptions;
 
   // Filter out 'updateAttendance' option if task start time is in the future
   const isStartTimeInFuture = new Date(taskInfo?.date) > new Date();
@@ -536,6 +564,59 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
         </Paper>
       )}
 
+      {action === "assignServiceProvider" && (
+        <Paper className={classes.formSection}>
+          <div className={classes.sectionTitle}>
+            <IconUsers size={16} />
+            <Text size="xs" weight={600}>Assign Service Provider</Text>
+          </div>
+          
+          <Alert 
+            icon={<IconInfoCircle size={14} />} 
+            title={<Text size="xs" weight={600}>Service Provider Assignment</Text>}
+            color="blue" 
+            variant="light"
+            className={classes.alert}
+            p="xs"
+          >
+            <Text size="xs">
+              Select a service provider to assign to this unassigned task. The task status will be changed to "Scheduled".
+            </Text>
+          </Alert>
+
+          <Button
+            fullWidth
+            variant="outline"
+            onClick={() => setShowProviderSelector(true)}
+            leftIcon={<IconUsers size={16} />}
+            mt="sm"
+            size="sm"
+          >
+            {selectedProvider ? `Selected: ${selectedProvider.name}` : "Select Service Provider"}
+          </Button>
+
+          {selectedProvider && (
+            <Alert 
+              icon={<IconCheck size={14} />} 
+              title={<Text size="xs" weight={600}>Provider Selected</Text>}
+              color="green" 
+              variant="light"
+              mt="sm"
+              p="xs"
+            >
+              <Text size="xs">
+                <strong>{selectedProvider.name}</strong> will be assigned to this task.
+                {selectedProvider.finalAvailabilityStatus?.toLowerCase() !== "available" && (
+                  <Text size="xs" color="orange" mt="xs" component="div">
+                    ⚠️ Note: This provider's status is "{selectedProvider.finalAvailabilityStatus}"
+                  </Text>
+                )}
+              </Text>
+            </Alert>
+          )}
+        </Paper>
+      )}
+
       {(action === "updateNotes" || action === "cancelTask") && (
         <Paper className={classes.formSection}>
           <div className={classes.sectionTitle}>
@@ -595,7 +676,8 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
           (action === "updateAttendance" && 
            checkIn && 
            checkOut && 
-           !isCheckOutTimeValid())
+           !isCheckOutTimeValid()) ||
+          (action === "assignServiceProvider" && !selectedProvider)
         }
         leftIcon={!isLoading && <IconCheck size={20} />}
         styles={(theme) => ({
@@ -619,6 +701,24 @@ const UpdateAppointment = ({ taskID, franchiseName, onModalClose }) => {
         taskId={taskInfo?.taskId}
         taskTitle={`Task #${taskInfo?.taskId} - ${taskInfo?.clientName || 'Unknown Client'}`}
       />
+
+      {/* Service Provider Selector Modal */}
+      {taskInfo && (
+        <ServiceProviderSelector
+          opened={showProviderSelector}
+          onClose={() => setShowProviderSelector(false)}
+          onSelect={(providers) => {
+            if (providers && providers.length > 0) {
+              setSelectedProvider(providers[0]); // Take first provider (single select for assignment)
+              setShowProviderSelector(false);
+            }
+          }}
+          selectedProviders={selectedProvider ? [selectedProvider.userId] : []}
+          startDateTime={new Date(taskInfo.startTime)}
+          endDateTime={new Date(taskInfo.endTime)}
+          multiSelect={false}
+        />
+      )}
     </div>
   );
 };

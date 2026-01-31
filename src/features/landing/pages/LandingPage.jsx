@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Container,
   Title,
@@ -14,7 +14,6 @@ import {
   Badge,
   Box,
   Anchor,
-  Divider,
   ThemeIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -22,28 +21,23 @@ import { notifications } from "@mantine/notifications";
 import { 
   IconCalendar, 
   IconUsers, 
-  IconChartBar, 
   IconPhone, 
   IconMail, 
   IconCheck,
   IconDashboard,
-  IconCreditCard,
   IconCash,
   IconReportAnalytics,
   IconFileInvoice,
   IconClipboardCheck,
   IconBell,
-  IconSettings,
   IconClock,
   IconMapPin,
 } from "@tabler/icons";
-import { packageService, landingService } from "core/services";
+import { landingService } from "core/services";
 import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [packages, setPackages] = useState([]);
-  const [isLoadingPackages, setIsLoadingPackages] = useState(true);
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
   const [isSubmittingDemo, setIsSubmittingDemo] = useState(false);
 
@@ -79,28 +73,6 @@ const LandingPage = () => {
     },
   });
 
-  useEffect(() => {
-    fetchPackages();
-  }, []);
-
-  const fetchPackages = async () => {
-    try {
-      setIsLoadingPackages(true);
-      const response = await packageService.getAllPackages(false);
-      if (response?.data) {
-        setPackages(response.data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch packages:", error);
-      notifications.show({
-        title: "Error",
-        message: "Failed to load pricing packages",
-        color: "red",
-      });
-    } finally {
-      setIsLoadingPackages(false);
-    }
-  };
 
   const handleContactSubmit = async (values) => {
     try {
@@ -152,21 +124,6 @@ const LandingPage = () => {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
-
-  const calculateTotalMonthly = (pkg) => {
-    return (
-      pkg.perClientCharge +
-      pkg.infrastructureCost +
-      pkg.supportCharges +
-      pkg.newFeatureReportCharges
-    );
-  };
 
   return (
     <Box>
@@ -233,26 +190,6 @@ const LandingPage = () => {
                 })}
               >
                 Features
-              </Button>
-              <Button
-                variant="subtle"
-                color="gray"
-                size="md"
-                onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
-                style={{ 
-                  fontWeight: 600,
-                  transition: "all 0.2s ease",
-                }}
-                styles={(theme) => ({
-                  root: {
-                    '&:hover': {
-                      backgroundColor: theme.colors.blue[0],
-                      color: theme.colors.blue[7],
-                    }
-                  }
-                })}
-              >
-                Pricing
               </Button>
               <Button
                 variant="subtle"
@@ -338,32 +275,6 @@ const LandingPage = () => {
               exceptional care with our comprehensive all-in-one platform.
             </Text>
             <Group spacing="lg" mt="lg">
-              <Button 
-                size="xl" 
-                variant="filled" 
-                leftIcon={<IconCreditCard size={24} />}
-                onClick={() => {
-                  document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                style={{ 
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  backgroundColor: "#ffffff",
-                  color: "#667eea",
-                  border: "2px solid #ffffff",
-                  fontWeight: 700,
-                }}
-                styles={(theme) => ({
-                  root: {
-                    '&:hover': {
-                      backgroundColor: "#f8f9fa",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
-                    }
-                  }
-                })}
-              >
-                View Pricing
-              </Button>
               <Button
                 size="xl"
                 variant="filled"
@@ -651,152 +562,6 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Enhanced Pricing Section */}
-      <Box id="pricing" style={{ backgroundColor: "#fff", padding: "5rem 0" }}>
-        <Container size="xl">
-          <Stack align="center" spacing="md" mb={50}>
-            <Badge size="lg" variant="dot" color="blue">Pricing</Badge>
-            <Title order={2} ta="center" size={42} fw={700}>
-              Simple, Transparent Pricing
-            </Title>
-            <Text size="lg" c="dimmed" ta="center" maw={700}>
-              Flexible pricing options designed to scale with your home care organization. 
-              No hidden fees, no surprises.
-            </Text>
-          </Stack>
-
-          {isLoadingPackages ? (
-            <Text ta="center" py={40}>
-              Loading pricing plans...
-            </Text>
-          ) : packages.length === 0 ? (
-            <Text ta="center" py={40} c="dimmed">
-              No pricing plans available at the moment. Please contact us for more information.
-            </Text>
-          ) : (
-            <Grid>
-              {packages.map((pkg, index) => (
-                <Grid.Col key={pkg.id} md={4} sm={6}>
-                  <Card 
-                    shadow="xl" 
-                    padding="xl" 
-                    radius="lg" 
-                    withBorder 
-                    h="100%"
-                    style={{
-                      borderWidth: pkg.isActive ? 3 : 1,
-                      borderColor: pkg.isActive ? "#228be6" : "#dee2e6",
-                      transform: pkg.isActive ? "scale(1.05)" : "scale(1)",
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <Stack>
-                      <Group position="apart" align="flex-start">
-                        <div>
-                          <Title order={3} c={pkg.isActive ? "blue" : "dark"}>{pkg.name}</Title>
-                          {pkg.isActive && (
-                            <Badge color="blue" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }} mt="xs">
-                              Most Popular
-                            </Badge>
-                          )}
-                        </div>
-                      </Group>
-                      {pkg.description && (
-                        <Text size="sm" c="dimmed" style={{ minHeight: "40px" }}>
-                          {pkg.description}
-                        </Text>
-                      )}
-                      
-                      <Box
-                        style={{
-                          background: pkg.isActive 
-                            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-                            : "#f8f9fa",
-                          padding: "1.5rem",
-                          borderRadius: "12px",
-                          textAlign: "center",
-                        }}
-                      >
-                        <Text 
-                          size="xs" 
-                          fw={600} 
-                          tt="uppercase" 
-                          c={pkg.isActive ? "white" : "dimmed"}
-                          mb="xs"
-                        >
-                          Monthly Total
-                        </Text>
-                        <Group position="center" spacing={4}>
-                          <Text 
-                            size={42} 
-                            fw={800} 
-                            c={pkg.isActive ? "white" : "blue"}
-                            style={{ lineHeight: 1 }}
-                          >
-                            {formatCurrency(calculateTotalMonthly(pkg)).split('.')[0]}
-                          </Text>
-                          <Text size="lg" c={pkg.isActive ? "gray.3" : "dimmed"}>
-                            /mo
-                          </Text>
-                        </Group>
-                      </Box>
-
-                      <Divider label="What's included" labelPosition="center" />
-                      
-                      <Stack spacing="xs">
-                        {pkg.initialOneTimeCost > 0 && (
-                          <Group position="apart" noWrap>
-                            <Text size="sm" c="dimmed">One-Time Setup</Text>
-                            <Text fw={600} size="sm">{formatCurrency(pkg.initialOneTimeCost)}</Text>
-                          </Group>
-                        )}
-                        {pkg.perClientCharge > 0 && (
-                          <Group position="apart" noWrap>
-                            <Text size="sm" c="dimmed">Per Client</Text>
-                            <Text fw={600} size="sm">{formatCurrency(pkg.perClientCharge)}</Text>
-                          </Group>
-                        )}
-                        {pkg.infrastructureCost > 0 && (
-                          <Group position="apart" noWrap>
-                            <Text size="sm" c="dimmed">Infrastructure</Text>
-                            <Text fw={600} size="sm">{formatCurrency(pkg.infrastructureCost)}</Text>
-                          </Group>
-                        )}
-                        {pkg.supportCharges > 0 && (
-                          <Group position="apart" noWrap>
-                            <Text size="sm" c="dimmed">24/7 Support</Text>
-                            <Text fw={600} size="sm">{formatCurrency(pkg.supportCharges)}</Text>
-                          </Group>
-                        )}
-                        {pkg.newFeatureReportCharges > 0 && (
-                          <Group position="apart" noWrap>
-                            <Text size="sm" c="dimmed">New Features</Text>
-                            <Text fw={600} size="sm">{formatCurrency(pkg.newFeatureReportCharges)}</Text>
-                          </Group>
-                        )}
-                      </Stack>
-
-                      <Button
-                        fullWidth
-                        size="lg"
-                        mt="md"
-                        variant={pkg.isActive ? "gradient" : "light"}
-                        gradient={pkg.isActive ? { from: 'blue', to: 'cyan' } : undefined}
-                        onClick={() => {
-                          document.getElementById("request-demo")?.scrollIntoView({ behavior: "smooth" });
-                        }}
-                      >
-                        {pkg.isActive ? "Get Started Now" : "Choose Plan"}
-                      </Button>
-                    </Stack>
-                  </Card>
-                </Grid.Col>
-              ))}
-            </Grid>
-          )}
-        </Container>
-      </Box>
-
       {/* Enhanced Request Demo Section */}
       <Box 
         id="request-demo" 
@@ -973,7 +738,7 @@ const LandingPage = () => {
                       <Stack spacing={2}>
                         <Text fw={600} size="sm">Email Us</Text>
                         <Anchor href="mailto:asproducts123@hotmail.com" c="white" size="sm">
-                          products123@hotmail.com
+                          asproducts123@hotmail.com
                         </Anchor>
                       </Stack>
                     </Group>
@@ -983,9 +748,9 @@ const LandingPage = () => {
                         <IconPhone size={26} />
                       </ThemeIcon>
                       <Stack spacing={2}>
-                        <Text fw={600} size="sm">Call Us</Text>
-                        <Anchor href="tel:+1-555-123-4567" c="white" size="sm">
-                          +1 (555) 123-4567
+                        <Text fw={600} size="sm">Whatsapp Us</Text>
+                        <Anchor href="tel:+92 (346) 5315102" c="white" size="sm">
+                          +92 (346) 5315102
                         </Anchor>
                       </Stack>
                     </Group>
@@ -1114,17 +879,6 @@ const LandingPage = () => {
                     style={{ cursor: "pointer" }}
                   >
                     Features
-                  </Anchor>
-                  <Anchor 
-                    c="gray.4" 
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    Pricing
                   </Anchor>
                   <Anchor 
                     c="gray.4" 
