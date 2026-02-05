@@ -23,7 +23,7 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     minHeight: "100vh",
     display: "flex",
-    backgroundImage: "url(/LoginPage.png?w=1280&q=80)",
+    backgroundImage: "url(/LoginPage-HC.png?w=1280&q=80)",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "right center",
     backgroundSize: "contain"
@@ -186,7 +186,7 @@ const Login = () => {
             mt="md"
             mb={50}
           >
-            Welcome back to CareSync!
+            Welcome back to CareSynX!
           </Title>
 
           <TextInput

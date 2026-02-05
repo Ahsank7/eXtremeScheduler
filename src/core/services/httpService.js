@@ -31,7 +31,7 @@ axiosClient.interceptors.response.use(
     if (error?.response?.status === 401) {
       // Don't redirect if we're on public pages (landing page, login, etc.)
       const currentPath = window.location.pathname.toLowerCase();
-      const publicPaths = ['/home', '/login', '/attendance', '/admin'];
+      const publicPaths = ['/', '/home', '/products', '/contact', '/login', '/attendance', '/admin'];
       const isPublicPath = publicPaths.some(path => currentPath === path || currentPath.startsWith(path + '/'));
       
       if (isPublicPath) {

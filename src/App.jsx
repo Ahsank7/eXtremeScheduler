@@ -18,7 +18,7 @@ import StandaloneAttendance from "features/attendance/pages/StandaloneAttendance
 import { StandaloneAdminPortal } from "features/admin";
 import { PermissionProvider } from "core/context/PermissionContext";
 import { Reports } from "features/reports";
-import { LandingPage } from "features/landing";
+import { PublicSiteLayout, MainPage, ProductsPage, ContactPage, CareSyncHomeCarePage } from "features/landing";
 
 const App = () => {
   return (
@@ -92,11 +92,16 @@ const App = () => {
           />
         </Route>
 
-        <Route path="/home" element={<LandingPage />} />
+        <Route path="/" element={<PublicSiteLayout />}>
+          <Route index element={<MainPage />} />
+          <Route path="home" element={<MainPage />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="products/home-care" element={<CareSyncHomeCarePage />} />
+          <Route path="contact" element={<ContactPage />} />
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/attendance" element={<StandaloneAttendance />} />
         <Route path="/admin" element={<StandaloneAdminPortal />} />
-        <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
       </div>
     </PermissionProvider>
