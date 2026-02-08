@@ -16,10 +16,10 @@ const CareSyncXLogo = ({ variant = "header", height, onClick, style = {} }) => {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "6px 12px",
-        borderRadius: 10,
-        background: "rgba(255, 255, 255, 0.08)",
-        boxShadow: "0 1px 8px rgba(0, 0, 0, 0.15)",
+        padding: "8px 16px",
+        borderRadius: 12,
+        background: "rgba(255, 255, 255, 0.95)",
+        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.2)",
       }
     : {
         display: "inline-flex",
