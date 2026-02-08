@@ -1,15 +1,17 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box, Container, Group, Button, Text, Anchor, Stack } from "@mantine/core";
+import { Box, Container, Group, Text, Anchor, Stack, SimpleGrid } from "@mantine/core";
 import caresynxLogo from "../../../assets/images/caresynx-logo.png";
+
+const NAV_ITEMS = [
+  { label: "Home", path: "/", match: (p) => p === "/" || p === "/home" },
+  { label: "Products", path: "/products", match: (p) => p.startsWith("/products") },
+  { label: "Contact", path: "/contact", match: (p) => p === "/contact" },
+];
 
 const PublicSiteLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname;
-
-  const isHome = path === "/" || path === "/home";
-  const isProducts = path.startsWith("/products");
-  const isContact = path === "/contact";
 
   return (
     <Box
@@ -17,21 +19,31 @@ const PublicSiteLayout = () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "linear-gradient(180deg, #f0f4ff 0%, #faf5ff 50%, #f0f9ff 100%)",
+        background: "#faf5ff",
       }}
     >
-      {/* CareSyncX Header - subtle gradient like logo */}
+      {/* Header - Glassmorphism */}
       <Box
+        className="landing-glass"
         style={{
           position: "sticky",
           top: 0,
           zIndex: 100,
-          background: "linear-gradient(90deg, rgba(240,244,255,0.98) 0%, rgba(250,245,255,0.98) 50%, rgba(240,249,255,0.98) 100%)",
-          borderBottom: "1px solid rgba(124, 58, 237, 0.12)",
-          padding: "0.75rem 0",
-          boxShadow: "0 2px 16px rgba(79, 140, 255, 0.08)",
+          borderBottom: "1px solid rgba(99, 102, 241, 0.08)",
+          padding: "0.6rem 0",
         }}
       >
+        {/* Gradient accent line */}
+        <Box
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: "linear-gradient(90deg, #6366f1 0%, #8b5cf6 40%, #06b6d4 100%)",
+          }}
+        />
         <Container size="xl">
           <Group position="apart" align="center">
             <Group
@@ -43,7 +55,7 @@ const PublicSiteLayout = () => {
                 src={caresynxLogo}
                 alt="CareSyncX"
                 style={{
-                  height: 100,
+                  height: 80,
                   width: "auto",
                   display: "block",
                   objectFit: "contain",
@@ -51,43 +63,24 @@ const PublicSiteLayout = () => {
               />
             </Group>
 
-            <Group spacing="xs">
-              <Button
-                variant={isHome ? "filled" : "subtle"}
-                color="violet"
-                size="md"
-                onClick={() => navigate("/")}
-                style={{
-                  fontWeight: 600,
-                  ...(isHome ? { backgroundColor: "#7c3aed", color: "white" } : {}),
-                }}
-              >
-                Home
-              </Button>
-              <Button
-                variant={isProducts ? "filled" : "subtle"}
-                color="violet"
-                size="md"
-                onClick={() => navigate("/products")}
-                style={{
-                  fontWeight: 600,
-                  ...(isProducts ? { backgroundColor: "#7c3aed", color: "white" } : {}),
-                }}
-              >
-                Products
-              </Button>
-              <Button
-                variant={isContact ? "filled" : "subtle"}
-                color="violet"
-                size="md"
-                onClick={() => navigate("/contact")}
-                style={{
-                  fontWeight: 600,
-                  ...(isContact ? { backgroundColor: "#7c3aed", color: "white" } : {}),
-                }}
-              >
-                Contact
-              </Button>
+            <Group spacing={32}>
+              {NAV_ITEMS.map((item) => (
+                <Text
+                  key={item.label}
+                  className={`landing-nav-link ${item.match(path) ? "active" : ""}`}
+                  size="sm"
+                  fw={600}
+                  color={item.match(path) ? "#6366f1" : "#475569"}
+                  onClick={() => navigate(item.path)}
+                  style={{
+                    cursor: "pointer",
+                    letterSpacing: "0.01em",
+                    padding: "8px 0",
+                  }}
+                >
+                  {item.label}
+                </Text>
+              ))}
             </Group>
           </Group>
         </Container>
@@ -97,50 +90,103 @@ const PublicSiteLayout = () => {
         <Outlet />
       </Box>
 
-      {/* Footer */}
+      {/* Footer - Dark Gradient */}
       <Box
         style={{
-          background: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
+          background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
           color: "white",
-          padding: "2.5rem 0",
+          padding: "3.5rem 0 2rem",
           marginTop: "auto",
+          position: "relative",
         }}
       >
+        {/* Top gradient line */}
+        <Box
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: "linear-gradient(90deg, #6366f1 0%, #8b5cf6 30%, #06b6d4 60%, #f59e0b 100%)",
+          }}
+        />
         <Container size="xl">
-          <Group position="apart" align="flex-start">
-            <Stack spacing="xs">
+          <SimpleGrid
+            cols={3}
+            breakpoints={[
+              { maxWidth: "md", cols: 2 },
+              { maxWidth: "sm", cols: 1 },
+            ]}
+            spacing="xl"
+          >
+            {/* Brand */}
+            <Stack spacing="md">
               <img
                 src={caresynxLogo}
                 alt="CareSyncX"
                 style={{
-                  height: 40,
+                  height: 48,
                   width: "auto",
                   display: "block",
                   objectFit: "contain",
+                  filter: "brightness(1.2)",
                 }}
               />
-              <Text c="gray.4" size="sm" maw={280}>
-                Empowering care organizations with modern software solutions.
-              </Text>
-              <Text c="gray.5" size="xs">
-                © {new Date().getFullYear()} CareSyncX. All rights reserved.
+              <Text c="gray.5" size="sm" maw={250} style={{ lineHeight: 1.7 }}>
+                Empowering care organizations with modern, cloud-based software solutions.
               </Text>
             </Stack>
-            <Group spacing="xl">
-              <Stack spacing="xs">
-                <Text fw={600} size="sm">Quick Links</Text>
-                <Anchor c="gray.4" size="sm" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
-                  Home
-                </Anchor>
-                <Anchor c="gray.4" size="sm" onClick={() => navigate("/products")} style={{ cursor: "pointer" }}>
-                  Products
-                </Anchor>
-                <Anchor c="gray.4" size="sm" onClick={() => navigate("/contact")} style={{ cursor: "pointer" }}>
-                  Contact
-                </Anchor>
-              </Stack>
+
+            {/* Products */}
+            <Stack spacing="sm">
+              <Text fw={700} size="sm" style={{ textTransform: "uppercase", letterSpacing: "0.08em", color: "#a78bfa" }}>
+                Products
+              </Text>
+              <Anchor className="landing-footer-link" c="gray.4" size="sm" onClick={() => navigate("/products/home-care")}>
+                CareSync Home Care
+              </Anchor>
+              <Text c="gray.6" size="sm" style={{ fontStyle: "italic" }}>
+                CareSync HMS (Coming Soon)
+              </Text>
+            </Stack>
+
+            {/* Company */}
+            <Stack spacing="sm">
+              <Text fw={700} size="sm" style={{ textTransform: "uppercase", letterSpacing: "0.08em", color: "#a78bfa" }}>
+                Company
+              </Text>
+              <Anchor className="landing-footer-link" c="gray.4" size="sm" onClick={() => navigate("/")}>
+                Home
+              </Anchor>
+              <Anchor className="landing-footer-link" c="gray.4" size="sm" onClick={() => navigate("/products")}>
+                Products
+              </Anchor>
+              <Anchor className="landing-footer-link" c="gray.4" size="sm" onClick={() => navigate("/contact")}>
+                Contact Us
+              </Anchor>
+            </Stack>
+
+          </SimpleGrid>
+
+          {/* Bottom bar */}
+          <Box
+            style={{
+              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+              marginTop: "2.5rem",
+              paddingTop: "1.5rem",
+            }}
+          >
+            <Group position="apart">
+              <Text c="gray.6" size="xs">
+                &copy; {new Date().getFullYear()} CareSyncX. All rights reserved.
+              </Text>
+              <Group spacing="lg">
+                <Text c="gray.6" size="xs" style={{ cursor: "pointer" }}>Privacy Policy</Text>
+                <Text c="gray.6" size="xs" style={{ cursor: "pointer" }}>Terms of Service</Text>
+              </Group>
             </Group>
-          </Group>
+          </Box>
         </Container>
       </Box>
     </Box>
