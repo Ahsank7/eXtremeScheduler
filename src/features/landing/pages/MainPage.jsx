@@ -10,6 +10,7 @@ import {
   Card,
   Badge,
   ThemeIcon,
+  Anchor,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import {
@@ -21,6 +22,8 @@ import {
   IconUsers,
   IconReportAnalytics,
   IconArrowRight,
+  IconMail,
+  IconPhone,
 } from "@tabler/icons";
 import BannerSlider, { MAIN_PAGE_SLIDES } from "../components/BannerSlider";
 
@@ -142,16 +145,16 @@ const MainPage = () => {
         />
         <Container size="xl" style={{ position: "relative", zIndex: 1 }}>
           <Stack align="center" spacing="md" mb="xl">
-            <Badge size="lg" variant="gradient" gradient={{ from: "indigo", to: "violet" }}>
-              Who we are
+            <Badge size="lg" variant="gradient" gradient={{ from: "pink", to: "violet" }}>
+              Our cause
             </Badge>
             <Title order={2} ta="center" size={36} fw={700}>
-              One organization. Multiple solutions.
+              Care at the center. Technology that serves it.
             </Title>
             <Text size="lg" c="dimmed" ta="center" maw={680} style={{ lineHeight: 1.7 }}>
-              CareSyncX is your partner for care-focused software. We build tools that help home care
-              agencies and healthcare teams save time, reduce errors, and put the focus back on people.
-              From scheduling and billing today to full hospital management tomorrow—we're here for the long run.
+              CareSyncX exists to help care organizations do what they do best: deliver for people.
+              We build software so agencies and teams spend less time on admin and more time on care.
+              Scheduling, billing, and operations—clear, simple, and built for the long run.
             </Text>
           </Stack>
           <SimpleGrid cols={3} breakpoints={[{ maxWidth: "md", cols: 1 }]} spacing="xl">
@@ -220,11 +223,11 @@ const MainPage = () => {
         </Container>
       </Box>
 
-      {/* What we offer - feature highlights */}
+      {/* What we offer - feature highlights; white + green tint */}
       <Box
         style={{
           padding: "4rem 0",
-          background: "linear-gradient(180deg, rgba(250, 245, 255, 0.9) 0%, rgba(224, 231, 255, 0.6) 100%)",
+          background: "linear-gradient(180deg, #ffffff 0%, rgba(240, 253, 244, 0.6) 50%, rgba(254, 242, 248, 0.4) 100%)",
         }}
       >
         <Container size="xl">

@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Box, Container, Group, Button, Text, Anchor, Stack } from "@mantine/core";
-import caresynxLogo from "../../../assets/images/caresynx-logo.png";
+import CareSyncXLogo from "./CareSyncXLogo";
 
 const PublicSiteLayout = () => {
   const navigate = useNavigate();
@@ -34,22 +34,7 @@ const PublicSiteLayout = () => {
       >
         <Container size="xl">
           <Group position="apart" align="center">
-            <Group
-              spacing="sm"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/")}
-            >
-              <img
-                src={caresynxLogo}
-                alt="CareSyncX"
-                style={{
-                  height: 100,
-                  width: "auto",
-                  display: "block",
-                  objectFit: "contain",
-                }}
-              />
-            </Group>
+            <CareSyncXLogo variant="header" onClick={() => navigate("/")} />
 
             <Group spacing="xs">
               <Button
@@ -109,16 +94,7 @@ const PublicSiteLayout = () => {
         <Container size="xl">
           <Group position="apart" align="flex-start">
             <Stack spacing="xs">
-              <img
-                src={caresynxLogo}
-                alt="CareSyncX"
-                style={{
-                  height: 40,
-                  width: "auto",
-                  display: "block",
-                  objectFit: "contain",
-                }}
-              />
+              <CareSyncXLogo variant="footer" />
               <Text c="gray.4" size="sm" maw={280}>
                 Empowering care organizations with modern software solutions.
               </Text>

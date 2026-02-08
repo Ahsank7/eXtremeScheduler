@@ -284,7 +284,7 @@ const CareSyncHomeCarePage = () => {
               <Paper p="xl" radius="lg" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white" }}>
                 <Stack spacing="xl">
                   <Title order={4} c="white" mb="md">Contact Information</Title>
-                  <Group><ThemeIcon size={50} radius="md" variant="white" color="blue"><IconMail size={26} /></ThemeIcon><Stack spacing={2}><Text fw={600} size="sm">Email</Text><Anchor href="mailto:asproducts123@hotmail.com" c="white" size="sm">asproducts123@hotmail.com</Anchor></Stack></Group>
+                  <Group><ThemeIcon size={50} radius="md" variant="white" color="blue"><IconMail size={26} /></ThemeIcon><Stack spacing={2}><Text fw={600} size="sm">Email</Text><Anchor href="mailto:admin@caresynx.com" c="white" size="sm">admin@caresynx.com</Anchor></Stack></Group>
                   <Group><ThemeIcon size={50} radius="md" variant="white" color="blue"><IconPhone size={26} /></ThemeIcon><Stack spacing={2}><Text fw={600} size="sm">WhatsApp</Text><Anchor href="tel:+923465315102" c="white" size="sm">+92 (346) 5315102</Anchor></Stack></Group>
                   <Group><ThemeIcon size={50} radius="md" variant="white" color="blue"><IconClock size={26} /></ThemeIcon><Stack spacing={2}><Text fw={600} size="sm">Support</Text><Text size="sm" c="gray.3">Available when you need us</Text></Stack></Group>
                 </Stack>

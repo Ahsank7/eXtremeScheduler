@@ -2,9 +2,9 @@
   "short_name": "CareSyncX",
   "name": "CareSyncX",
   "icons": [
-    { "src": "caresynx-logo.png", "sizes": "any", "type": "image/png" },
-    { "src": "caresynx-logo.png", "type": "image/png", "sizes": "192x192" },
-    { "src": "caresynx-logo.png", "type": "image/png", "sizes": "512x512" }
+    { "src": "simpleLogo.PNG", "sizes": "any", "type": "image/png" },
+    { "src": "simpleLogo.PNG", "type": "image/png", "sizes": "192x192" },
+    { "src": "simpleLogo.PNG", "type": "image/png", "sizes": "512x512" }
   ],
   "start_url": ".",
   "display": "standalone",

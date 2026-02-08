@@ -233,33 +233,15 @@ export function AppHeader({ franchiseName }) {
   );
 }
 
-export function Logo(props) {
+export function Logo({ width = 180, ...props }) {
   return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 45">
-      <g fill="none" fillRule="evenodd">
-        {/* Calendar Icon */}
-        <g transform="translate(0, 4)">
-          <rect x="2" y="7" width="32" height="30" rx="3" fill="#3b82f6" stroke="#3b82f6" strokeWidth="1"/>
-          <rect x="2" y="5" width="32" height="7" rx="2" fill="#60a5fa"/>
-          <line x1="9" y1="2" x2="9" y2="9" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round"/>
-          <line x1="27" y1="2" x2="27" y2="9" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round"/>
-          <g fill="white">
-            <rect x="7" y="16" width="5" height="4" rx="1"/>
-            <rect x="16" y="16" width="5" height="4" rx="1"/>
-            <rect x="25" y="16" width="5" height="4" rx="1"/>
-            <rect x="7" y="24" width="5" height="4" rx="1"/>
-            <rect x="16" y="24" width="5" height="4" rx="1"/>
-            <rect x="25" y="24" width="5" height="4" rx="1"/>
-          </g>
-        </g>
-        {/* Text "CareSync Scheduler" */}
-        <text x="42" y="32" fill="#3b82f6" fontSize="26" fontFamily="Arial, sans-serif" fontWeight="700">
-          CareSync
-        </text>
-        <text x="165" y="32" fill="#6b7280" fontSize="26" fontFamily="Arial, sans-serif" fontWeight="500">
-          Scheduler
-        </text>
-      </g>
-    </svg>
+    <img
+      src="/caresyncHC-Logo.PNG"
+      alt="CareSync Scheduler"
+      width={width}
+      height="auto"
+      style={{ maxHeight: "40px", objectFit: "contain" }}
+      {...props}
+    />
   );
 }
