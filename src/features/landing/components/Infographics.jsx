@@ -214,7 +214,7 @@ export const HowItWorks = () => (
           <span className="landing-gradient-text">Streamlined Care</span>
         </Title>
         <Text size="lg" c="dimmed" ta="center" maw={600}>
-          From setup to insights — here's how CareSyncX transforms your operations.
+          From setup to insights — here's how caresynX transforms your operations.
         </Text>
       </Stack>
 
@@ -529,7 +529,7 @@ export const BeforeAfter = () => {
       <Container size="lg">
         <Stack align="center" spacing="md" mb={48}>
           <Badge size="lg" variant="gradient" gradient={{ from: C.indigo, to: C.violet }} radius="xl" styles={{ root: { padding: "10px 20px", textTransform: "none", fontSize: 13, fontWeight: 600 } }}>
-            Why CareSyncX
+            Why caresynX
           </Badge>
           <Title order={2} ta="center" fw={800} style={{ fontSize: "clamp(28px, 4vw, 42px)" }}>
             From Chaos to{" "}
@@ -548,11 +548,11 @@ export const BeforeAfter = () => {
         >
           {/* Header row */}
           <Box style={{ padding: "12px 20px", background: "#fee2e2", borderRadius: "12px 0 0 0" }}>
-            <Text fw={700} ta="center" size="sm" style={{ color: C.rose }}>Without CareSyncX</Text>
+            <Text fw={700} ta="center" size="sm" style={{ color: C.rose }}>Without caresynX</Text>
           </Box>
           <Box style={{ width: 48 }} />
           <Box style={{ padding: "12px 20px", background: `${C.emerald}15`, borderRadius: "0 12px 0 0" }}>
-            <Text fw={700} ta="center" size="sm" style={{ color: C.emerald }}>With CareSyncX</Text>
+            <Text fw={700} ta="center" size="sm" style={{ color: C.emerald }}>With caresynX</Text>
           </Box>
 
           {items.map(({ before, after }, idx) => (

@@ -145,7 +145,7 @@ const LandingPage = () => {
             <Group spacing="xs">
               <IconCalendar size={32} color="#228be6" />
               <Title order={2} c="blue" style={{ fontWeight: 700 }}>
-                CareSync Scheduler
+                caresynX Scheduler
               </Title>
             </Group>
 
@@ -841,7 +841,7 @@ const LandingPage = () => {
                 <Group spacing="xs">
                   <IconCalendar size={32} color="#3498db" />
                   <Title order={3} c="white">
-                    CareSync Scheduler
+                    caresynX Scheduler
                   </Title>
                 </Group>
                 <Text c="gray.4" size="sm">

@@ -237,7 +237,7 @@ export function Logo({ width = 180, ...props }) {
   return (
     <img
       src="/caresyncHC-Logo.PNG"
-      alt="CareSync Scheduler"
+      alt="caresynX Scheduler"
       width={width}
       height="auto"
       style={{ maxHeight: "40px", objectFit: "contain" }}

@@ -39,7 +39,7 @@ const CareSyncXLogo = ({ variant = "header", height, onClick, style = {} }) => {
     >
       <img
         src={caresynxLogoPng}
-        alt="CareSyncX"
+        alt="caresynX"
         style={{
           height: logoHeight,
           width: "auto",

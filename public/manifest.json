@@ -1,6 +1,6 @@
 {
-  "short_name": "CareSyncX",
-  "name": "CareSyncX",
+  "short_name": "caresynX",
+  "name": "caresynX",
   "icons": [
     { "src": "simpleLogo.PNG", "sizes": "any", "type": "image/png" },
     { "src": "simpleLogo.PNG", "type": "image/png", "sizes": "192x192" },

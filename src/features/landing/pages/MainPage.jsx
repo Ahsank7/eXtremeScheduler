@@ -162,7 +162,7 @@ const MainPage = () => {
               <span className="landing-gradient-text">Multiple Solutions.</span>
             </Title>
             <Text size="lg" c="dimmed" ta="center" maw={700} style={{ lineHeight: 1.7 }}>
-              CareSyncX is your partner for care-focused software. We build tools that help home care
+              caresynX is your partner for care-focused software. We build tools that help home care
               agencies and healthcare teams save time, reduce errors, and put the focus back on people.
             </Text>
           </Stack>
@@ -270,7 +270,7 @@ const MainPage = () => {
               <span className="landing-gradient-text">Operations?</span>
             </Title>
             <Text ta="center" size="lg" style={{ color: "rgba(255,255,255,0.8)", maxWidth: 560 }}>
-              Join care organizations that already use CareSyncX to save time and deliver better outcomes.
+              Join care organizations that already use caresynX to save time and deliver better outcomes.
             </Text>
             <Group position="center" spacing="md" mt="sm">
               <Button className="landing-btn-lift" size="lg" variant="white" color="dark" radius="xl" onClick={() => navigate("/products")} rightIcon={<IconArrowRight size={18} />} styles={{ root: { fontWeight: 700, padding: "0 28px", height: 52 } }}>

@@ -261,10 +261,10 @@ const Login = () => {
         <Box className={classes.formColumnDecorBottom} aria-hidden />
         <Box component="form" onSubmit={form.onSubmit((values) => handleSubmit(values))} className={classes.formInner} style={{ position: "relative", zIndex: 1 }}>
           <div className={classes.logoWrap}>
-            <img src={logoUrl} alt="CareSyncX" className={classes.logo} />
+            <img src={logoUrl} alt="caresynX" className={classes.logo} />
           </div>
           <Title order={1} className={classes.title} align="center" size="h2">
-            Welcome back to CareSyncX
+            Welcome back to caresynX
           </Title>
           <Text className={classes.subtitle} align="center">
             Sign in to manage your schedules and care team

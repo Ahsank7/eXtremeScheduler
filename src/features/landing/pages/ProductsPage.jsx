@@ -78,7 +78,7 @@ const ProductsPage = () => {
               <span className="landing-gradient-text">Care Organizations</span>
             </Title>
             <Text ta="center" maw={700} style={{ color: "rgba(255,255,255,0.7)", fontSize: 20, lineHeight: 1.7 }}>
-              Explore CareSyncX products designed to streamline your operations,
+              Explore caresynX products designed to streamline your operations,
               reduce manual work, and deliver exceptional care.
             </Text>
 
@@ -99,7 +99,7 @@ const ProductsPage = () => {
         </Container>
       </Box>
 
-      {/* ===== FLAGSHIP PRODUCT – CareSync Home Care ===== */}
+      {/* ===== FLAGSHIP PRODUCT – caresynX Home Care ===== */}
       <Box
         style={{
           padding: "5rem 0",
@@ -113,7 +113,7 @@ const ProductsPage = () => {
               Flagship Product
             </Badge>
             <Title order={2} ta="center" fw={800} style={{ fontSize: "clamp(28px, 4vw, 42px)" }}>
-              CareSync{" "}
+              caresynX{" "}
               <span className="landing-gradient-text">Home Care</span>
             </Title>
             <Text size="lg" c="dimmed" ta="center" maw={700} style={{ lineHeight: 1.7 }}>
@@ -145,13 +145,13 @@ const ProductsPage = () => {
                     <IconHome size={36} color="white" />
                   </Box>
                   <div>
-                    <Title order={3} fw={800}>CareSync Home Care</Title>
+                    <Title order={3} fw={800}>caresynX Home Care</Title>
                     <Text size="sm" c="dimmed">All-in-One Platform</Text>
                   </div>
                 </Group>
 
                 <Text size="md" c="dimmed" style={{ lineHeight: 1.8 }}>
-                  Designed specifically for home care agencies, CareSync Home Care brings together
+                  Designed specifically for home care agencies, caresynX Home Care brings together
                   every tool you need — from intelligent scheduling and caregiver management to
                   automated billing, payroll, and advanced analytics.
                 </Text>
@@ -258,7 +258,7 @@ const ProductsPage = () => {
         </Container>
       </Box>
 
-      {/* ===== COMING SOON – CareSync HMS ===== */}
+      {/* ===== COMING SOON – caresynX HMS ===== */}
       <Box style={{ padding: "5rem 0", background: "#fff", position: "relative", overflow: "hidden" }}>
         <Box className="landing-pulse" style={{ position: "absolute", top: "-10%", left: "-5%", width: "30%", height: "60%", borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 70%)", pointerEvents: "none" }} />
 
@@ -322,7 +322,7 @@ const ProductsPage = () => {
                 <Box style={{ padding: "3rem 2.5rem" }}>
                   <Stack spacing="lg">
                     <div>
-                      <Title order={3} fw={800} mb={8}>CareSync HMS</Title>
+                      <Title order={3} fw={800} mb={8}>caresynX HMS</Title>
                       <Text size="sm" c="dimmed" style={{ lineHeight: 1.8 }}>
                         A comprehensive Healthcare Management System for broader clinical and
                         operational needs. We're building something special to help healthcare
@@ -379,8 +379,8 @@ const ProductsPage = () => {
               Ready to Transform Your{" "}
               <span className="landing-gradient-text">Operations?</span>
             </Title>
-            <Text ta="center" size="lg" style={{ color: "rgba(255,255,255,0.8)", maxWidth: 560 }}>
-              Discover how CareSyncX can help your organization save time, reduce errors,
+                <Text ta="center" size="lg" style={{ color: "rgba(255,255,255,0.8)", maxWidth: 560 }}>
+              Discover how caresynX can help your organization save time, reduce errors,
               and focus on what matters most — delivering exceptional care.
             </Text>
             <Group position="center" spacing="md" mt="sm">

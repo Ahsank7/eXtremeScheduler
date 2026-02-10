@@ -113,7 +113,7 @@ const PublicSiteLayout = () => {
             <Stack spacing="md">
               <CareSyncXLogo variant="footer" height={36} />
               <Text c="gray.5" size="sm" maw={250} style={{ lineHeight: 1.7 }}>
-                Empowering care organizations with modern, cloud-based software solutions.
+                Empowering care organizations with modern, cloud-based software solutions from caresynX.
               </Text>
             </Stack>
 
@@ -123,10 +123,10 @@ const PublicSiteLayout = () => {
                 Products
               </Text>
               <Anchor className="landing-footer-link" c="gray.4" size="sm" onClick={() => navigate("/products/home-care")}>
-                CareSync Home Care
+                caresynX Home Care
               </Anchor>
               <Text c="gray.6" size="sm" style={{ fontStyle: "italic" }}>
-                CareSync HMS (Coming Soon)
+                caresynX HMS (Coming Soon)
               </Text>
             </Stack>
 
@@ -158,7 +158,7 @@ const PublicSiteLayout = () => {
           >
             <Group position="apart">
               <Text c="gray.6" size="xs">
-                &copy; {new Date().getFullYear()} CareSyncX. All rights reserved.
+                &copy; {new Date().getFullYear()} caresynX. All rights reserved.
               </Text>
               <Group spacing="lg">
                 <Text c="gray.6" size="xs" style={{ cursor: "pointer" }}>Privacy Policy</Text>

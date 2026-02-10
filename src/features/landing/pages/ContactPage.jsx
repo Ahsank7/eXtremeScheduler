@@ -66,8 +66,8 @@ const ContactPage = () => {
     {
       icon: IconMail,
       label: "Email",
-      value: "asproducts123@hotmail.com",
-      href: "mailto:asproducts123@hotmail.com",
+      value: "admin@caresynx.com",
+      href: "mailto:admin@caresynx.com",
       color: "#6366f1",
     },
     {

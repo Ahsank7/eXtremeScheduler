@@ -145,7 +145,7 @@ const CareSyncHomeCarePage = () => {
                   radius="xl"
                   styles={{ root: { padding: "12px 24px", textTransform: "none", fontSize: 14, fontWeight: 600, width: "fit-content" } }}
                 >
-                  CareSync Home Care
+                  caresynX Home Care
                 </Badge>
                 <Title order={1} fw={900} style={{ fontSize: "clamp(36px, 5vw, 60px)", lineHeight: 1.1 }}>
                   Transform Your Home Care{" "}
@@ -229,7 +229,7 @@ const CareSyncHomeCarePage = () => {
                   radius="xl"
                   styles={{ root: { padding: "10px 20px", textTransform: "none", fontSize: 13, fontWeight: 600 } }}
                 >
-                  About CareSync Home Care
+                  About caresynX Home Care
                 </Badge>
                 <Title order={2} fw={800} style={{ fontSize: "clamp(28px, 4vw, 42px)" }}>
                   Your Complete Home Care{" "}
@@ -393,7 +393,7 @@ const CareSyncHomeCarePage = () => {
                   Request Demo
                 </Badge>
                 <Title order={2} fw={800} style={{ fontSize: "clamp(28px, 4vw, 42px)" }}>
-                  See CareSync Home Care{" "}
+                  See caresynX Home Care{" "}
                   <span className="landing-gradient-text">In Action</span>
                 </Title>
                 <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
@@ -500,7 +500,7 @@ const CareSyncHomeCarePage = () => {
                 <Stack spacing="xl" style={{ position: "relative", zIndex: 1 }}>
                   <Title order={4} c="white" mb="xs" fw={800}>Contact Information</Title>
                   {[
-                    { icon: IconMail, label: "Email", value: "asproducts123@hotmail.com", href: "mailto:asproducts123@hotmail.com" },
+                    { icon: IconMail, label: "Email", value: "admin@caresynx.com", href: "mailto:admin@caresynx.com" },
                     { icon: IconPhone, label: "WhatsApp", value: "+92 (346) 5315102", href: "tel:+923465315102" },
                     { icon: IconClock, label: "Support", value: "Available when you need us", href: null },
                   ].map(({ icon: Icon, label, value, href }) => (
